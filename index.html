@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick — Plataforma Last Mile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  /* ───── RESET & BASE ───── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --q: #F5C518;
+    --q-dark: #C9A200;
+    --q-glow: rgba(245,197,24,.18);
+    /* DARK GRADIENT THEME */
+    --bg-grad: linear-gradient(135deg, #0f0c1a 0%, #1a0f0a 40%, #0d1520 100%);
+    --sidebar-bg: rgba(8,6,18,.85);
+    --topbar-bg: rgba(12,9,22,.7);
+    --card-bg: rgba(255,255,255,.04);
+    --card-bg-hover: rgba(255,255,255,.07);
+    --card-border: rgba(255,255,255,.08);
+    --card-glass: rgba(255,255,255,.06);
+    --text-1: #FFFFFF;
+    --text-2: rgba(255,255,255,.55);
+    --text-3: rgba(255,255,255,.3);
+    --border: rgba(255,255,255,.08);
+    --accent-glow: 0 0 24px rgba(245,197,24,.25);
+    /* GRADIENT CARDS */
+    --grad-purple: linear-gradient(135deg,#6C3FB5 0%,#3B1E8E 100%);
+    --grad-orange: linear-gradient(135deg,#E8622A 0%,#B83A10 100%);
+    --grad-blue:   linear-gradient(135deg,#1E5CA8 0%,#0D3B73 100%);
+    --grad-teal:   linear-gradient(135deg,#0E8A78 0%,#074E44 100%);
+    --grad-warm:   linear-gradient(135deg,#C97B20 0%,#7A3E08 100%);
+    --grad-rose:   linear-gradient(135deg,#C03060 0%,#7A1535 100%);
+    --green: #22C55E; --red: #F87171; --blue: #60A5FA; --orange: #FB923C;
+    --mode: dark;
+  }
+  .light-mode {
+    --bg-grad: linear-gradient(135deg,#f0ede8 0%,#e8e0d8 40%,#ece8f0 100%);
+    --sidebar-bg: rgba(255,255,255,.92);
+    --topbar-bg: rgba(255,255,255,.85);
+    --card-bg: rgba(255,255,255,.75);
+    --card-bg-hover: rgba(255,255,255,.95);
+    --card-border: rgba(0,0,0,.09);
+    --card-glass: rgba(255,255,255,.6);
+    --text-1: #0D0B1A;
+    --text-2: rgba(0,0,0,.55);
+    --text-3: rgba(0,0,0,.35);
+    --border: rgba(0,0,0,.09);
+    --accent-glow: 0 4px 20px rgba(245,197,24,.35);
+  }
+
+  html, body { height: 100%; font-family: 'Inter', sans-serif; font-size: 13px; }
+
+  body {
+    background: var(--bg-grad);
+    color: var(--text-1);
+    min-height: 100vh;
+    position: relative;
+    transition: background .4s, color .3s;
+  }
+
+  /* Atmospheric glow blobs */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 80%, rgba(180,80,20,.22) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 85% 20%, rgba(80,30,160,.25) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(200,120,20,.08) 0%, transparent 70%);
+    transition: opacity .4s;
+  }
+  .light-mode body::before { opacity: .4; }
+
+  #app { display: flex; height: 100vh; position: relative; z-index: 1; }
+
+  /* ───── SCROLLBAR ───── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
+  .light-mode ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); }
+
+  /* ───── SIDEBAR ───── */
+  #sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--sidebar-bg);
+    backdrop-filter: blur(24px);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    transition: background .3s;
+  }
+  .sb-logo {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sb-logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg,#F5C518,#C9A200);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #000;
+    box-shadow: 0 4px 16px rgba(245,197,24,.4);
+  }
+  .sb-logo-name { font-size: 16px; font-weight: 700; color: var(--text-1); }
+  .sb-logo-tag  { font-size: 10px; color: var(--text-2); letter-spacing: .3px; }
+
+  .sb-section {
+    padding: 16px 14px 6px;
+    font-size: 10px; font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 12px;
+    margin: 1px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--text-2);
+    transition: all .2s;
+    position: relative;
+  }
+  .nav-item:hover { background: var(--card-bg); color: var(--text-1); }
+  .nav-item.active {
+    background: linear-gradient(135deg,rgba(245,197,24,.25),rgba(245,197,24,.08));
+    color: var(--q);
+    border: 1px solid rgba(245,197,24,.25);
+    box-shadow: inset 0 1px 0 rgba(245,197,24,.15);
+  }
+  .nav-item .ti { font-size: 17px; }
+  .nav-item .nbadge {
+    margin-left: auto;
+    background: #EF4444;
+    color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 20px;
+    min-width: 20px; text-align: center;
+  }
+  .nav-item.active .nbadge { background: rgba(0,0,0,.4); color: var(--q); }
+
+  .sb-bottom { margin-top: auto; border-top: 1px solid var(--border); padding: 10px 8px; }
+  .sb-user {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 10px;
+    cursor: pointer; transition: background .2s;
+  }
+  .sb-user:hover { background: var(--card-bg); }
+  .sb-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg,#F5C518,#C9A200);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #000; flex-shrink: 0;
+  }
+  .sb-user-name { font-size: 12px; font-weight: 600; color: var(--text-1); }
+  .sb-user-role { font-size: 10px; color: var(--text-2); }
+
+  /* ───── MAIN ───── */
+  #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ───── TOPBAR ───── */
+  #topbar {
+    height: 58px; flex-shrink: 0;
+    background: var(--topbar-bg);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 24px;
+    transition: background .3s;
+  }
+  .tb-title { font-size: 17px; font-weight: 700; color: var(--text-1); }
+  .tb-crumb { font-size: 12px; color: var(--text-3); }
+  .tb-spacer { flex: 1; }
+  .tb-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 7px 14px;
+    color: var(--text-2);
+    font-size: 12px;
+    width: 180px;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .tb-search:hover { border-color: rgba(245,197,24,.4); }
+  .tb-search .ti { font-size: 14px; }
+  .tb-icon-btn {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-2);
+    position: relative; transition: all .2s;
+  }
+  .tb-icon-btn:hover { background: var(--card-bg-hover); color: var(--text-1); }
+  .tb-icon-btn .ti { font-size: 17px; }
+  .notif-dot {
+    position: absolute; top: 4px; right: 4px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #EF4444;
+    border: 2px solid var(--topbar-bg);
+  }
+  #mode-toggle {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 14px; border-radius: 20px;
+    background: var(--card-bg);
+    border: 1px solid rgba(245,197,24,.35);
+    color: var(--q);
+    cursor: pointer; font-size: 11px; font-weight: 600;
+    transition: all .25s; white-space: nowrap;
+  }
+  #mode-toggle:hover { background: var(--q); color: #000; }
+  #mode-toggle .ti { font-size: 14px; }
+  .top-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg,#F5C518,#C9A200);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #000;
+    cursor: pointer;
+    box-shadow: 0 0 0 2px rgba(245,197,24,.3);
+  }
+
+  /* ───── CONTENT AREA ───── */
+  #content { flex: 1; overflow-y: auto; padding: 22px 24px; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ───── KPI CARDS ───── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 18px; }
+  .kpi-card {
+    border-radius: 14px;
+    padding: 16px 18px;
+    position: relative; overflow: hidden;
+    border: 1px solid transparent;
+    cursor: default;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); }
+  .kpi-card.glass {
+    background: var(--card-glass);
+    backdrop-filter: blur(20px);
+    border-color: var(--card-border);
+  }
+  .kpi-card.grad-purple { background: var(--grad-purple); border-color: rgba(255,255,255,.12); box-shadow: 0 8px 32px rgba(80,30,160,.35); }
+  .kpi-card.grad-orange { background: var(--grad-orange); border-color: rgba(255,255,255,.12); box-shadow: 0 8px 32px rgba(180,60,20,.35); }
+  .kpi-card.grad-blue   { background: var(--grad-blue);   border-color: rgba(255,255,255,.12); box-shadow: 0 8px 32px rgba(20,60,140,.35); }
+  .kpi-card.grad-teal   { background: var(--grad-teal);   border-color: rgba(255,255,255,.12); box-shadow: 0 8px 32px rgba(10,100,80,.35); }
+  .kpi-card.grad-warm   { background: var(--grad-warm);   border-color: rgba(255,255,255,.12); box-shadow: 0 8px 32px rgba(160,80,10,.35); }
+  .kpi-card.grad-rose   { background: var(--grad-rose);   border-color: rgba(255,255,255,.12); box-shadow: 0 8px 32px rgba(150,20,60,.35); }
+  .kpi-card.q-accent {
+    background: linear-gradient(135deg,rgba(245,197,24,.22),rgba(245,197,24,.06));
+    border-color: rgba(245,197,24,.3);
+    box-shadow: 0 8px 32px rgba(245,197,24,.15);
+  }
+  .kpi-label { font-size: 11px; color: rgba(255,255,255,.65); font-weight: 500; margin-bottom: 8px; }
+  .kpi-value { font-size: 26px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 8px; }
+  .kpi-value.yellow { color: var(--q); }
+  .kpi-delta { font-size: 11px; display: flex; align-items: center; gap: 4px; color: rgba(255,255,255,.7); }
+  .kpi-delta.up { color: #4ADE80; }
+  .kpi-delta.down { color: #F87171; }
+  .kpi-delta .ti { font-size: 13px; }
+  .kpi-icon {
+    position: absolute; right: 14px; top: 14px;
+    font-size: 28px; opacity: .2; color: #fff;
+  }
+  /* light mode kpi overrides */
+  .light-mode .kpi-card.glass { background: rgba(255,255,255,.7); border-color: rgba(0,0,0,.1); }
+  .light-mode .kpi-card.glass .kpi-label { color: rgba(0,0,0,.5); }
+  .light-mode .kpi-card.glass .kpi-value { color: #0D0B1A; }
+  .light-mode .kpi-card.glass .kpi-delta { color: rgba(0,0,0,.6); }
+
+  /* ───── GRID LAYOUTS ───── */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .g3 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .g3r { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; margin-bottom: 14px; }
+  .g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 14px; }
+
+  /* ───── GLASS CARD ───── */
+  .card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    transition: background .3s, border-color .2s;
+  }
+  .card:hover { border-color: rgba(245,197,24,.2); }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--text-1); }
+  .card-sub { font-size: 11px; color: var(--text-3); }
+  .card-action {
+    font-size: 11px; color: var(--q); cursor: pointer;
+    background: rgba(245,197,24,.1); border: 1px solid rgba(245,197,24,.2);
+    padding: 4px 10px; border-radius: 8px; transition: all .2s;
+  }
+  .card-action:hover { background: var(--q); color: #000; }
+
+  /* ───── TABLE ───── */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .tbl th {
+    text-align: left; padding: 6px 10px;
+    color: var(--text-3); font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+  }
+  .tbl td { padding: 9px 10px; border-bottom: 1px solid rgba(255,255,255,.04); color: var(--text-1); vertical-align: middle; }
+  .light-mode .tbl td { border-bottom: 1px solid rgba(0,0,0,.05); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tbody tr { transition: background .15s; }
+  .tbl tbody tr:hover td { background: var(--card-bg); }
+  .tbl .link { color: var(--q); cursor: pointer; }
+
+  /* ───── BADGES ───── */
+  .b { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+  .b-green  { background: rgba(34,197,94,.15);  color: #4ADE80; border: 1px solid rgba(34,197,94,.25); }
+  .b-yellow { background: rgba(245,197,24,.15); color: var(--q); border: 1px solid rgba(245,197,24,.25); }
+  .b-red    { background: rgba(239,68,68,.15);  color: #F87171; border: 1px solid rgba(239,68,68,.25); }
+  .b-blue   { background: rgba(96,165,250,.15); color: #93C5FD; border: 1px solid rgba(96,165,250,.25); }
+  .b-purple { background: rgba(167,139,250,.15);color: #C4B5FD; border: 1px solid rgba(167,139,250,.25); }
+  .light-mode .b-green  { background: #DCFCE7; color: #166534; border-color: #86EFAC; }
+  .light-mode .b-yellow { background: #FEF3C7; color: #92400E; border-color: #FCD34D; }
+  .light-mode .b-red    { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; }
+  .light-mode .b-blue   { background: #DBEAFE; color: #1E40AF; border-color: #93C5FD; }
+  .light-mode .b-purple { background: #EDE9FE; color: #5B21B6; border-color: #C4B5FD; }
+
+  /* ───── ALERT ROWS ───── */
+  .alert-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 10px;
+    background: var(--card-bg);
+    border-left: 3px solid; margin-bottom: 8px;
+    transition: background .2s;
+  }
+  .alert-item:hover { background: var(--card-bg-hover); }
+  .alert-item:last-child { margin-bottom: 0; }
+  .alert-item.warn  { border-color: var(--q); }
+  .alert-item.danger{ border-color: #EF4444; }
+  .alert-item.info  { border-color: #60A5FA; }
+  .alert-title { font-size: 12px; font-weight: 600; color: var(--text-1); }
+  .alert-sub   { font-size: 11px; color: var(--text-2); margin-top: 1px; }
+  .alert-time  { font-size: 10px; color: var(--text-3); margin-left: auto; white-space: nowrap; }
+  .alert-icon  { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .alert-icon.warn   { background: rgba(245,197,24,.15); color: var(--q); }
+  .alert-icon.danger { background: rgba(239,68,68,.15);  color: #F87171; }
+  .alert-icon.info   { background: rgba(96,165,250,.15); color: #60A5FA; }
+
+  /* ───── GRADIENT BARS ───── */
+  .bar-list { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row  { display: flex; align-items: center; gap: 10px; }
+  .bar-lbl  { width: 85px; font-size: 11px; color: var(--text-2); text-align: right; flex-shrink: 0; }
+  .bar-track{ flex: 1; background: rgba(255,255,255,.06); border-radius: 4px; height: 10px; overflow: hidden; }
+  .light-mode .bar-track { background: rgba(0,0,0,.08); }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width .6s ease; }
+  .bar-fill.gq  { background: linear-gradient(90deg,#C9A200,#F5C518); }
+  .bar-fill.gg  { background: linear-gradient(90deg,#059669,#22C55E); }
+  .bar-fill.gr  { background: linear-gradient(90deg,#DC2626,#F87171); }
+  .bar-fill.gb  { background: linear-gradient(90deg,#1D4ED8,#60A5FA); }
+  .bar-fill.go  { background: linear-gradient(90deg,#C2410C,#FB923C); }
+  .bar-fill.gp  { background: linear-gradient(90deg,#6D28D9,#A78BFA); }
+  .bar-val  { width: 34px; font-size: 11px; font-weight: 600; color: var(--text-1); }
+
+  /* ───── MAP PLACEHOLDER ───── */
+  .map-ph {
+    background: linear-gradient(135deg,rgba(20,40,80,.6),rgba(30,20,60,.6));
+    border-radius: 10px; height: 180px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(255,255,255,.06);
+  }
+  .light-mode .map-ph { background: linear-gradient(135deg,#e0e8f4,#d8d0e8); }
+  .map-dot {
+    position: absolute; border-radius: 50%;
+    box-shadow: 0 0 10px 4px currentColor;
+    transition: all .3s;
+  }
+  .map-dot.y { width: 10px; height: 10px; color: var(--q); background: var(--q); }
+  .map-dot.g { width: 10px; height: 10px; color: #22C55E; background: #22C55E; }
+  .map-dot.r { width: 12px; height: 12px; color: #EF4444; background: #EF4444; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 8px 3px currentColor} 50%{box-shadow:0 0 16px 7px currentColor} }
+  .map-label {
+    background: rgba(0,0,0,.55); backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,.1);
+    padding: 5px 12px; border-radius: 8px;
+    font-size: 11px; color: rgba(255,255,255,.8);
+  }
+  .map-legend { display: flex; gap: 14px; margin-top: 10px; }
+  .map-leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); }
+  .map-leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ───── MINI TIMELINE ───── */
+  .tl-list { display: flex; flex-direction: column; }
+  .tl-item { display: flex; gap: 12px; padding-bottom: 14px; position: relative; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-item::after {
+    content: ''; position: absolute;
+    left: 9px; top: 20px; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .tl-item:last-child::after { display: none; }
+  .tl-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0; position: relative; z-index: 1;
+    border: 2px solid transparent;
+  }
+  .tl-dot.y { background: rgba(245,197,24,.15); border-color: var(--q); color: var(--q); }
+  .tl-dot.g { background: rgba(34,197,94,.15);  border-color: #22C55E; color: #22C55E; }
+  .tl-dot.r { background: rgba(239,68,68,.15);  border-color: #EF4444; color: #EF4444; }
+  .tl-dot.b { background: rgba(96,165,250,.15); border-color: #60A5FA; color: #60A5FA; }
+  .tl-body-title { font-size: 12px; font-weight: 600; color: var(--text-1); }
+  .tl-body-meta  { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+  /* ───── SETTINGS CARDS ───── */
+  .settings-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+  .settings-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 18px;
+    cursor: pointer; transition: all .25s;
+  }
+  .settings-card:hover {
+    border-color: rgba(245,197,24,.4);
+    background: var(--card-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(245,197,24,.12);
+  }
+  .sc-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg,rgba(245,197,24,.25),rgba(245,197,24,.08));
+    border: 1px solid rgba(245,197,24,.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: var(--q); margin-bottom: 12px;
+  }
+  .sc-title { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+  .sc-desc  { font-size: 11px; color: var(--text-2); line-height: 1.5; }
+
+  /* ───── ROLE CARDS ───── */
+  .roles-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; margin-bottom: 16px; }
+  .role-card {
+    background: var(--card-bg); backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 14px 10px; text-align: center;
+    transition: all .2s; cursor: default;
+  }
+  .role-card:hover { border-color: rgba(245,197,24,.3); background: var(--card-bg-hover); }
+  .role-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg,#F5C518,#C9A200);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 8px; font-size: 16px; color: #000;
+  }
+  .role-name { font-size: 11px; font-weight: 600; color: var(--text-1); margin-bottom: 3px; }
+  .role-desc { font-size: 10px; color: var(--text-3); line-height: 1.3; }
+
+  /* ───── DB DIAGRAM ───── */
+  .db-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+  .db-entity {
+    background: var(--card-bg); backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: 10px; overflow: hidden;
+    transition: border-color .2s;
+  }
+  .db-entity:hover { border-color: rgba(245,197,24,.35); }
+  .db-head {
+    background: linear-gradient(135deg,rgba(245,197,24,.25),rgba(245,197,24,.08));
+    border-bottom: 1px solid rgba(245,197,24,.2);
+    padding: 6px 10px;
+    font-size: 11px; font-weight: 700; color: var(--q);
+  }
+  .db-fields { padding: 8px 10px; font-size: 10px; color: var(--text-2); line-height: 1.7; }
+  .db-field-key { color: var(--q); font-weight: 600; }
+
+  /* ───── BUTTONS ───── */
+  .btn-q {
+    background: linear-gradient(135deg,#F5C518,#C9A200);
+    color: #000; border: none;
+    padding: 8px 16px; border-radius: 10px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: opacity .2s, transform .15s;
+  }
+  .btn-q:hover { opacity: .9; transform: translateY(-1px); }
+  .btn-q .ti { font-size: 14px; }
+  .btn-ghost {
+    background: var(--card-bg); backdrop-filter: blur(10px);
+    color: var(--text-1); border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 10px;
+    font-size: 12px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all .2s;
+  }
+  .btn-ghost:hover { background: var(--card-bg-hover); border-color: rgba(245,197,24,.3); color: var(--q); }
+  .btn-ghost .ti { font-size: 14px; }
+
+  /* ───── FORM ───── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-label { font-size: 11px; color: var(--text-2); font-weight: 500; }
+  .form-input {
+    background: var(--card-bg); backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 9px; padding: 8px 12px;
+    color: var(--text-1); font-size: 12px;
+    transition: border-color .2s;
+    width: 100%;
+  }
+  .form-input:focus { outline: none; border-color: rgba(245,197,24,.5); }
+  select.form-input { cursor: pointer; }
+
+  /* ───── MINI CHART (canvas via Chart.js) ───── */
+  .chart-wrap { position: relative; width: 100%; }
+
+  /* ───── STAT ROW ───── */
+  .stat-row { display: flex; align-items: baseline; gap: 6px; }
+  .stat-big { font-size: 32px; font-weight: 700; color: var(--text-1); line-height: 1; }
+  .stat-unit{ font-size: 14px; color: var(--text-3); }
+
+  /* ───── SECTION DIVIDER ───── */
+  .sdiv { display: flex; align-items: center; gap: 12px; margin: 20px 0 14px; }
+  .sdiv-title { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+  .sdiv-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ───── QUICK ACTIONS ───── */
+  .qa-list { display: flex; flex-direction: column; gap: 6px; }
+  .qa-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    cursor: pointer; transition: all .2s;
+    font-size: 12px; color: var(--text-1);
+  }
+  .qa-item:hover { border-color: rgba(245,197,24,.35); background: var(--card-bg-hover); color: var(--q); }
+  .qa-item .ti { font-size: 16px; color: var(--q); }
+  .qa-item-arrow { margin-left: auto; font-size: 14px; color: var(--text-3); }
+
+  /* ───── MVP FUNCTIONAL LAYER ───── */
+  .tb-search input { width: 150px; border: 0; outline: 0; background: transparent; color: var(--text-1); font: inherit; }
+  .tb-search input::placeholder { color: var(--text-2); }
+  .dev-btn {
+    height: 34px; border-radius: 10px; border: 1px solid rgba(245,197,24,.35);
+    background: linear-gradient(135deg,rgba(245,197,24,.22),rgba(245,197,24,.06));
+    color: var(--q); padding: 0 12px; font-size: 11px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .dev-btn.primary { background: linear-gradient(135deg,#F5C518,#C9A200); color: #0b0b0b; border: 0; box-shadow: 0 6px 22px rgba(245,197,24,.28); }
+  .functional-panel {
+    margin-bottom: 18px; border: 1px solid rgba(245,197,24,.18);
+    background: linear-gradient(135deg,rgba(245,197,24,.075),rgba(255,255,255,.035));
+    border-radius: 18px; padding: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .fp-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .fp-title { font-size: 14px; font-weight: 800; color: var(--text-1); }
+  .fp-sub { margin-top: 3px; font-size: 11px; color: var(--text-2); }
+  .fp-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fp-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; margin-bottom: 12px; }
+  .fp-card { border: 1px solid var(--border); border-radius: 14px; background: var(--card-bg); padding: 12px; }
+  .fp-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: .7px; color: var(--text-3); }
+  .fp-card-value { font-size: 22px; font-weight: 800; margin: 6px 0 2px; color: var(--text-1); }
+  .fp-card-note { font-size: 11px; color: var(--text-2); }
+  .data-table-wrap { border: 1px solid var(--border); border-radius: 14px; overflow: auto; background: rgba(0,0,0,.12); }
+  .data-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  .data-table th,.data-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+  .data-table th { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--text-3); font-weight: 800; background: rgba(255,255,255,.025); }
+  .data-table td { font-size: 12px; color: var(--text-1); }
+  .data-table th,.data-table td,.tbl th,.tbl td { white-space: nowrap; }
+  .data-table tr:hover { background: rgba(245,197,24,.055); }
+  .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .mini-action { border: 1px solid var(--border); background: var(--card-bg); color: var(--text-1); border-radius: 9px; padding: 5px 8px; font-size: 10px; font-weight: 700; }
+  .mini-action:hover { border-color: rgba(245,197,24,.45); color: var(--q); }
+  .status-pill { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 10px; font-weight: 800; border: 1px solid transparent; }
+  .st-ok { background: rgba(34,197,94,.13); color: #4ade80; border-color: rgba(34,197,94,.2); }
+  .st-warn { background: rgba(245,197,24,.14); color: var(--q); border-color: rgba(245,197,24,.22); }
+  .st-bad { background: rgba(248,113,113,.14); color: #fb7185; border-color: rgba(248,113,113,.24); }
+  .st-info { background: rgba(96,165,250,.13); color: #93c5fd; border-color: rgba(96,165,250,.22); }
+  .app-modal {
+    position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.72); display: none;
+    align-items: center; justify-content: center; padding: 18px;
+  }
+  .app-modal.open { display: flex; }
+  .modal-card {
+    width: min(620px,100%); max-height: calc(100vh - 36px); overflow: auto;
+    border: 1px solid rgba(245,197,24,.24); background: linear-gradient(145deg,var(--topbar-bg),rgba(10,8,4,.96));
+    border-radius: 20px; padding: 18px; box-shadow: 0 34px 90px rgba(0,0,0,.58); backdrop-filter: blur(24px);
+  }
+  .modal-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .modal-title { font-size: 16px; font-weight: 800; }
+  .modal-close { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); color: var(--text-1); background: var(--card-bg); }
+  .form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .form-field { display: grid; gap: 5px; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label { font-size: 10px; color: var(--text-3); font-weight: 800; text-transform: uppercase; letter-spacing: .7px; }
+  .form-field input,.form-field select,.form-field textarea {
+    width: 100%; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-1);
+    border-radius: 10px; padding: 9px 10px; outline: 0;
+  }
+  .form-field textarea { min-height: 82px; resize: vertical; }
+  .modal-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+  .toast {
+    position: fixed; right: 22px; bottom: 22px; z-index: 60; border: 1px solid rgba(245,197,24,.35);
+    background: rgba(8,6,18,.94); color: #fff; border-radius: 14px; padding: 12px 14px; font-size: 12px;
+    box-shadow: 0 18px 42px rgba(0,0,0,.42); transform: translateY(12px); opacity: 0; transition: .2s;
+  }
+  .toast.show { transform: none; opacity: 1; }
+  @media (max-width: 980px) {
+    .fp-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .form-grid { grid-template-columns: 1fr; }
+    .tb-search input { width: 110px; }
+  }
+
+  /* ───── LIGHT MODE READABILITY + ADMIN UX ───── */
+  .light-mode .functional-panel,
+  .light-mode .fp-card,
+  .light-mode .data-table-wrap,
+  .light-mode .card,
+  .light-mode .kpi-card,
+  .light-mode .settings-card,
+  .light-mode .modal-card {
+    background: rgba(255,255,255,.94);
+    color: #15130c;
+    border-color: rgba(18,18,18,.38);
+    box-shadow: 0 14px 40px rgba(72,58,12,.12);
+  }
+  .light-mode .dev-btn { color: #3b2c00; background: #fff9dc; border-color: rgba(176,133,0,.35); }
+  .light-mode .dev-btn.primary { color: #0b0b0b; }
+  .light-mode .data-table th { color: #6c6250; background: #fff7d6; }
+  .light-mode .data-table td,
+  .light-mode .form-field input,
+  .light-mode .form-field select,
+  .light-mode .form-field textarea,
+  .light-mode .tb-search input { color: #15130c; }
+  .light-mode .form-field input,
+  .light-mode .form-field select,
+  .light-mode .form-field textarea { background: #fff; border-color: #ded5b8; }
+  select option { color: #111; background: #fff; }
+  .light-mode .kpi-card,
+  .light-mode .card,
+  .light-mode .tbl,
+  .light-mode .settings-card { color: #15130c; }
+  .light-mode .kpi-card:not(.grad-purple):not(.grad-orange):not(.grad-blue):not(.grad-teal):not(.grad-warm):not(.grad-rose) {
+    background: rgba(255,255,255,.88);
+  }
+  .light-mode .kpi-label,
+  .light-mode .card-sub,
+  .light-mode .fp-sub,
+  .light-mode .fp-card-note { color: #6d675b; }
+  .toolbar-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .toolbar-line select,
+  .toolbar-line input {
+    height: 34px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg);
+    color: var(--text-1); padding: 0 10px; outline: 0;
+  }
+  .light-mode .toolbar-line select,
+  .light-mode .toolbar-line input { background: #fff; color: #15130c; border-color: #ded5b8; }
+  .col-tools { display: inline-flex; gap: 4px; margin-left: 6px; vertical-align: middle; }
+  .col-btn {
+    width: 20px; height: 20px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--card-bg); color: var(--text-2); font-size: 10px; line-height: 1;
+  }
+  .evidence-thumb {
+    width: 46px; height: 34px; border-radius: 9px; border: 1px solid rgba(245,197,24,.35);
+    background: linear-gradient(135deg,#151515,#F5C518); display: inline-flex; align-items: center;
+    justify-content: center; color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .sat-map {
+    position: relative; min-height: 390px; border-radius: 18px; overflow: hidden; border: 1px solid var(--border);
+    background:
+      radial-gradient(circle at 55% 48%, rgba(255,255,255,.22), transparent 2%),
+      radial-gradient(circle at 50% 48%, rgba(245,197,24,.14), transparent 24%),
+      linear-gradient(135deg,#10140d,#2a321e 42%,#0b1014);
+  }
+  .sat-map.map-road { background: linear-gradient(135deg,#f5f2e8,#d8d0bc); }
+  .sat-map.map-dark { background: linear-gradient(135deg,#080808,#211b0a,#050505); }
+  .sat-road {
+    position: absolute; height: 2px; background: rgba(255,255,255,.26); transform-origin: left center;
+    box-shadow: 0 0 12px rgba(245,197,24,.18);
+  }
+  .light-mode .sat-road { background: rgba(40,40,40,.32); }
+  .kml-zone {
+    position: absolute; left: 24%; top: 18%; width: 52%; height: 58%; border: 2px dashed rgba(245,197,24,.8);
+    border-radius: 46% 38% 44% 52%; background: rgba(245,197,24,.09);
+  }
+  .map-dot-live {
+    position: absolute; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #111;
+    background: #22C55E; box-shadow: 0 0 0 8px rgba(34,197,94,.12),0 0 24px rgba(34,197,94,.45);
+  }
+  .map-dot-live.warn { background: #F5C518; box-shadow: 0 0 0 8px rgba(245,197,24,.12),0 0 24px rgba(245,197,24,.45); }
+  .map-dot-live.bad { background: #EF4444; box-shadow: 0 0 0 8px rgba(239,68,68,.12),0 0 24px rgba(239,68,68,.45); }
+  .map-caption { position: absolute; left: 14px; bottom: 14px; padding: 9px 12px; border-radius: 12px; background: rgba(0,0,0,.58); color: #fff; font-size: 11px; }
+  .login-overlay {
+    position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center;
+    padding: 20px; background: radial-gradient(circle at 80% 10%,rgba(245,197,24,.45),transparent 32%),linear-gradient(135deg,#060606,#17130a);
+  }
+  .login-overlay.open { display: flex; }
+  .login-card {
+    width: min(430px,100%); border: 1px solid rgba(245,197,24,.35); border-radius: 24px; padding: 24px;
+    background: rgba(12,10,7,.88); box-shadow: 0 34px 90px rgba(0,0,0,.58); backdrop-filter: blur(24px);
+  }
+  .login-card h2 { margin: 0 0 6px; color: #fff; font-size: 26px; }
+  .login-card p { color: rgba(255,255,255,.62); margin-bottom: 18px; }
+  .login-field { display: grid; gap: 6px; margin-bottom: 10px; }
+  .login-field label { color: rgba(255,255,255,.55); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; }
+  .login-field input { border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); color: #fff; border-radius: 12px; padding: 12px; outline: 0; }
+  .login-demo { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-top: 12px; }
+  .password-wrap { position: relative; }
+  .password-wrap input { width: 100%; padding-right: 48px; }
+  .password-toggle {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 34px; height: 34px; border-radius: 10px; border: 0;
+    background: rgba(255,255,255,.08); color: #fff;
+  }
+  .bootstrap-note {
+    margin-top: 12px; padding: 12px; border-radius: 14px;
+    border: 1px solid rgba(245,197,24,.22); background: rgba(245,197,24,.08);
+    color: rgba(255,255,255,.72); font-size: 12px; line-height: 1.35;
+  }
+  .messenger-shell { display: grid; grid-template-columns: 280px minmax(0,1fr); gap: 14px; }
+  .mobile-preview { max-width: 320px; border-radius: 28px; border: 1px solid var(--border); padding: 12px; background: #050505; }
+  .mobile-screen { border-radius: 22px; min-height: 470px; padding: 16px; background: radial-gradient(circle at 82% 8%,rgba(245,197,24,.38),transparent 26%),linear-gradient(145deg,#17130a,#050505); }
+  @media (max-width: 980px) { .messenger-shell { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <nav id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">Q</div>
+      <div>
+        <div class="sb-logo-name">Quick</div>
+        <div class="sb-logo-tag">Last Mile Platform</div>
+      </div>
+    </div>
+
+    <div class="sb-section">Principal</div>
+    <div class="nav-item active" onclick="nav('dashboard',this)">
+      <i class="ti ti-layout-dashboard"></i> Dashboard
+    </div>
+    <div class="nav-item" onclick="nav('mallas',this)">
+      <i class="ti ti-calendar-event"></i> Mallas
+      <span class="nbadge">3</span>
+    </div>
+    <div class="nav-item" onclick="nav('mapa',this)">
+      <i class="ti ti-map-pin"></i> Mapa en Vivo
+    </div>
+
+    <div class="sb-section">Operaciones</div>
+    <div class="nav-item" onclick="nav('novedades',this)">
+      <i class="ti ti-alert-triangle"></i> Novedades
+      <span class="nbadge">7</span>
+    </div>
+    <div class="nav-item" onclick="nav('tickets',this)">
+      <i class="ti ti-ticket"></i> Tickets
+      <span class="nbadge">4</span>
+    </div>
+    <div class="nav-item" onclick="nav('evidencias',this)">
+      <i class="ti ti-photo"></i> Evidencias
+    </div>
+    <div class="nav-item" onclick="nav('quickers',this)">
+      <i class="ti ti-users"></i> Quickers
+    </div>
+    <div class="nav-item" onclick="nav('mensajero',this)">
+      <i class="ti ti-device-mobile"></i> App Mensajero
+    </div>
+
+    <div class="sb-section">Administración</div>
+    <div class="nav-item" onclick="nav('casos',this)">
+      <i class="ti ti-briefcase"></i> Casos Admin
+    </div>
+    <div class="nav-item" onclick="nav('reportes',this)">
+      <i class="ti ti-chart-bar"></i> Reportes
+    </div>
+    <div class="nav-item" onclick="nav('bd',this)">
+      <i class="ti ti-database"></i> Modelo de Datos
+    </div>
+
+    <div class="sb-bottom">
+      <div class="nav-item" onclick="nav('config',this)">
+        <i class="ti ti-settings"></i> Configuración
+      </div>
+      <div class="sb-user" style="margin-top:6px">
+        <div class="sb-avatar">AD</div>
+        <div>
+          <div class="sb-user-name">Admin Quick</div>
+          <div class="sb-user-role">Administrador</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN ═══ -->
+  <div id="main">
+    <div id="topbar">
+      <span class="tb-title" id="tb-title">Dashboard</span>
+      <span class="tb-crumb" id="tb-crumb">/ Inicio</span>
+      <div class="tb-spacer"></div>
+      <div class="tb-search"><i class="ti ti-search"></i><input id="global-search" placeholder="Buscar módulo o Quicker..."></div>
+      <button class="dev-btn primary" id="quick-create"><i class="ti ti-plus"></i> Nuevo registro</button>
+      <button class="dev-btn" id="export-current"><i class="ti ti-download"></i> Exportar</button>
+      <div class="tb-icon-btn" title="Notificaciones">
+        <i class="ti ti-bell"></i>
+        <div class="notif-dot"></div>
+      </div>
+      <button id="mode-toggle" onclick="toggleMode()">
+        <i class="ti ti-sun" id="mode-icon"></i>
+        <span id="mode-label">Modo claro</span>
+      </button>
+      <div class="top-avatar" title="Admin Quick">AD</div>
+    </div>
+
+    <div id="content">
+
+      <!-- ════════════════════ DASHBOARD ════════════════════ -->
+      <div class="page active" id="page-dashboard">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent">
+            <i class="ti ti-run kpi-icon"></i>
+            <div class="kpi-label">Quickers activos hoy</div>
+            <div class="kpi-value yellow">187</div>
+            <div class="kpi-delta up"><i class="ti ti-trending-up"></i> +12 vs ayer · 93.5%</div>
+          </div>
+          <div class="kpi-card grad-purple">
+            <i class="ti ti-clipboard-list kpi-icon"></i>
+            <div class="kpi-label">Servicios en curso</div>
+            <div class="kpi-value">143</div>
+            <div class="kpi-delta up"><i class="ti ti-trending-up"></i> 94% colocación</div>
+          </div>
+          <div class="kpi-card grad-orange">
+            <i class="ti ti-alert-circle kpi-icon"></i>
+            <div class="kpi-label">Novedades pendientes</div>
+            <div class="kpi-value">7</div>
+            <div class="kpi-delta down"><i class="ti ti-alert-triangle"></i> 3 críticas hoy</div>
+          </div>
+          <div class="kpi-card grad-teal">
+            <i class="ti ti-chart-line kpi-icon"></i>
+            <div class="kpi-label">Cumplimiento SLA</div>
+            <div class="kpi-value">91%</div>
+            <div class="kpi-delta up"><i class="ti ti-check"></i> Meta: 88% ✓</div>
+          </div>
+        </div>
+
+        <div class="g3">
+          <div class="card">
+            <div class="card-head">
+              <div><div class="card-title">Disponibilidades por estado</div><div class="card-sub">Hoy · 200 programadas</div></div>
+              <span class="card-action">Ver todo</span>
+            </div>
+            <div class="bar-list">
+              <div class="bar-row"><span class="bar-lbl">Activa</span><div class="bar-track"><div class="bar-fill gg" style="width:71%"></div></div><span class="bar-val">143</span></div>
+              <div class="bar-row"><span class="bar-lbl">Iniciada</span><div class="bar-track"><div class="bar-fill gq" style="width:18%"></div></div><span class="bar-val">36</span></div>
+              <div class="bar-row"><span class="bar-lbl">Con novedad</span><div class="bar-track"><div class="bar-fill gr" style="width:7%"></div></div><span class="bar-val">14</span></div>
+              <div class="bar-row"><span class="bar-lbl">No colocado</span><div class="bar-track"><div class="bar-fill gb" style="width:4%"></div></div><span class="bar-val">7</span></div>
+            </div>
+
+            <div class="sdiv"><div class="sdiv-line"></div><div class="sdiv-title">Alertas activas</div><div class="sdiv-line"></div></div>
+
+            <div class="alert-item danger">
+              <div class="alert-icon danger"><i class="ti ti-map-pin-off"></i></div>
+              <div><div class="alert-title">Quicker fuera de geocerca</div><div class="alert-sub">JL2049 · Cliente Almacenes XYZ · 14 min fuera</div></div>
+              <span class="alert-time">09:14</span>
+            </div>
+            <div class="alert-item warn">
+              <div class="alert-icon warn"><i class="ti ti-clock"></i></div>
+              <div><div class="alert-title">Retardo inicio de turno</div><div class="alert-sub">CO8821 · 42 min de retraso</div></div>
+              <span class="alert-time">08:53</span>
+            </div>
+            <div class="alert-item info">
+              <div class="alert-icon info"><i class="ti ti-file-alert"></i></div>
+              <div><div class="alert-title">Documento vence mañana</div><div class="alert-sub">Cédula · AR3312 · Mensajería</div></div>
+              <span class="alert-time">Aviso</span>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-head"><div class="card-title">Novedades por tipo</div><div class="card-sub">Últimos 7 días</div></div>
+              <div class="bar-list">
+                <div class="bar-row"><span class="bar-lbl">Retardo</span><div class="bar-track"><div class="bar-fill gq" style="width:65%"></div></div><span class="bar-val">28</span></div>
+                <div class="bar-row"><span class="bar-lbl">Inasistencia</span><div class="bar-track"><div class="bar-fill gr" style="width:35%"></div></div><span class="bar-val">15</span></div>
+                <div class="bar-row"><span class="bar-lbl">Salida zona</span><div class="bar-track"><div class="bar-fill gb" style="width:21%"></div></div><span class="bar-val">9</span></div>
+                <div class="bar-row"><span class="bar-lbl">Evid. falt.</span><div class="bar-track"><div class="bar-fill go" style="width:14%"></div></div><span class="bar-val">6</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Accesos rápidos</div></div>
+              <div class="qa-list">
+                <div class="qa-item" onclick="nav('mallas',document.querySelector('[onclick*=mallas]'))"><i class="ti ti-calendar-plus"></i> Nueva malla <i class="ti ti-arrow-right qa-item-arrow"></i></div>
+                <div class="qa-item" onclick="nav('novedades',document.querySelector('[onclick*=novedades]'))"><i class="ti ti-alert-triangle"></i> Ver novedades <i class="ti ti-arrow-right qa-item-arrow"></i></div>
+                <div class="qa-item" onclick="nav('reportes',document.querySelector('[onclick*=reportes]'))"><i class="ti ti-download"></i> Exportar reporte <i class="ti ti-arrow-right qa-item-arrow"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-head">
+              <div><div class="card-title">Productividad coordinadores</div><div class="card-sub">Semana actual</div></div>
+            </div>
+            <table class="tbl">
+              <thead><tr><th>Coordinador</th><th>Quickers</th><th>Tickets</th><th>Cumplim.</th><th>Carga</th></tr></thead>
+              <tbody>
+                <tr><td>Laura Ríos</td><td>48</td><td>3</td><td><span class="b b-green">96%</span></td><td><span class="b b-green">Óptima</span></td></tr>
+                <tr><td>Miguel Torres</td><td>41</td><td>7</td><td><span class="b b-yellow">87%</span></td><td><span class="b b-yellow">Media</span></td></tr>
+                <tr><td>Paola Castro</td><td>35</td><td>2</td><td><span class="b b-green">98%</span></td><td><span class="b b-green">Óptima</span></td></tr>
+                <tr><td>Carlos Vera</td><td>29</td><td>11</td><td><span class="b b-red">74%</span></td><td><span class="b b-red">Alta</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Actividad reciente</div><div class="card-sub">Hoy</div></div>
+            <div class="tl-list">
+              <div class="tl-item">
+                <div class="tl-dot r"><i class="ti ti-alert-triangle" style="font-size:10px"></i></div>
+                <div class="tl-body">
+                  <div class="tl-body-title">Novedad registrada · CO8821</div>
+                  <div class="tl-body-meta">Retardo 42 min · Coordinador: Laura Ríos · 08:53</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot y"><i class="ti ti-map-pin" style="font-size:10px"></i></div>
+                <div class="tl-body">
+                  <div class="tl-body-title">Alerta geocerca · JL2049</div>
+                  <div class="tl-body-meta">Salida de zona · Almacenes XYZ · 09:14</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot g"><i class="ti ti-check" style="font-size:10px"></i></div>
+                <div class="tl-body">
+                  <div class="tl-body-title">Malla publicada · Farma Express</div>
+                  <div class="tl-body-meta">25 Quickers · Coordinador: Paola Castro · 07:30</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot b"><i class="ti ti-file" style="font-size:10px"></i></div>
+                <div class="tl-body">
+                  <div class="tl-body-title">Evidencia cargada · AR3312</div>
+                  <div class="tl-body-meta">Inicio de turno · Logística Norte · 07:58</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════ MALLAS ════════════════════ -->
+      <div class="page" id="page-mallas">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><i class="ti ti-calendar kpi-icon"></i><div class="kpi-label">Mallas esta semana</div><div class="kpi-value yellow">14</div><div class="kpi-delta"><i class="ti ti-building"></i> 4 clientes activos</div></div>
+          <div class="kpi-card grad-purple"><i class="ti ti-clock kpi-icon"></i><div class="kpi-label">Pendientes validar</div><div class="kpi-value">3</div><div class="kpi-delta"><i class="ti ti-alert-circle"></i> Requieren atención</div></div>
+          <div class="kpi-card grad-teal"><i class="ti ti-check kpi-icon"></i><div class="kpi-label">Publicadas</div><div class="kpi-value">11</div><div class="kpi-delta up"><i class="ti ti-trending-up"></i> Todo en orden</div></div>
+          <div class="kpi-card grad-blue"><i class="ti ti-users kpi-icon"></i><div class="kpi-label">Quickers asignados</div><div class="kpi-value">200</div><div class="kpi-delta up"><i class="ti ti-trending-up"></i> Plan completo</div></div>
+        </div>
+        <div class="g3">
+          <div class="card">
+            <div class="card-head">
+              <div><div class="card-title">Mallas activas</div><div class="card-sub">Semana del 16 al 22 junio 2026</div></div>
+              <button class="btn-q"><i class="ti ti-plus"></i> Nueva malla</button>
+            </div>
+            <table class="tbl">
+              <thead><tr><th>Cliente / ID Proyecto</th><th>Fecha</th><th>Quickers</th><th>Validación</th><th>Estado</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><strong>Almacenes XYZ</strong><br><small style="color:var(--text-3)">ID-2024-001</small></td><td>18 Jun</td><td>48</td><td><span class="b b-green">Aprobada</span></td><td><span class="b b-green">Publicada</span></td><td class="link">Ver</td></tr>
+                <tr><td><strong>Logística Norte</strong><br><small style="color:var(--text-3)">ID-2024-002</small></td><td>18 Jun</td><td>32</td><td><span class="b b-yellow">Pendiente</span></td><td><span class="b b-yellow">Borrador</span></td><td class="link">Ver</td></tr>
+                <tr><td><strong>Farma Express</strong><br><small style="color:var(--text-3)">ID-2024-003</small></td><td>19 Jun</td><td>25</td><td><span class="b b-red">Sin validar</span></td><td><span class="b b-blue">Pendiente</span></td><td class="link">Ver</td></tr>
+                <tr><td><strong>Distribuidora CR</strong><br><small style="color:var(--text-3)">ID-2024-004</small></td><td>20 Jun</td><td>40</td><td><span class="b b-green">Aprobada</span></td><td><span class="b b-green">Publicada</span></td><td class="link">Ver</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="card">
+              <div class="card-head"><div class="card-title">Acciones</div></div>
+              <div class="qa-list">
+                <div class="qa-item"><i class="ti ti-upload"></i> Importar malla <i class="ti ti-arrow-right qa-item-arrow"></i></div>
+                <div class="qa-item"><i class="ti ti-copy"></i> Replicar semana anterior <i class="ti ti-arrow-right qa-item-arrow"></i></div>
+                <div class="qa-item"><i class="ti ti-checks"></i> Validar masivo <i class="ti ti-arrow-right qa-item-arrow"></i></div>
+                <div class="qa-item"><i class="ti ti-send"></i> Publicar pendientes <i class="ti ti-arrow-right qa-item-arrow"></i></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Validaciones requeridas</div></div>
+              <div class="alert-item danger"><div class="alert-icon danger"><i class="ti ti-git-merge"></i></div><div><div class="alert-title">Turno cruzado detectado</div><div class="alert-sub">AR3312 · Lun-Mar mismo punto</div></div></div>
+              <div class="alert-item warn"><div class="alert-icon warn"><i class="ti ti-file-x"></i></div><div><div class="alert-title">Doc. vencido · Cédula</div><div class="alert-sub">CO8821 · Malla 18 Jun</div></div></div>
+              <div class="alert-item info"><div class="alert-icon info"><i class="ti ti-map-pin"></i></div><div><div class="alert-title">Punto sin coordenada</div><div class="alert-sub">Punto-NNW · Dist. CR</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════ MAPA ════════════════════ -->
+      <div class="page" id="page-mapa">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><i class="ti ti-run kpi-icon"></i><div class="kpi-label">Quickers en campo</div><div class="kpi-value yellow">143</div><div class="kpi-delta up"><i class="ti ti-map-pin"></i> Activos y geolocalizados</div></div>
+          <div class="kpi-card grad-orange"><i class="ti ti-map-pin-off kpi-icon"></i><div class="kpi-label">Fuera de geocerca</div><div class="kpi-value">2</div><div class="kpi-delta down"><i class="ti ti-alert-circle"></i> Alerta crítica activa</div></div>
+          <div class="kpi-card grad-warm"><i class="ti ti-clock kpi-icon"></i><div class="kpi-label">Sin ping +30 min</div><div class="kpi-value">5</div><div class="kpi-delta"><i class="ti ti-refresh"></i> Verificar conectividad</div></div>
+          <div class="kpi-card grad-blue"><i class="ti ti-refresh kpi-icon"></i><div class="kpi-label">Próximo ping masivo</div><div class="kpi-value">6 min</div><div class="kpi-delta up"><i class="ti ti-check"></i> Automático cada 15 min</div></div>
+        </div>
+        <div class="g3">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Mapa operativo en vivo</div><div class="card-sub">Geocercas KML · Colombia</div></div><span class="card-action"><i class="ti ti-refresh"></i> Actualizar</span></div>
+            <div class="map-ph">
+              <div class="map-dot y" style="top:30%;left:25%"></div>
+              <div class="map-dot g" style="top:45%;left:55%"></div>
+              <div class="map-dot g" style="top:55%;left:40%"></div>
+              <div class="map-dot r" style="top:35%;left:68%"></div>
+              <div class="map-dot y" style="top:60%;left:72%"></div>
+              <div class="map-dot g" style="top:70%;left:30%"></div>
+              <div class="map-dot r" style="top:22%;left:78%"></div>
+              <div class="map-dot y" style="top:50%;left:18%"></div>
+              <div class="map-dot g" style="top:38%;left:44%"></div>
+              <div class="map-label"><i class="ti ti-map"></i> Vista satelital · Bogotá D.C. y área metropolitana</div>
+            </div>
+            <div class="map-legend">
+              <div class="map-leg-item"><div class="map-leg-dot" style="background:var(--q)"></div> En zona (141)</div>
+              <div class="map-leg-item"><div class="map-leg-dot" style="background:#22C55E"></div> Activo OK</div>
+              <div class="map-leg-item"><div class="map-leg-dot" style="background:#EF4444"></div> Alerta (2)</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="card">
+              <div class="card-head"><div class="card-title">Alertas de ubicación</div></div>
+              <div class="alert-item danger"><div class="alert-icon danger"><i class="ti ti-map-pin-off"></i></div><div><div class="alert-title">Salida de geocerca</div><div class="alert-sub">JL2049 · 14 min fuera</div></div><span class="alert-time">09:14</span></div>
+              <div class="alert-item danger"><div class="alert-icon danger"><i class="ti ti-map-pin-off"></i></div><div><div class="alert-title">Salida de geocerca</div><div class="alert-sub">MR7743 · 3 min fuera</div></div><span class="alert-time">09:38</span></div>
+              <div class="alert-item warn"><div class="alert-icon warn"><i class="ti ti-clock"></i></div><div><div class="alert-title">Permanencia excesiva</div><div class="alert-sub">CO8821 · +95 min en punto</div></div><span class="alert-time">08:12</span></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Estado de pings</div></div>
+              <div class="bar-list">
+                <div class="bar-row"><span class="bar-lbl">Último &lt;15m</span><div class="bar-track"><div class="bar-fill gg" style="width:96%"></div></div><span class="bar-val">138</span></div>
+                <div class="bar-row"><span class="bar-lbl">15–30 min</span><div class="bar-track"><div class="bar-fill gq" style="width:3.5%"></div></div><span class="bar-val">5</span></div>
+                <div class="bar-row"><span class="bar-lbl">Sin ping</span><div class="bar-track"><div class="bar-fill gr" style="width:0%"></div></div><span class="bar-val">0</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════ NOVEDADES ════════════════════ -->
+      <div class="page" id="page-novedades">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><div class="kpi-label">Total abiertas</div><div class="kpi-value yellow">7</div><div class="kpi-delta down"><i class="ti ti-alert-circle"></i> Requieren validación</div></div>
+          <div class="kpi-card grad-orange"><div class="kpi-label">Críticas</div><div class="kpi-value">3</div><div class="kpi-delta down"><i class="ti ti-flame"></i> Acción inmediata</div></div>
+          <div class="kpi-card grad-teal"><div class="kpi-label">Resueltas hoy</div><div class="kpi-value">12</div><div class="kpi-delta up"><i class="ti ti-check"></i> Tiempo prom. 24 min</div></div>
+          <div class="kpi-card grad-blue"><div class="kpi-label">Automáticas</div><div class="kpi-value">9</div><div class="kpi-delta"><i class="ti ti-robot"></i> Generadas por sistema</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Novedades operativas</div><div class="card-sub">Retardos, inasistencias, salidas de zona, evidencias faltantes</div></div>
+            <button class="btn-q"><i class="ti ti-plus"></i> Registrar novedad</button>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Tipo</th><th>Quicker</th><th>Cliente / Punto</th><th>Hora</th><th>Origen</th><th>Estado</th><th>Acción</th></tr></thead>
+            <tbody>
+              <tr><td><span class="b b-red">Retardo</span></td><td>CO8821</td><td>Almacenes XYZ</td><td>08:53</td><td><span class="b b-blue">Sistema</span></td><td><span class="b b-yellow">Pendiente</span></td><td class="link">Validar</td></tr>
+              <tr><td><span class="b b-red">Inasistencia</span></td><td>JL2049</td><td>Logística Norte</td><td>07:30</td><td><span class="b b-purple">Coordinador</span></td><td><span class="b b-yellow">Pendiente</span></td><td class="link">Validar</td></tr>
+              <tr><td><span class="b b-red">Salida zona</span></td><td>MR7743</td><td>Farma Express</td><td>09:38</td><td><span class="b b-blue">Sistema</span></td><td><span class="b b-red">Crítica</span></td><td class="link">Gestionar</td></tr>
+              <tr><td><span class="b b-yellow">Almuerzo ext.</span></td><td>AR3312</td><td>Dist. CR</td><td>12:47</td><td><span class="b b-blue">Sistema</span></td><td><span class="b b-green">Resuelta</span></td><td style="color:var(--text-3)">Cerrada</td></tr>
+              <tr><td><span class="b b-blue">Doc vencido</span></td><td>PE5541</td><td>Todos</td><td>—</td><td><span class="b b-blue">Sistema</span></td><td><span class="b b-yellow">Pendiente</span></td><td class="link">Gestionar</td></tr>
+              <tr><td><span class="b b-red">No colocado</span></td><td>NQ0091</td><td>Logística Norte</td><td>07:00</td><td><span class="b b-blue">Sistema</span></td><td><span class="b b-red">Crítica</span></td><td class="link">Gestionar</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════════════════════ TICKETS ════════════════════ -->
+      <div class="page" id="page-tickets">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><div class="kpi-label">Tickets abiertos</div><div class="kpi-value yellow">4</div><div class="kpi-delta"><i class="ti ti-ticket"></i> 2 coordinadores</div></div>
+          <div class="kpi-card grad-orange"><div class="kpi-label">Vencen hoy</div><div class="kpi-value">1</div><div class="kpi-delta down"><i class="ti ti-alert-triangle"></i> Requiere acción</div></div>
+          <div class="kpi-card grad-purple"><div class="kpi-label">Carga laboral prom.</div><div class="kpi-value">38 pts</div><div class="kpi-delta"><i class="ti ti-chart-bar"></i> Por coordinador</div></div>
+          <div class="kpi-card grad-teal"><div class="kpi-label">Cerrados esta semana</div><div class="kpi-value">17</div><div class="kpi-delta up"><i class="ti ti-trending-up"></i> +3 vs semana anterior</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Tickets de coordinador</div><div class="card-sub">Comparendos, documentos, llamadas, validaciones</div></div>
+            <button class="btn-q"><i class="ti ti-plus"></i> Crear ticket</button>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Tipo</th><th>Quicker</th><th>Coordinador</th><th>SLA</th><th>Complejidad</th><th>Puntos</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td>Comparendo</td><td>JL2049</td><td>Laura Ríos</td><td style="color:#F87171">Vence hoy</td><td><span class="b b-red">Alta</span></td><td>15</td><td><span class="b b-yellow">En proceso</span></td></tr>
+              <tr><td>Doc pendiente</td><td>CO8821</td><td>Miguel Torres</td><td>2 días</td><td><span class="b b-yellow">Media</span></td><td>8</td><td><span class="b b-yellow">Abierto</span></td></tr>
+              <tr><td>Llamada valid.</td><td>AR3312</td><td>Paola Castro</td><td>3 días</td><td><span class="b b-blue">Baja</span></td><td>3</td><td><span class="b b-blue">Programado</span></td></tr>
+              <tr><td>Ajuste malla</td><td>MR7743</td><td>Laura Ríos</td><td>1 día</td><td><span class="b b-yellow">Media</span></td><td>6</td><td><span class="b b-yellow">Abierto</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════════════════════ EVIDENCIAS ════════════════════ -->
+      <div class="page" id="page-evidencias">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><div class="kpi-label">Evidencias cargadas hoy</div><div class="kpi-value yellow">412</div><div class="kpi-delta up"><i class="ti ti-photo"></i> Inicio, almuerzo, cierre</div></div>
+          <div class="kpi-card grad-orange"><div class="kpi-label">Faltantes obligatorias</div><div class="kpi-value">9</div><div class="kpi-delta down"><i class="ti ti-alert-circle"></i> Requieren seguimiento</div></div>
+          <div class="kpi-card grad-teal"><div class="kpi-label">Aprobadas</div><div class="kpi-value">398</div><div class="kpi-delta up"><i class="ti ti-check"></i> 96.6% del total</div></div>
+          <div class="kpi-card grad-purple"><div class="kpi-label">Pendientes aprobación</div><div class="kpi-value">5</div><div class="kpi-delta"><i class="ti ti-clock"></i> Cliente debe aprobar</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Registro de evidencias</div><div class="card-sub">Foto con coordenada automática · No editable por Quicker</div></div>
+            <span class="card-action"><i class="ti ti-filter"></i> Filtrar</span>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Quicker</th><th>Etapa</th><th>Hora</th><th>Archivo</th><th>Coord. capturada</th><th>Obligatoria</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td>CO8821</td><td>Inicio turno</td><td>07:58</td><td class="link"><i class="ti ti-photo"></i> foto_inicio_CO8821.jpg</td><td style="color:#22C55E"><i class="ti ti-check"></i> 4.6542°N, 74.0627°W</td><td><span class="b b-yellow">Sí</span></td><td><span class="b b-green">Aprobada</span></td></tr>
+              <tr><td>JL2049</td><td>Almuerzo</td><td>12:03</td><td class="link"><i class="ti ti-photo"></i> almuerzo_JL2049.jpg</td><td style="color:#22C55E"><i class="ti ti-check"></i> 4.6612°N, 74.0541°W</td><td><span class="b b-blue">No</span></td><td><span class="b b-green">Aprobada</span></td></tr>
+              <tr><td>MR7743</td><td>Inicio turno</td><td>—</td><td style="color:var(--text-3)">Sin archivo</td><td style="color:#F87171"><i class="ti ti-x"></i> No capturada</td><td><span class="b b-yellow">Sí</span></td><td><span class="b b-red">Faltante</span></td></tr>
+              <tr><td>AR3312</td><td>Cierre</td><td>17:22</td><td class="link"><i class="ti ti-photo"></i> cierre_AR3312.jpg</td><td style="color:#22C55E"><i class="ti ti-check"></i> 4.6500°N, 74.0700°W</td><td><span class="b b-yellow">Sí</span></td><td><span class="b b-yellow">Pendiente</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════════════════════ QUICKERS ════════════════════ -->
+      <div class="page" id="page-quickers">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><div class="kpi-label">Quickers activos</div><div class="kpi-value yellow">187</div><div class="kpi-delta up"><i class="ti ti-users"></i> De 212 registrados</div></div>
+          <div class="kpi-card grad-orange"><div class="kpi-label">Con doc vencido</div><div class="kpi-value">6</div><div class="kpi-delta down"><i class="ti ti-file-x"></i> Cédula, SOAT u otros</div></div>
+          <div class="kpi-card grad-purple"><div class="kpi-label">En proceso de vinc.</div><div class="kpi-value">12</div><div class="kpi-delta"><i class="ti ti-user-plus"></i> Docs pendientes</div></div>
+          <div class="kpi-card grad-blue"><div class="kpi-label">Suspendidos</div><div class="kpi-value">13</div><div class="kpi-delta down"><i class="ti ti-user-off"></i> Por vencimiento o caso</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Directorio de Quickers</div><div class="card-sub">Mensajería · Distribución · Outsourcing</div></div>
+            <button class="btn-q"><i class="ti ti-user-plus"></i> Registrar Quicker</button>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>ID Quicker</th><th>Nombre</th><th>Operación</th><th>Coordinador</th><th>Documentos</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td class="link">CO8821</td><td>Carlos Ospina</td><td>Mensajería</td><td>Laura Ríos</td><td><span class="b b-green">Al día</span></td><td><span class="b b-green">Activo</span></td></tr>
+              <tr><td class="link">JL2049</td><td>Jorge López</td><td>Distribución</td><td>Miguel Torres</td><td><span class="b b-yellow">1 por vencer</span></td><td><span class="b b-green">Activo</span></td></tr>
+              <tr><td class="link">AR3312</td><td>Adriana Ruiz</td><td>Outsourcing</td><td>Paola Castro</td><td><span class="b b-green">Al día</span></td><td><span class="b b-green">Activo</span></td></tr>
+              <tr><td class="link">MR7743</td><td>Mario Restrepo</td><td>Mensajería</td><td>Carlos Vera</td><td><span class="b b-red">Cédula vencida</span></td><td><span class="b b-yellow">Alerta doc.</span></td></tr>
+              <tr><td class="link">PE5541</td><td>Pedro Estrada</td><td>Distribución</td><td>Laura Ríos</td><td><span class="b b-red">SOAT vencido</span></td><td><span class="b b-red">Suspendido</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════════════════════ APP MENSAJERO ════════════════════ -->
+      <div class="page" id="page-mensajero">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><div class="kpi-label">Turnos visibles</div><div class="kpi-value yellow">3</div><div class="kpi-delta up"><i class="ti ti-device-mobile"></i> Por usuario logueado</div></div>
+          <div class="kpi-card grad-teal"><div class="kpi-label">Evidencias cargadas</div><div class="kpi-value">2</div><div class="kpi-delta up"><i class="ti ti-photo"></i> Inicio y ubicación</div></div>
+          <div class="kpi-card grad-orange"><div class="kpi-label">Pendientes</div><div class="kpi-value">1</div><div class="kpi-delta"><i class="ti ti-clock"></i> Cierre de jornada</div></div>
+          <div class="kpi-card grad-blue"><div class="kpi-label">Modo offline</div><div class="kpi-value">PWA</div><div class="kpi-delta up"><i class="ti ti-wifi-off"></i> Cola local</div></div>
+        </div>
+      </div>
+
+      <!-- ════════════════════ CASOS ADMIN ════════════════════ -->
+      <div class="page" id="page-casos">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><div class="kpi-label">Casos abiertos</div><div class="kpi-value yellow">8</div><div class="kpi-delta"><i class="ti ti-briefcase"></i> 3 tipos distintos</div></div>
+          <div class="kpi-card grad-rose"><div class="kpi-label">Disciplinarios</div><div class="kpi-value">2</div><div class="kpi-delta down"><i class="ti ti-gavel"></i> En investigación</div></div>
+          <div class="kpi-card grad-warm"><div class="kpi-label">Incapacidades</div><div class="kpi-value">3</div><div class="kpi-delta"><i class="ti ti-heart-broken"></i> Docs en revisión</div></div>
+          <div class="kpi-card grad-teal"><div class="kpi-label">Cerrados este mes</div><div class="kpi-value">24</div><div class="kpi-delta up"><i class="ti ti-trending-up"></i> +6 vs mes anterior</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Procesos administrativos</div><div class="card-sub">Inasistencias · Incapacidades · Contrataciones · Disciplinarios · Otrosí · Descuentos</div></div>
+            <button class="btn-q"><i class="ti ti-plus"></i> Abrir caso</button>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Tipo</th><th>Quicker</th><th>Estado del caso</th><th>Documentos</th><th>Responsable</th><th>Actualizado</th></tr></thead>
+            <tbody>
+              <tr><td><span class="b b-red">Disciplinario</span></td><td>PE5541</td><td><span class="b b-yellow">En investigación</span></td><td><span class="b b-green">Completos</span></td><td>Laura Ríos</td><td>Hoy 10:30</td></tr>
+              <tr><td><span class="b b-blue">Incapacidad</span></td><td>JL2049</td><td><span class="b b-yellow">Docs pendientes</span></td><td><span class="b b-red">Faltantes</span></td><td>Miguel Torres</td><td>Ayer</td></tr>
+              <tr><td><span class="b b-yellow">Contratación</span></td><td>NQ0091</td><td><span class="b b-blue">En validación</span></td><td><span class="b b-yellow">En revisión</span></td><td>Paola Castro</td><td>Hoy 08:15</td></tr>
+              <tr><td><span class="b b-purple">Descuento</span></td><td>AR3312</td><td><span class="b b-yellow">Pend. aprobación</span></td><td><span class="b b-green">Completos</span></td><td>Laura Ríos</td><td>16 Jun</td></tr>
+              <tr><td><span class="b b-blue">Otrosí</span></td><td>CO8821</td><td><span class="b b-green">Enviado / Firmado</span></td><td><span class="b b-green">Firmado</span></td><td>Carlos Vera</td><td>15 Jun</td></tr>
+              <tr><td><span class="b b-red">Desvinculación</span></td><td>ZZ0013</td><td><span class="b b-green">Ejecutada</span></td><td><span class="b b-green">Completos</span></td><td>Admin Quick</td><td>12 Jun</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════════════════════ REPORTES ════════════════════ -->
+      <div class="page" id="page-reportes">
+        <div class="kpi-row">
+          <div class="kpi-card q-accent"><div class="kpi-label">SLA cumplimiento</div><div class="kpi-value yellow">91%</div><div class="kpi-delta up"><i class="ti ti-trending-up"></i> Meta 88% superada</div></div>
+          <div class="kpi-card grad-purple"><div class="kpi-label">Tiempo prom. inicio</div><div class="kpi-value">7.4 min</div><div class="kpi-delta down"><i class="ti ti-clock"></i> +2.4 min vs plan</div></div>
+          <div class="kpi-card grad-teal"><div class="kpi-label">Tasa no colocado</div><div class="kpi-value">3.5%</div><div class="kpi-delta up"><i class="ti ti-trending-down"></i> Bajó -1.2%</div></div>
+          <div class="kpi-card grad-blue"><div class="kpi-label">Servicios aprobados</div><div class="kpi-value">1,847</div><div class="kpi-delta up"><i class="ti ti-check"></i> Este mes</div></div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Cumplimiento SLA por cliente</div><div class="card-sub">Junio 2026</div></div><span class="card-action">Exportar</span></div>
+            <div class="bar-list">
+              <div class="bar-row"><span class="bar-lbl">Almac. XYZ</span><div class="bar-track"><div class="bar-fill gg" style="width:96%"></div></div><span class="bar-val">96%</span></div>
+              <div class="bar-row"><span class="bar-lbl">Log. Norte</span><div class="bar-track"><div class="bar-fill gq" style="width:88%"></div></div><span class="bar-val">88%</span></div>
+              <div class="bar-row"><span class="bar-lbl">Farma Exp.</span><div class="bar-track"><div class="bar-fill gg" style="width:92%"></div></div><span class="bar-val">92%</span></div>
+              <div class="bar-row"><span class="bar-lbl">Dist. CR</span><div class="bar-track"><div class="bar-fill gr" style="width:72%"></div></div><span class="bar-val">72%</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Exportar reportes</div><div class="card-sub">Buscador, filtros y paginación incluidos</div></div>
+            <div class="qa-list">
+              <div class="qa-item"><i class="ti ti-file-spreadsheet"></i> Excel · Disponibilidades <i class="ti ti-download qa-item-arrow"></i></div>
+              <div class="qa-item"><i class="ti ti-file-spreadsheet"></i> CSV · Novedades <i class="ti ti-download qa-item-arrow"></i></div>
+              <div class="qa-item"><i class="ti ti-file-type-pdf"></i> PDF · Reporte ejecutivo <i class="ti ti-download qa-item-arrow"></i></div>
+              <div class="qa-item"><i class="ti ti-chart-area"></i> BI Interno · Dashboard <i class="ti ti-arrow-right qa-item-arrow"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════ MODELO DE DATOS ════════════════════ -->
+      <div class="page" id="page-bd">
+        <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
+          <div><div style="font-size:15px;font-weight:700;color:var(--text-1);margin-bottom:2px">Modelo de datos · Plataforma Last Mile Quick</div><div style="font-size:12px;color:var(--text-3)">Entidades principales · Cloud SQL for PostgreSQL + PostGIS</div></div>
+        </div>
+        <div class="db-grid" style="margin-bottom:14px">
+          <div class="db-entity"><div class="db-head">Cliente</div><div class="db-fields"><span class="db-field-key">id · id_proyecto (PK/centro costos)</span><br>nombre · NIT<br>reglas_cliente · estado</div></div>
+          <div class="db-entity"><div class="db-head">ReglaCliente</div><div class="db-fields"><span class="db-field-key">id · id_proyecto (FK)</span><br>retardo_min · almuerzo_activo<br>aprobacion_activa · evidencias_json · alertas_json</div></div>
+          <div class="db-entity"><div class="db-head">Usuario</div><div class="db-fields"><span class="db-field-key">id · correo · usuario</span><br>telefono · password_hash<br>perfil · estado · alcance</div></div>
+          <div class="db-entity"><div class="db-head">PerfilPermiso</div><div class="db-fields"><span class="db-field-key">perfil · permiso</span><br>alcance · estado<br>Admin / Coord / Quicker / Cliente / Punto / Gerencia</div></div>
+          <div class="db-entity"><div class="db-head">PuntoVenta</div><div class="db-fields"><span class="db-field-key">id · id_proyecto (FK)</span><br>nombre · direccion<br>latlon (PostGIS)</div></div>
+          <div class="db-entity"><div class="db-head">Quicker</div><div class="db-fields"><span class="db-field-key">id · usuario_id (FK)</span><br>documento · operacion<br>estado · datos_contacto</div></div>
+          <div class="db-entity"><div class="db-head">Disponibilidad</div><div class="db-fields"><span class="db-field-key">id · id_proyecto · punto_id · quicker_id</span><br>inicio_plan/real · fin_plan/real<br>aprobacion_estado · aprobador_id</div></div>
+          <div class="db-entity"><div class="db-head">EventoTurno</div><div class="db-fields"><span class="db-field-key">id · disponibilidad_id (FK)</span><br>tipo_evento · fecha_hora<br>latlon · evidencia_id?</div></div>
+          <div class="db-entity"><div class="db-head">Novedad</div><div class="db-fields"><span class="db-field-key">id · disponibilidad_id (FK)</span><br>tipo · origen · creado_por<br>estado · regla_retraso</div></div>
+          <div class="db-entity"><div class="db-head">Evidencia</div><div class="db-fields"><span class="db-field-key">id · disponibilidad_id (FK)</span><br>archivo · etapa<br>obligatoria · estado</div></div>
+          <div class="db-entity"><div class="db-head">CasoAdmin</div><div class="db-fields"><span class="db-field-key">id · tipo · quicker_id (FK)</span><br>disponibilidad_id? · latlon<br>estado · documentos</div></div>
+          <div class="db-entity"><div class="db-head">DocumentoQuicker</div><div class="db-fields"><span class="db-field-key">id · quicker_id (FK)</span><br>nombre_libre · tipo_doc<br>fecha_vencimiento · archivo · estado</div></div>
+          <div class="db-entity"><div class="db-head">TicketActividad</div><div class="db-fields"><span class="db-field-key">id · coordinador_id (FK)</span><br>tipo · complejidad · sla<br>estado · carga_puntos</div></div>
+          <div class="db-entity"><div class="db-head">ZonaKML</div><div class="db-fields"><span class="db-field-key">id · id_proyecto (FK)</span><br>punto_id? · poligono (PostGIS)<br>version</div></div>
+          <div class="db-entity"><div class="db-head">UbicacionPing</div><div class="db-fields"><span class="db-field-key">id · disponibilidad_id (FK)</span><br>quicker_id · latlon<br>timestamp</div></div>
+          <div class="db-entity"><div class="db-head">LogAuditoria</div><div class="db-fields"><span class="db-field-key">id · usuario_id (FK)</span><br>accion · entidad<br>antes/despues · fecha · ip</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Infraestructura GCP</div><div class="card-sub">Piloto: 2 clientes · 20 coordinadores · 200 Quickers</div></div>
+          <div class="bar-list">
+            <div class="bar-row"><span class="bar-lbl">Frontend</span><div style="flex:1;font-size:11px;color:var(--text-2)">Firebase Hosting / Cloud Run + CDN — Portal admin, portal cliente, PWA Quicker</div></div>
+            <div class="bar-row"><span class="bar-lbl">Backend/API</span><div style="flex:1;font-size:11px;color:var(--text-2)">Cloud Run — API containerizada, escalable por ambiente</div></div>
+            <div class="bar-row"><span class="bar-lbl">Base de datos</span><div style="flex:1;font-size:11px;color:var(--text-2)">Cloud SQL PostgreSQL + PostGIS — 2 vCPU, 8GB RAM, 100-200GB SSD</div></div>
+            <div class="bar-row"><span class="bar-lbl">Tiempo real</span><div style="flex:1;font-size:11px;color:var(--text-2)">Memorystore Redis + WebSockets — Estado operativo, sesiones, tableros en vivo</div></div>
+            <div class="bar-row"><span class="bar-lbl">Seguridad</span><div style="flex:1;font-size:11px;color:var(--text-2)">Cloud IAM + Secret Manager + Cloud Armor + Identity Platform (MFA)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════ CONFIGURACIÓN ════════════════════ -->
+      <div class="page" id="page-config">
+        <div style="margin-bottom:16px">
+          <div style="font-size:15px;font-weight:700;color:var(--text-1);margin-bottom:4px">Configuración del sistema</div>
+          <div style="font-size:12px;color:var(--text-3)">Gestión de clientes, usuarios, roles, permisos y parámetros operativos</div>
+        </div>
+
+        <div class="roles-grid" style="margin-bottom:18px">
+          <div class="role-card"><div class="role-icon"><i class="ti ti-shield" style="font-size:16px"></i></div><div class="role-name">Administrador</div><div class="role-desc">Acceso total · MFA obligatorio · Auditoria completa</div></div>
+          <div class="role-card"><div class="role-icon"><i class="ti ti-user-check" style="font-size:16px"></i></div><div class="role-name">Coordinador</div><div class="role-desc">Solo su alcance asignado · Sin ubicación global</div></div>
+          <div class="role-card"><div class="role-icon"><i class="ti ti-run" style="font-size:16px"></i></div><div class="role-name">Quicker</div><div class="role-desc">App móvil únicamente · Sin reportes ni ubicaciones ajenas</div></div>
+          <div class="role-card"><div class="role-icon"><i class="ti ti-building" style="font-size:16px"></i></div><div class="role-name">Cliente Admin</div><div class="role-desc">Solo su cliente · Sin logs internos · Sin mapa</div></div>
+          <div class="role-card"><div class="role-icon"><i class="ti ti-map-pin" style="font-size:16px"></i></div><div class="role-name">Usuario Punto</div><div class="role-desc">Solo su punto de venta · Aprobar servicios</div></div>
+          <div class="role-card"><div class="role-icon"><i class="ti ti-chart-area" style="font-size:16px"></i></div><div class="role-name">Gerencia</div><div class="role-desc">Solo lectura agregada · Sin edición operativa</div></div>
+        </div>
+
+        <div class="settings-grid">
+          <div class="settings-card">
+            <div class="sc-icon"><i class="ti ti-building"></i></div>
+            <div class="sc-title">Clientes y reglas</div>
+            <div class="sc-desc">Crear clientes con ID Proyecto (centro de costos), configurar retardos, almuerzo, aprobación masiva, evidencias requeridas y alertas automáticas por cliente</div>
+          </div>
+          <div class="settings-card">
+            <div class="sc-icon"><i class="ti ti-users-group"></i></div>
+            <div class="sc-title">Usuarios y permisos</div>
+            <div class="sc-desc">Gestionar roles (Admin, Coordinador, Quicker, Cliente, Punto, Gerencia), correos, contraseñas cifradas, perfiles, estado y alcance operativo</div>
+          </div>
+          <div class="settings-card">
+            <div class="sc-icon"><i class="ti ti-map-pin"></i></div>
+            <div class="sc-title">Puntos de venta</div>
+            <div class="sc-desc">Registrar y administrar puntos de venta con nombre, dirección, coordenadas GPS (PostGIS) y cliente asociado (ID Proyecto)</div>
+          </div>
+          <div class="settings-card">
+            <div class="sc-icon"><i class="ti ti-files"></i></div>
+            <div class="sc-title">Documentos Quicker</div>
+            <div class="sc-desc">Configurar tipos de documentos obligatorios (cédula, SOAT, licencia), fechas de vencimiento y alertas automáticas de renovación</div>
+          </div>
+          <div class="settings-card">
+            <div class="sc-icon"><i class="ti ti-map-2"></i></div>
+            <div class="sc-title">Geocercas KML</div>
+            <div class="sc-desc">Cargar polígonos KML por operación, cliente o punto. Configurar alertas de salida de zona y permanencia prolongada (+30 min)</div>
+          </div>
+          <div class="settings-card">
+            <div class="sc-icon"><i class="ti ti-list-search"></i></div>
+            <div class="sc-title">Logs y auditoría</div>
+            <div class="sc-desc">Historial completo de cambios: usuario, entidad, dato anterior/nuevo, fecha, IP y dispositivo. Solo superadmin puede borrar físicamente</div>
+          </div>
+          <div class="settings-card">
+            <div class="sc-icon"><i class="ti ti-bell-ringing"></i></div>
+            <div class="sc-title">Reglas y alertas</div>
+            <div class="sc-desc">Configurar automatizaciones: alertas por retardo, inasistencia, doc vencido, no inicio, salida de zona y evidencia faltante por cliente</div>
+          </div>
+          <div class="settings-card">
+            <div class="sc-icon"><i class="ti ti-plug-connected"></i></div>
+            <div class="sc-title">Integraciones</div>
+            <div class="sc-desc">Oasis, ID Talento, QuickApp, Nómina, Facturación y WhatsApp/SMS. Configurar credenciales y sincronización por fase del proyecto</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="login-overlay open" id="login-screen">
+  <form class="login-card" id="login-form">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div class="sb-logo">Q</div>
+      <div><h2>Quick Last Mile</h2><p style="margin:0">Ingreso administrativo y operativo</p></div>
+    </div>
+    <div class="login-field"><label>Usuario</label><input id="login-user" autocomplete="username" value="admin.quick" required></div>
+    <div class="login-field"><label>Contraseña</label><div class="password-wrap"><input id="login-pass" type="password" autocomplete="current-password" value="" required><button class="password-toggle" type="button" id="toggle-login-pass"><i class="ti ti-eye"></i></button></div></div>
+    <button class="dev-btn primary" type="submit" style="width:100%;justify-content:center;height:42px">Ingresar</button>
+    <div class="bootstrap-note">Acceso inicial de administrador: usuario <strong>admin.quick</strong> y contraseña <strong>Quick2026!</strong>. Los demás usuarios se crean desde Configuración y su visual queda definida por el perfil asignado por el administrador.</div>
+  </form>
+</div>
+
+<div class="app-modal" id="app-modal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="modal-title">Nuevo registro</div>
+        <div class="fp-sub" id="modal-subtitle">Completa la información requerida.</div>
+      </div>
+      <button class="modal-close" id="modal-close" type="button">×</button>
+    </div>
+    <form id="modal-form"></form>
+  </div>
+</div>
+<div class="toast" id="app-toast">Cambio guardado</div>
+
+<script>
+const pageInfo = {
+  dashboard:  ['Dashboard',      '/ Inicio'],
+  mallas:     ['Mallas',         '/ Operaciones'],
+  mapa:       ['Mapa en Vivo',   '/ Operaciones'],
+  novedades:  ['Novedades',      '/ Operaciones'],
+  tickets:    ['Tickets',        '/ Operaciones'],
+  evidencias: ['Evidencias',     '/ Operaciones'],
+  quickers:   ['Quickers',       '/ Operaciones'],
+  mensajero:  ['App Mensajero',   '/ Operación móvil'],
+  casos:      ['Casos Admin',    '/ Administración'],
+  reportes:   ['Reportes',       '/ Administración'],
+  bd:         ['Modelo de Datos','/ Referencia técnica'],
+  config:     ['Configuración',  '/ Sistema'],
+};
+
+function nav(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  if (el) el.classList.add('active');
+  const info = pageInfo[id] || [id, ''];
+  document.getElementById('tb-title').textContent = info[0];
+  document.getElementById('tb-crumb').textContent = info[1];
+  document.getElementById('content').scrollTop = 0;
+}
+
+let dark = true;
+function toggleMode() {
+  dark = !dark;
+  document.body.classList.toggle('light-mode', !dark);
+  const icon  = document.getElementById('mode-icon');
+  const label = document.getElementById('mode-label');
+  if (dark) { icon.className = 'ti ti-sun';  label.textContent = 'Modo claro'; }
+  else       { icon.className = 'ti ti-moon'; label.textContent = 'Modo oscuro'; }
+}
+
+/* ───── MVP LOCAL: DATA, CRUD, STATE & EXPORTS ───── */
+(() => {
+  const STORAGE_KEY = 'quick_lastmile_mvp_state_v1';
+  let activeModule = 'dashboard';
+
+  const seed = {
+    clients: [
+      { id: 'CLI-001', idProyecto: 'CC-1024', name: 'Farmacias Andina', delayRule: 30, lunch: 'Si', approval: 'Activa', evidenceRule: 'Inicio 2 fotos / cierre 1 foto', alerts: 'KML + permanencia 30m' },
+      { id: 'CLI-002', idProyecto: 'CC-2032', name: 'Retail Express', delayRule: 120, lunch: 'No', approval: 'No aplica', evidenceRule: 'Foto cierre opcional', alerts: 'Retardo + no colocado' }
+    ],
+    users: [
+      { id: 'USR-001', name: 'Diana Gómez', email: 'diana.gomez@quick.com.co', phone: '3000000001', username: 'diana.coord', password: 'Coord2026!', profile: 'Coordinador', scope: 'Farmacias Andina' },
+      { id: 'USR-002', name: 'Admin Quick', email: 'admin@quick.com.co', phone: '3000000002', username: 'admin.quick', password: 'Quick2026!', profile: 'Administrador', scope: 'Global' },
+      { id: 'USR-003', name: 'Carlos Mejía', email: 'carlos.mejia@mail.com', phone: '3105550101', username: 'carlos.qk', password: 'Mensajero2026!', profile: 'Quicker', scope: 'Carlos Mejía' },
+      { id: 'USR-004', name: 'Cliente Demo', email: 'cliente.demo@cliente.com', phone: '3000000004', username: 'cliente.demo', password: 'Cliente2026!', profile: 'Cliente Admin', scope: 'Farmacias Andina' }
+    ],
+    quickers: [
+      { id: 'QK-1001', cedula: '1018456789', name: 'Carlos Mejía', phone: '3105550101', email: 'carlos.mejia@mail.com', client: 'Farmacias Andina', point: 'Santa Bárbara', zone: 'KML Norte', docName: 'SOAT moto', docExpires: '2026-06-25', status: 'Activo' },
+      { id: 'QK-1002', cedula: '1020456123', name: 'Lina Torres', phone: '3105550102', email: 'lina.torres@mail.com', client: 'Retail Express', point: 'Portal 80', zone: 'KML Centro', docName: 'Licencia conducción', docExpires: '2026-09-18', status: 'Activo' },
+      { id: 'QK-1003', cedula: '79999123', name: 'Andrés Silva', phone: '3105550103', email: 'andres.silva@mail.com', client: 'Farmacias Andina', point: 'Chapinero', zone: 'KML Sur', docName: 'Tecnomecánica', docExpires: '2026-06-15', status: 'Bloqueado' }
+    ],
+    availabilities: [
+      { id: 'DIS-001', date: '2026-06-17', client: 'Farmacias Andina', point: 'Santa Bárbara', quicker: 'Carlos Mejía', plannedStart: '08:00', plannedEnd: '18:00', realStart: '08:03', realEnd: '', serviceType: 'Fijo', approval: 'Pendiente punto', evidencePhoto: 'inicio_carlos.jpg', status: 'Iniciado', custom: {} },
+      { id: 'DIS-002', date: '2026-06-17', client: 'Retail Express', point: 'Portal 80', quicker: 'Lina Torres', plannedStart: '09:00', plannedEnd: '19:00', realStart: '09:41', realEnd: '', serviceType: 'Adicional', approval: 'No aplica', evidencePhoto: 'retardo_lina.jpg', status: 'Con novedad', custom: {} },
+      { id: 'DIS-003', date: '2026-06-17', client: 'Farmacias Andina', point: 'Chapinero', quicker: 'Andrés Silva', plannedStart: '07:00', plannedEnd: '17:00', realStart: '', realEnd: '', serviceType: 'Colaborativo', approval: 'Pendiente', evidencePhoto: '', status: 'No colocado', custom: {} }
+    ],
+    novelties: [
+      { id: 'NOV-001', type: 'Retardo', origin: 'Sistema', ref: 'DIS-002', severity: 'Media', status: 'En validación', note: 'Llegada 41 minutos después del plan.' },
+      { id: 'NOV-002', type: 'No colocado', origin: 'Sistema', ref: 'DIS-003', severity: 'Alta', status: 'Reportada', note: 'Sin inicio dentro de la regla del cliente.' }
+    ],
+    tickets: [
+      { id: 'TCK-001', coordinator: 'Diana Gómez', activity: 'Validar comparendos de Carlos Mejía', type: 'Seguimiento Quicker', complexity: 'Media', sla: 'Hoy 15:00', status: 'Abierto' },
+      { id: 'TCK-002', coordinator: 'Diana Gómez', activity: 'Aprobar novedad DIS-002', type: 'Novedad operativa', complexity: 'Alta', sla: 'Hoy 11:30', status: 'En proceso' }
+    ],
+    cases: [
+      { id: 'CAS-001', type: 'Incapacidad', quicker: 'Lina Torres', period: '2026-06-16 a 2026-06-18', status: 'Docs pendientes', owner: 'Miguel Torres' },
+      { id: 'CAS-002', type: 'Descuento', quicker: 'Carlos Mejía', period: 'Junio 2026', status: 'Pend. aprobación', owner: 'Laura Ríos' }
+    ],
+    evidences: [
+      { id: 'EVI-001', availability: 'DIS-001', quicker: 'Carlos Mejía', stage: 'Inicio', type: 'Foto', required: 'Si', status: 'Cargada' },
+      { id: 'EVI-002', availability: 'DIS-002', quicker: 'Lina Torres', stage: 'Retardo', type: 'Comentario', required: 'No', status: 'Pendiente revisión' }
+    ],
+    logs: [
+      { id: 'LOG-001', time: '2026-06-17 10:20', user: 'Sistema', entity: 'Disponibilidad', action: 'Creó novedad por retardo', detail: 'DIS-002' },
+      { id: 'LOG-002', time: '2026-06-17 10:28', user: 'Admin Quick', entity: 'Quicker', action: 'Marcó documento vencido', detail: 'QK-1003' }
+    ],
+    parkingReports: [],
+    locationPings: [],
+    prefs: {
+      mallaColumns: ['date', 'cedula', 'quicker', 'client', 'point', 'planned', 'executed', 'evidence', 'approval', 'status', 'actions'],
+      customMallaColumns: [],
+      sortMallas: 'date-desc',
+      mapStyle: 'satellite',
+      mapQuicker: 'Todos',
+      mapZone: 'Todas',
+      kmlName: ''
+    },
+    session: null
+  };
+
+  let state = loadState();
+  const nativeNav = window.nav;
+
+  window.nav = function(id, el) {
+    activeModule = id;
+    nativeNav(id, el);
+    renderAll();
+  };
+
+  function loadState() {
+    try {
+      return normalizeState(JSON.parse(localStorage.getItem(STORAGE_KEY)) || structuredClone(seed));
+    } catch (_) {
+      return normalizeState(JSON.parse(JSON.stringify(seed)));
+    }
+  }
+
+  function normalizeState(value) {
+    const next = { ...JSON.parse(JSON.stringify(seed)), ...(value || {}) };
+    next.clients = value?.clients || seed.clients;
+    next.users = value?.users || seed.users;
+    next.quickers = value?.quickers || seed.quickers;
+    next.availabilities = value?.availabilities || seed.availabilities;
+    next.novelties = value?.novelties || seed.novelties;
+    next.tickets = value?.tickets || seed.tickets;
+    next.cases = value?.cases || seed.cases;
+    next.evidences = value?.evidences || seed.evidences;
+    next.logs = value?.logs || seed.logs;
+    next.parkingReports = value?.parkingReports || [];
+    next.locationPings = value?.locationPings || [];
+    next.prefs = { ...seed.prefs, ...(value?.prefs || {}) };
+    next.session = null;
+    const missingUsers = seed.users.filter(seedUser => !next.users.some(u => u.username === seedUser.username));
+    next.users = [...next.users, ...missingUsers].map((u, i) => {
+      const seedUser = seed.users.find(s => s.username === u.username);
+      const password = !u.password || u.password === '1234' ? (seedUser?.password || '') : u.password;
+      return { ...u, password, username: u.username || `usuario${i + 1}` };
+    });
+    next.quickers = next.quickers.map((q, i) => ({ cedula: q.cedula || `100000000${i + 1}`, ...q }));
+    next.availabilities = next.availabilities.map((d, i) => ({
+      date: d.date || '2026-06-17',
+      evidencePhoto: d.evidencePhoto || (i === 0 ? 'foto_inicio.jpg' : ''),
+      custom: d.custom || {},
+      ...d
+    }));
+    return next;
+  }
+
+  function saveState(message = 'Cambio guardado') {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    renderAll();
+    toast(message);
+  }
+
+  function uid(prefix) {
+    return `${prefix}-${Math.floor(Date.now() / 1000).toString(36).toUpperCase()}${Math.floor(Math.random() * 90 + 10)}`;
+  }
+
+  function todayTime() {
+    return new Date().toLocaleString('es-CO', { hour12: false });
+  }
+
+  function log(entity, action, detail, user = 'Admin Quick') {
+    state.logs.unshift({ id: uid('LOG'), time: todayTime(), user, entity, action, detail });
+    state.logs = state.logs.slice(0, 40);
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+
+  function statusClass(value) {
+    const v = String(value || '').toLowerCase();
+    if (v.includes('final') || v.includes('activo') || v.includes('cerr') || v.includes('cargada') || v.includes('aprob')) return 'st-ok';
+    if (v.includes('pend') || v.includes('valid') || v.includes('proceso') || v.includes('iniciado')) return 'st-warn';
+    if (v.includes('no colocado') || v.includes('bloque') || v.includes('alta') || v.includes('venc')) return 'st-bad';
+    return 'st-info';
+  }
+
+  function pill(value) {
+    return `<span class="status-pill ${statusClass(value)}">${escapeHTML(value)}</span>`;
+  }
+
+  function table(headers, rows) {
+    return `<div class="data-table-wrap"><table class="data-table">
+      <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table></div>`;
+  }
+
+  function row(cells) {
+    return `<tr>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
+  }
+
+  function action(label, actionName, id) {
+    return `<button class="mini-action" type="button" data-action="${actionName}" data-id="${id}">${label}</button>`;
+  }
+
+  function mallaColumnLabels() {
+    const base = {
+      date: 'Fecha',
+      cedula: 'Cédula',
+      quicker: 'Mensajero',
+      client: 'Cliente',
+      point: 'Punto',
+      planned: 'Planeado',
+      executed: 'Ejecutado',
+      serviceType: 'Servicio',
+      evidence: 'Evidencia foto',
+      approval: 'Aprobación',
+      status: 'Estado',
+      actions: 'Gestión'
+    };
+    state.prefs.customMallaColumns.forEach(col => base[col.key] = `${col.label}${col.enabled === false ? ' (inh.)' : ''}`);
+    return base;
+  }
+
+  function headerCell(key) {
+    const label = mallaColumnLabels()[key] || key;
+    return `${escapeHTML(label)}<span class="col-tools"><button class="col-btn" data-move-col="${key}" data-dir="-1" title="Mover izquierda">‹</button><button class="col-btn" data-move-col="${key}" data-dir="1" title="Mover derecha">›</button></span>`;
+  }
+
+  function sortedMallas() {
+    const items = [...state.availabilities];
+    const mode = state.prefs.sortMallas;
+    const by = (fn, dir = 1) => items.sort((a, b) => String(fn(a)).localeCompare(String(fn(b)), 'es') * dir);
+    if (mode === 'date-desc') by(a => a.date || '', -1);
+    if (mode === 'date-asc') by(a => a.date || '', 1);
+    if (mode === 'quicker-asc') by(a => a.quicker || '', 1);
+    if (mode === 'client-asc') by(a => a.client || '', 1);
+    if (mode === 'status-asc') by(a => a.status || '', 1);
+    return items;
+  }
+
+  function visibleMallaColumns() {
+    const profile = state.session?.profile || 'Administrador';
+    return state.prefs.mallaColumns.filter(key => {
+      const col = state.prefs.customMallaColumns.find(item => item.key === key);
+      if (!col) return true;
+      if (col.enabled === false) return profile === 'Administrador';
+      return !col.roles?.length || col.roles.includes(profile) || profile === 'Administrador';
+    });
+  }
+
+  function evidenceCell(d) {
+    if (!d.evidencePhoto) return '<span class="fp-sub">Pendiente</span>';
+    return `<span class="evidence-thumb" title="${escapeHTML(d.evidencePhoto)}"><i class="ti ti-photo"></i></span>`;
+  }
+
+  function customCell(d, col) {
+    const value = d.custom?.[col.key] || '';
+    if (col.type === 'lista') {
+      const options = String(col.options || '').split(',').map(v => v.trim()).filter(Boolean);
+      return `<select class="mini-action" data-custom-cell="${d.id}" data-custom-key="${col.key}"><option value=""></option>${options.map(o => `<option ${o === value ? 'selected' : ''}>${escapeHTML(o)}</option>`).join('')}</select>`;
+    }
+    const type = col.type === 'numero' ? 'number' : col.type === 'fecha' ? 'date' : 'text';
+    return `<input class="mini-action" style="min-width:120px" type="${type}" value="${escapeHTML(value)}" data-custom-cell="${d.id}" data-custom-key="${col.key}">`;
+  }
+
+  function panel(pageId, title, subtitle, actions, body) {
+    const page = document.getElementById(`page-${pageId}`);
+    if (!page) return;
+    let box = page.querySelector('.functional-panel');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'functional-panel';
+      page.prepend(box);
+    }
+    box.innerHTML = `
+      <div class="fp-head">
+        <div><div class="fp-title">${title}</div><div class="fp-sub">${subtitle}</div></div>
+        <div class="fp-actions">${actions}</div>
+      </div>
+      ${body}`;
+  }
+
+  function metrics(items) {
+    return `<div class="fp-grid">${items.map(([label, value, note]) => `
+      <div class="fp-card"><div class="fp-card-label">${label}</div><div class="fp-card-value">${value}</div><div class="fp-card-note">${note}</div></div>
+    `).join('')}</div>`;
+  }
+
+  function renderDashboard() {
+    const openNov = state.novelties.filter(n => !/cerrada|rechazada/i.test(n.status)).length;
+    const activeQuickers = state.quickers.filter(q => q.status === 'Activo').length;
+    const inProgress = state.availabilities.filter(d => /iniciado|en turno|novedad/i.test(d.status)).length;
+    const openTickets = state.tickets.filter(t => !/cerrado/i.test(t.status)).length;
+    const logs = state.logs.slice(0, 5).map(l => row([escapeHTML(l.time), escapeHTML(l.user), escapeHTML(l.entity), escapeHTML(l.action), escapeHTML(l.detail)]));
+    panel('dashboard', 'MVP funcional conectado a datos locales', 'Estos indicadores ya salen de registros creados/editados en el navegador.',
+      `<button class="dev-btn primary" data-open="malla"><i class="ti ti-calendar-plus"></i> Crear malla</button>
+       <button class="dev-btn" data-open="ticket"><i class="ti ti-ticket"></i> Crear ticket</button>
+       <button class="dev-btn" data-export="all"><i class="ti ti-download"></i> Exportar todo</button>`,
+      metrics([
+        ['Quickers activos', activeQuickers, 'Maestra de Quickers'],
+        ['Turnos en curso', inProgress, 'Disponibilidades activas'],
+        ['Novedades abiertas', openNov, 'Pendientes de coordinador'],
+        ['Tickets abiertos', openTickets, 'Carga de coordinadores']
+      ]) + table(['Hora', 'Usuario', 'Entidad', 'Acción', 'Detalle'], logs)
+    );
+  }
+
+  function renderMallas() {
+    const rows = sortedMallas().map(d => {
+      const q = state.quickers.find(item => item.name === d.quicker) || {};
+      const values = {
+        date: escapeHTML(d.date),
+        cedula: escapeHTML(q.cedula || 'Sin cédula'),
+        quicker: escapeHTML(d.quicker),
+        client: escapeHTML(d.client),
+        point: escapeHTML(d.point),
+        planned: `${escapeHTML(d.plannedStart)} - ${escapeHTML(d.plannedEnd)}`,
+        executed: `${escapeHTML(d.realStart || 'Sin inicio')} - ${escapeHTML(d.realEnd || 'En curso')}`,
+        serviceType: escapeHTML(d.serviceType),
+        evidence: evidenceCell(d),
+        approval: pill(d.approval),
+        status: pill(d.status),
+        actions: `<div class="row-actions">${action('Gestionar', 'manageMalla', d.id)}${action('Duplicar rango', 'duplicateMalla', d.id)}</div>`
+      };
+      state.prefs.customMallaColumns.forEach(col => values[col.key] = customCell(d, col));
+      return row(visibleMallaColumns().map(key => values[key] ?? ''));
+    });
+    const headers = visibleMallaColumns().map(key => headerCell(key));
+    panel('mallas', 'Gestión real de mallas y turnos', 'Crea disponibilidades y cambia estados. Los cambios quedan guardados en localStorage.',
+      `<button class="dev-btn primary" data-open="malla"><i class="ti ti-plus"></i> Nueva malla</button><button class="dev-btn" data-add-column="mallas"><i class="ti ti-columns"></i> Agregar título</button><button class="dev-btn" data-reset-columns="mallas"><i class="ti ti-refresh"></i> Reset columnas</button><button class="dev-btn" data-export="availabilities">Exportar CSV</button>`,
+      `<div class="toolbar-line"><span class="fp-sub">Ordenar:</span><select data-sort-mallas><option value="date-desc">Fecha mayor a menor</option><option value="date-asc">Fecha menor a mayor</option><option value="quicker-asc">Mensajero A-Z</option><option value="client-asc">Cliente A-Z</option><option value="status-asc">Estado A-Z</option></select></div>` +
+      table(headers, rows)
+    );
+    const sorter = document.querySelector('[data-sort-mallas]');
+    if (sorter) sorter.value = state.prefs.sortMallas;
+  }
+
+  function renderMapa() {
+    const filtered = state.availabilities.filter(d => {
+      const q = state.quickers.find(item => item.name === d.quicker) || {};
+      return (state.prefs.mapQuicker === 'Todos' || d.quicker === state.prefs.mapQuicker) &&
+        (state.prefs.mapZone === 'Todas' || q.zone === state.prefs.mapZone);
+    });
+    const rows = filtered.map(d => {
+      const q = state.quickers.find(item => item.name === d.quicker) || {};
+      return row([
+        escapeHTML(d.quicker),
+        escapeHTML(q.cedula || ''),
+        escapeHTML(d.client),
+        escapeHTML(d.point),
+        escapeHTML(q.zone || 'Sin zona'),
+        d.status === 'No colocado' ? pill('Sin ping') : pill('Dentro zona'),
+        d.status === 'Con novedad' ? pill('Permanencia +30m') : pill('Normal')
+      ]);
+    });
+    const zones = ['Todas', ...new Set(state.quickers.map(q => q.zone).filter(Boolean))];
+    const quickers = ['Todos', ...state.quickers.map(q => q.name)];
+    panel('mapa', 'Monitoreo operativo por zona KML', 'Prototipo de reglas: ping cada 15 minutos, zona asignada y alerta de permanencia.',
+      `<button class="dev-btn" data-open="novedad"><i class="ti ti-alert-triangle"></i> Crear novedad</button>`,
+      `<div class="toolbar-line">
+        <span class="fp-sub">Visual:</span><select data-map-style><option value="satellite">Satelital</option><option value="road">Mapa claro</option><option value="dark">Mapa oscuro</option></select>
+        <span class="fp-sub">Mensajero:</span><select data-map-quicker>${quickers.map(q => `<option>${escapeHTML(q)}</option>`).join('')}</select>
+        <span class="fp-sub">Zona:</span><select data-map-zone>${zones.map(z => `<option>${escapeHTML(z)}</option>`).join('')}</select>
+        <label class="dev-btn"><i class="ti ti-file-upload"></i> Adjuntar KML<input type="file" accept=".kml,.kmz" data-kml-input style="display:none"></label>
+        <span class="fp-sub">${state.prefs.kmlName ? `KML: ${escapeHTML(state.prefs.kmlName)}` : 'Sin KML cargado'}</span>
+      </div>
+      <div class="sat-map map-${state.prefs.mapStyle === 'road' ? 'road' : state.prefs.mapStyle === 'dark' ? 'dark' : 'satellite'}">
+        ${kmlOverlay()}
+        <div class="sat-road" style="left:9%;top:28%;width:80%;transform:rotate(12deg)"></div><div class="sat-road" style="left:12%;top:70%;width:74%;transform:rotate(-18deg)"></div><div class="sat-road" style="left:48%;top:8%;width:68%;transform:rotate(92deg)"></div>
+        <div class="map-caption" style="left:56%;top:14%;bottom:auto">Bogotá D.C.</div><div class="map-caption" style="left:18%;top:22%;bottom:auto">Suba</div><div class="map-caption" style="left:70%;top:36%;bottom:auto">Usaquén</div><div class="map-caption" style="left:42%;top:62%;bottom:auto">Chapinero</div>
+        ${filtered.map((d, i) => `<button class="map-dot-live ${d.status === 'No colocado' ? 'bad' : d.status === 'Con novedad' ? 'warn' : ''}" style="left:${24 + i * 18 % 58}%;top:${30 + i * 21 % 45}%" title="${escapeHTML(d.quicker)}"></button>`).join('')}
+        <div class="map-caption"><i class="ti ti-satellite"></i> Vista ${state.prefs.mapStyle} · polígonos KML · filtros activos</div>
+      </div>
+      <div style="margin-top:12px">${table(['Mensajero', 'Cédula', 'Cliente', 'Punto', 'Zona KML', 'Ubicación', 'Alerta'], rows)}</div>`
+    );
+    const style = document.querySelector('[data-map-style]');
+    const quicker = document.querySelector('[data-map-quicker]');
+    const zone = document.querySelector('[data-map-zone]');
+    if (style) style.value = state.prefs.mapStyle;
+    if (quicker) quicker.value = state.prefs.mapQuicker;
+    if (zone) zone.value = state.prefs.mapZone;
+  }
+
+  function kmlOverlay() {
+    const text = state.prefs.kmlText || '';
+    const match = text.match(/<coordinates[^>]*>([\s\S]*?)<\/coordinates>/i);
+    if (!match) return '<div class="kml-zone"></div>';
+    const coords = match[1].trim().split(/\s+/).map(pair => pair.split(',').map(Number)).filter(p => Number.isFinite(p[0]) && Number.isFinite(p[1])).slice(0, 80);
+    if (coords.length < 3) return '<div class="kml-zone"></div>';
+    const xs = coords.map(p => p[0]), ys = coords.map(p => p[1]);
+    const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+    const points = coords.map(([x, y]) => {
+      const px = 12 + ((x - minX) / ((maxX - minX) || 1)) * 76;
+      const py = 12 + (1 - ((y - minY) / ((maxY - minY) || 1))) * 76;
+      return `${px.toFixed(1)},${py.toFixed(1)}`;
+    }).join(' ');
+    return `<svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none"><polygon points="${points}" fill="rgba(245,197,24,.16)" stroke="#F5C518" stroke-width=".7" stroke-dasharray="2 1"/></svg>`;
+  }
+
+  function renderNovedades() {
+    const rows = state.novelties.map(n => row([
+      escapeHTML(n.id), escapeHTML(n.type), escapeHTML(n.origin), escapeHTML(n.ref), pill(n.severity), pill(n.status), escapeHTML(n.note),
+      `<div class="row-actions">${action('Aprobar', 'approveNovelty', n.id)}${action('Cerrar', 'closeNovelty', n.id)}${action('Ticket', 'ticketFromNovelty', n.id)}</div>`
+    ]));
+    panel('novedades', 'Novedades con aprobación del coordinador', 'El cliente o punto reporta, pero el coordinador valida y aprueba.',
+      `<button class="dev-btn primary" data-open="novedad"><i class="ti ti-plus"></i> Nueva novedad</button><button class="dev-btn" data-export="novelties">Exportar CSV</button>`,
+      table(['ID', 'Tipo', 'Origen', 'Ref.', 'Severidad', 'Estado', 'Nota', 'Acciones'], rows)
+    );
+  }
+
+  function renderTickets() {
+    const rows = state.tickets.map(t => row([
+      escapeHTML(t.id), escapeHTML(t.coordinator), escapeHTML(t.type), escapeHTML(t.activity), pill(t.complexity), escapeHTML(t.sla), pill(t.status),
+      `<div class="row-actions">${action('Tomar', 'takeTicket', t.id)}${action('Cerrar', 'closeTicket', t.id)}</div>`
+    ]));
+    panel('tickets', 'Gestión de productividad por tickets', 'Base para medir carga, complejidad, SLA y nivelación futura con IA.',
+      `<button class="dev-btn primary" data-open="ticket"><i class="ti ti-plus"></i> Nuevo ticket</button><button class="dev-btn" data-export="tickets">Exportar CSV</button>`,
+      table(['ID', 'Coordinador', 'Tipo', 'Actividad', 'Complejidad', 'SLA', 'Estado', 'Acciones'], rows)
+    );
+  }
+
+  function renderQuickers() {
+    const rows = state.quickers.map(q => {
+      const expired = q.docExpires && new Date(q.docExpires) < new Date('2026-06-17T00:00:00');
+      return row([
+        escapeHTML(q.id), escapeHTML(q.name), escapeHTML(q.phone), escapeHTML(q.email), escapeHTML(q.client), escapeHTML(q.point), escapeHTML(q.zone),
+        `${escapeHTML(q.docName)} · ${escapeHTML(q.docExpires)}`,
+        pill(expired ? 'Documento vencido' : q.status),
+        `<div class="row-actions">${action('Seguimiento', 'followQuicker', q.id)}${action('Bloquear', 'blockQuicker', q.id)}</div>`
+      ]);
+    });
+    panel('quickers', 'Maestra funcional de Quickers', 'Usuarios, contacto, cliente/punto, zona KML y alertas de documentos.',
+      `<button class="dev-btn primary" data-open="quicker"><i class="ti ti-user-plus"></i> Nuevo Quicker</button><button class="dev-btn" data-export="quickers">Exportar CSV</button>`,
+      table(['ID', 'Nombre', 'Teléfono', 'Correo', 'Cliente', 'Punto', 'Zona', 'Documento', 'Estado', 'Acciones'], rows)
+    );
+  }
+
+  function renderMensajero() {
+    const session = state.session;
+    const name = session?.profile === 'Quicker' ? session.name : 'Carlos Mejía';
+    const assigned = state.availabilities.filter(d => d.quicker === name);
+    const rows = assigned.map(d => row([
+      escapeHTML(d.date),
+      escapeHTML(d.client),
+      escapeHTML(d.point),
+      `${escapeHTML(d.plannedStart)} - ${escapeHTML(d.plannedEnd)}`,
+      pill(d.status),
+      evidenceCell(d),
+      `<div class="row-actions">${action('Iniciar', 'startAvailability', d.id)}${action('Cerrar', 'closeAvailability', d.id)}${action('Reportar novedad', 'reportQuickerNovelty', d.id)}</div>`
+    ]));
+    panel('mensajero', 'Página del mensajero / Quicker', 'Pantalla mobile first: solo ve sus turnos, registra ubicación automática y carga evidencias.',
+      `<button class="dev-btn" data-open="novedad"><i class="ti ti-alert-triangle"></i> Reportar novedad</button>`,
+      `<div class="messenger-shell">
+        <div class="mobile-preview"><div class="mobile-screen"><span class="status-pill st-warn">Usuario: ${escapeHTML(name)}</span><h2 style="margin:18px 0 6px">Turno asignado</h2><p style="color:rgba(255,255,255,.65)">Ubicación automática, sin selección manual.</p><div class="sat-map" style="min-height:150px;margin:16px 0"><div class="kml-zone"></div><button class="map-dot-live" style="left:54%;top:48%"></button></div><button class="dev-btn primary" style="width:100%;justify-content:center" data-action="startAvailability" data-id="${assigned[0]?.id || ''}">Iniciar jornada</button><button class="dev-btn" style="width:100%;justify-content:center;margin-top:8px" data-action="closeAvailability" data-id="${assigned[0]?.id || ''}">Cerrar jornada</button></div></div>
+        <div>${table(['Fecha', 'Cliente', 'Punto', 'Horario', 'Estado', 'Evidencia', 'Acciones'], rows)}</div>
+      </div>`
+    );
+  }
+
+  function renderEvidencias() {
+    const rows = state.evidences.map(e => row([
+      escapeHTML(e.id), escapeHTML(e.availability), escapeHTML(e.quicker), escapeHTML(e.stage), escapeHTML(e.type), pill(e.required), pill(e.status), escapeHTML(e.address || ''),
+      `<div class="row-actions">${action('Aprobar', 'approveEvidence', e.id)}${action('Rechazar', 'rejectEvidence', e.id)}</div>`
+    ]));
+    const parkingRows = (state.parkingReports || []).map(p => row([
+      escapeHTML(p.quicker), escapeHTML(p.client), escapeHTML(p.point), `$${escapeHTML(p.amount || 0)}`, escapeHTML(p.file || 'Sin soporte'), escapeHTML(p.address || ''), pill(p.status),
+      `<div class="row-actions">${action('Aprobar', 'approveParking', p.id)}${action('Rechazar', 'rejectParking', p.id)}</div>`
+    ]));
+    panel('evidencias', 'Evidencias y soportes', 'Control de fotos, archivos, obligatoriedad, estado y validación.',
+      `<button class="dev-btn" data-export="evidences">Exportar CSV</button>`,
+      table(['ID', 'Disponibilidad', 'Quicker', 'Etapa', 'Tipo', 'Obligatoria', 'Estado', 'Dirección/GPS', 'Acciones'], rows) +
+      `<div class="fp-title" style="margin:14px 0 8px">Parqueaderos enviados por mensajero</div>` +
+      table(['Mensajero', 'Cliente', 'Punto', 'Valor', 'Soporte', 'Dirección/GPS', 'Estado', 'Acciones'], parkingRows)
+    );
+  }
+
+  function renderCasos() {
+    const rows = state.cases.map(c => row([
+      escapeHTML(c.id), escapeHTML(c.type), escapeHTML(c.quicker), escapeHTML(c.period), pill(c.status), escapeHTML(c.owner),
+      `<div class="row-actions">${action('En proceso', 'processCase', c.id)}${action('Cerrar', 'closeCase', c.id)}</div>`
+    ]));
+    panel('casos', 'Procesos administrativos funcionales', 'Inasistencias, incapacidades, contrataciones, desvinculaciones, otrosí, descuentos y disciplinarios.',
+      `<button class="dev-btn primary" data-open="caso"><i class="ti ti-plus"></i> Nuevo caso</button><button class="dev-btn" data-export="cases">Exportar CSV</button>`,
+      table(['ID', 'Tipo', 'Quicker', 'Periodo', 'Estado', 'Responsable', 'Acciones'], rows)
+    );
+  }
+
+  function renderReportes() {
+    panel('reportes', 'Exportaciones funcionales', 'Descarga CSV desde los datos actuales del prototipo.',
+      `<button class="dev-btn primary" data-export="all"><i class="ti ti-download"></i> Exportar todo</button>`,
+      metrics([
+        ['Disponibilidades', state.availabilities.length, 'Mallas y turnos'],
+        ['Novedades', state.novelties.length, 'Retardos y no colocados'],
+        ['Tickets', state.tickets.length, 'Productividad coordinador'],
+        ['Casos', state.cases.length, 'Administrativo']
+      ])
+    );
+  }
+
+  function renderConfig() {
+    const clients = state.clients.map(c => row([escapeHTML(c.idProyecto), escapeHTML(c.name), `${escapeHTML(c.delayRule)} min`, escapeHTML(c.lunch), escapeHTML(c.approval), escapeHTML(c.evidenceRule), escapeHTML(c.alerts)]));
+    const users = state.users.map(u => row([escapeHTML(u.name), escapeHTML(u.email), escapeHTML(u.phone), escapeHTML(u.username), pill(u.profile), escapeHTML(u.scope)]));
+    panel('config', 'Configuración funcional', 'Parametriza clientes, reglas por cliente y usuarios base del sistema.',
+      `<button class="dev-btn primary" data-open="cliente"><i class="ti ti-building-plus"></i> Cliente</button><button class="dev-btn" data-open="usuario"><i class="ti ti-user-plus"></i> Usuario</button>`,
+      `<div class="fp-title" style="margin-bottom:8px">Clientes y reglas</div>${table(['ID Proyecto', 'Cliente', 'Retardo', 'Almuerzo', 'Aprobación', 'Evidencias', 'Alertas'], clients)}
+       <div class="fp-title" style="margin:14px 0 8px">Usuarios y perfiles</div>${table(['Nombre', 'Correo', 'Teléfono', 'Usuario', 'Perfil', 'Alcance'], users)}`
+    );
+  }
+
+  function renderBD() {
+    panel('bd', 'Estado técnico del prototipo', 'Esta capa simula el modelo de datos en el navegador; el siguiente paso es API + PostgreSQL/PostGIS.',
+      `<button class="dev-btn" data-export="all"><i class="ti ti-database-export"></i> Exportar semilla</button>`,
+      metrics([
+        ['Persistencia', 'localStorage', 'Temporal para MVP'],
+        ['Próximo backend', 'Cloud Run', 'API REST'],
+        ['Próxima BD', 'PostgreSQL', '+ PostGIS para KML'],
+        ['Autenticación', 'Identity Platform', 'MFA por perfil']
+      ])
+    );
+  }
+
+  function renderAll() {
+    renderDashboard();
+    renderMallas();
+    renderMapa();
+    renderNovedades();
+    renderTickets();
+    renderEvidencias();
+    renderQuickers();
+    renderMensajero();
+    renderCasos();
+    renderReportes();
+    renderConfig();
+    renderBD();
+  }
+
+  const schemas = {
+    malla: {
+      title: 'Nueva malla / disponibilidad',
+      subtitle: 'Crea un turno planeado y lo deja listo para ejecución.',
+      fields: [
+        ['date', 'Fecha', 'date'],
+        ['client', 'Cliente', 'select', state.clients.map(c => c.name)],
+        ['point', 'Punto de venta', 'text'],
+        ['quicker', 'Quicker', 'select', state.quickers.map(q => q.name)],
+        ['plannedStart', 'Inicio planeado', 'time'],
+        ['plannedEnd', 'Fin planeado', 'time'],
+        ['serviceType', 'Tipo de servicio', 'select', ['Fijo', 'Adicional', 'Colaborativo']]
+      ],
+      submit: data => {
+        const item = { id: uid('DIS'), ...data, realStart: '', realEnd: '', approval: 'Pendiente', evidencePhoto: '', status: 'Creado', custom: {} };
+        state.availabilities.unshift(item);
+        log('Disponibilidad', 'Creó malla', item.id);
+      }
+    },
+    quicker: {
+      title: 'Nuevo Quicker',
+      subtitle: 'Crea usuario operativo con documento y zona asignada.',
+      fields: [
+        ['name', 'Nombre', 'text'], ['cedula', 'Cédula', 'text'], ['phone', 'Teléfono', 'tel'], ['email', 'Correo', 'email'],
+        ['client', 'Cliente', 'select', state.clients.map(c => c.name)], ['point', 'Punto de venta', 'text'],
+        ['zone', 'Zona KML', 'text'], ['docName', 'Nombre documento', 'text'], ['docExpires', 'Vencimiento documento', 'date']
+      ],
+      submit: data => {
+        const item = { id: uid('QK'), ...data, status: 'Activo' };
+        state.quickers.unshift(item);
+        log('Quicker', 'Creó Quicker', item.id);
+      }
+    },
+    novedad: {
+      title: 'Nueva novedad',
+      subtitle: 'Registra retardo, no colocado, PQR o novedad operativa.',
+      fields: [
+        ['type', 'Tipo', 'select', ['Retardo', 'No colocado', 'PQR', 'Salida de zona', 'Permanencia 30m', 'Evidencia faltante']],
+        ['origin', 'Origen', 'select', ['Sistema', 'Coordinador', 'Cliente', 'Punto de venta', 'Quicker']],
+        ['ref', 'Referencia', 'text'], ['severity', 'Severidad', 'select', ['Baja', 'Media', 'Alta', 'Crítica']],
+        ['note', 'Descripción', 'textarea']
+      ],
+      submit: data => {
+        const item = { id: uid('NOV'), ...data, status: 'Reportada' };
+        state.novelties.unshift(item);
+        log('Novedad', 'Creó novedad', item.id);
+      }
+    },
+    ticket: {
+      title: 'Nuevo ticket de coordinador',
+      subtitle: 'Base para productividad, carga laboral y futura asignación con IA.',
+      fields: [
+        ['coordinator', 'Coordinador', 'select', state.users.filter(u => u.profile === 'Coordinador').map(u => u.name)],
+        ['type', 'Tipo actividad', 'select', ['Seguimiento Quicker', 'Novedad operativa', 'Cliente', 'Nómina', 'Documentos', 'PQR']],
+        ['activity', 'Actividad', 'textarea'], ['complexity', 'Complejidad', 'select', ['Baja', 'Media', 'Alta', 'Crítica']],
+        ['sla', 'SLA', 'text']
+      ],
+      submit: data => {
+        const item = { id: uid('TCK'), ...data, status: 'Abierto' };
+        state.tickets.unshift(item);
+        log('TicketActividad', 'Creó ticket', item.id);
+      }
+    },
+    caso: {
+      title: 'Nuevo caso administrativo',
+      subtitle: 'Registra incapacidades, inasistencias, contrataciones, descuentos u otros procesos.',
+      fields: [
+        ['type', 'Tipo', 'select', ['Inasistencia', 'Incapacidad', 'Contratación', 'Desvinculación', 'Otrosí', 'Descuento', 'Disciplinario', 'Seguridad']],
+        ['quicker', 'Quicker', 'select', state.quickers.map(q => q.name)], ['period', 'Periodo', 'text'],
+        ['owner', 'Responsable', 'text']
+      ],
+      submit: data => {
+        const item = { id: uid('CAS'), ...data, status: 'Creado' };
+        state.cases.unshift(item);
+        log('CasoAdmin', 'Creó caso', item.id);
+      }
+    },
+    cliente: {
+      title: 'Nuevo cliente',
+      subtitle: 'Crea cliente con ID Proyecto y reglas operativas.',
+      fields: [
+        ['idProyecto', 'ID Proyecto / centro de costos', 'text'], ['name', 'Cliente', 'text'],
+        ['delayRule', 'Regla retardo en minutos', 'number'], ['lunch', 'Almuerzo', 'select', ['Si', 'No']],
+        ['approval', 'Aprobación punto', 'select', ['Activa', 'No aplica']], ['evidenceRule', 'Regla evidencias', 'text'],
+        ['alerts', 'Alertas', 'text']
+      ],
+      submit: data => {
+        const item = { id: uid('CLI'), ...data };
+        state.clients.unshift(item);
+        log('Cliente', 'Creó cliente', item.idProyecto);
+      }
+    },
+    usuario: {
+      title: 'Nuevo usuario',
+      subtitle: 'Crea usuario base con correo, teléfono, usuario y perfil.',
+      fields: [
+        ['name', 'Nombre', 'text'], ['email', 'Correo', 'email'], ['phone', 'Teléfono', 'tel'],
+        ['username', 'Usuario', 'text'], ['password', 'Contraseña inicial', 'password'], ['profile', 'Perfil', 'select', ['Administrador', 'Coordinador', 'Quicker', 'Cliente Admin', 'Usuario Punto', 'Gerencia']],
+        ['scope', 'Alcance', 'text']
+      ],
+      submit: data => {
+        const item = { id: uid('USR'), ...data };
+        state.users.unshift(item);
+        log('Usuario', 'Creó usuario', item.username);
+      }
+    }
+  };
+
+  function schemaFor(type) {
+    const schema = schemas[type] || schemas.ticket;
+    const current = { ...schema, fields: schema.fields.map(field => [...field]) };
+    if (type === 'malla') {
+      current.fields = current.fields.map(field => {
+        if (field[0] === 'client') return ['client', 'Cliente', 'select', state.clients.map(c => c.name)];
+        if (field[0] === 'quicker') return ['quicker', 'Quicker', 'select', state.quickers.map(q => q.name)];
+        return field;
+      });
+    }
+    if (type === 'quicker') {
+      current.fields = current.fields.map(field => field[0] === 'client' ? ['client', 'Cliente', 'select', state.clients.map(c => c.name)] : field);
+    }
+    if (type === 'ticket') {
+      const coordinators = state.users.filter(u => u.profile === 'Coordinador').map(u => u.name);
+      current.fields = current.fields.map(field => field[0] === 'coordinator' ? ['coordinator', 'Coordinador', 'select', coordinators.length ? coordinators : ['Admin Quick']] : field);
+    }
+    if (type === 'caso') {
+      current.fields = current.fields.map(field => field[0] === 'quicker' ? ['quicker', 'Quicker', 'select', state.quickers.map(q => q.name)] : field);
+    }
+    return current;
+  }
+
+  function openForm(type) {
+    const schema = schemaFor(type);
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = schema.title;
+    document.getElementById('modal-subtitle').textContent = schema.subtitle;
+    form.innerHTML = `<div class="form-grid">${schema.fields.map(([name, label, inputType, options]) => fieldHTML(name, label, inputType, options)).join('')}</div>
+      <div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar</button></div>`;
+    form.onsubmit = event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      schema.submit(data);
+      closeModal();
+      saveState('Registro creado');
+    };
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('app-modal').classList.add('open');
+    document.getElementById('app-modal').setAttribute('aria-hidden', 'false');
+  }
+
+  function fieldHTML(name, label, type, options = []) {
+    const full = type === 'textarea' ? ' full' : '';
+    if (type === 'select') {
+      return `<div class="form-field${full}"><label>${label}</label><select name="${name}" required>${options.map(o => `<option>${escapeHTML(o)}</option>`).join('')}</select></div>`;
+    }
+    if (type === 'textarea') {
+      return `<div class="form-field full"><label>${label}</label><textarea name="${name}" required></textarea></div>`;
+    }
+    return `<div class="form-field${full}"><label>${label}</label><input name="${name}" type="${type}" required></div>`;
+  }
+
+  function closeModal() {
+    document.getElementById('app-modal').classList.remove('open');
+    document.getElementById('app-modal').setAttribute('aria-hidden', 'true');
+  }
+
+  function handleAction(actionName, id) {
+    const find = (key) => state[key].find(item => item.id === id);
+    if (actionName === 'manageMalla') { openMallaManagement(id); return; }
+    if (actionName === 'duplicateMalla') { openDuplicateMalla(id); return; }
+    if (actionName === 'startAvailability') {
+      const item = find('availabilities'); item.realStart = item.realStart || new Date().toTimeString().slice(0,5); item.status = 'En turno'; log('Disponibilidad', 'Inició turno', id);
+    }
+    if (actionName === 'closeAvailability') {
+      const item = find('availabilities'); item.realEnd = new Date().toTimeString().slice(0,5); item.status = item.status === 'Con novedad' ? 'Finalizado con novedad' : 'Finalizado'; log('Disponibilidad', 'Cerró turno', id);
+    }
+    if (actionName === 'noShowAvailability') {
+      const item = find('availabilities'); item.status = 'No colocado'; log('Disponibilidad', 'Marcó no colocado', id);
+      state.novelties.unshift({ id: uid('NOV'), type: 'No colocado', origin: 'Coordinador', ref: id, severity: 'Alta', status: 'Reportada', note: 'Marcado desde disponibilidad.' });
+    }
+    if (actionName === 'approveAvailability') {
+      const item = find('availabilities'); item.approval = 'Aprobada'; log('Disponibilidad', 'Aprobó servicio', id);
+    }
+    if (actionName === 'approveNovelty') { const item = find('novelties'); item.status = 'Aprobada'; log('Novedad', 'Aprobó novedad', id); }
+    if (actionName === 'closeNovelty') { const item = find('novelties'); item.status = 'Cerrada'; log('Novedad', 'Cerró novedad', id); }
+    if (actionName === 'ticketFromNovelty') {
+      const n = find('novelties');
+      state.tickets.unshift({ id: uid('TCK'), coordinator: 'Diana Gómez', activity: `Gestionar ${n.type} ${n.ref}`, type: 'Novedad operativa', complexity: n.severity, sla: 'Hoy', status: 'Abierto' });
+      log('TicketActividad', 'Creó ticket desde novedad', id);
+    }
+    if (actionName === 'takeTicket') { const item = find('tickets'); item.status = 'En proceso'; log('TicketActividad', 'Tomó ticket', id); }
+    if (actionName === 'closeTicket') { const item = find('tickets'); item.status = 'Cerrado'; log('TicketActividad', 'Cerró ticket', id); }
+    if (actionName === 'followQuicker') {
+      const q = find('quickers');
+      state.tickets.unshift({ id: uid('TCK'), coordinator: 'Diana Gómez', activity: `Seguimiento a ${q.name}: validar documentos/comparendos`, type: 'Seguimiento Quicker', complexity: 'Media', sla: 'Hoy', status: 'Abierto' });
+      log('TicketActividad', 'Creó seguimiento Quicker', q.id);
+    }
+    if (actionName === 'blockQuicker') { const item = find('quickers'); item.status = 'Bloqueado'; log('Quicker', 'Bloqueó Quicker', id); }
+    if (actionName === 'approveEvidence') { const item = find('evidences'); item.status = 'Aprobada'; log('Evidencia', 'Aprobó evidencia', id); }
+    if (actionName === 'rejectEvidence') { const item = find('evidences'); item.status = 'Rechazada'; log('Evidencia', 'Rechazó evidencia', id); }
+    if (actionName === 'approveParking') { const item = find('parkingReports'); item.status = 'Aprobado'; log('Parqueadero', 'Aprobó parqueadero', id); }
+    if (actionName === 'rejectParking') { const item = find('parkingReports'); item.status = 'Rechazado'; log('Parqueadero', 'Rechazó parqueadero', id); }
+    if (actionName === 'processCase') { const item = find('cases'); item.status = 'En proceso'; log('CasoAdmin', 'Caso en proceso', id); }
+    if (actionName === 'closeCase') { const item = find('cases'); item.status = 'Cerrado'; log('CasoAdmin', 'Cerró caso', id); }
+    if (actionName === 'createProcessFromMalla') {
+      const item = find('availabilities');
+      const select = document.querySelector(`[data-process-type="${id}"]`);
+      const type = select?.value || 'Inasistencia';
+      item.status = type === 'Inasistencia' ? 'No colocado' : 'Con novedad';
+      state.novelties.unshift({ id: uid('NOV'), type, origin: 'Coordinador', ref: `${item.date} · ${item.quicker}`, severity: type === 'Desvinculación' ? 'Alta' : 'Media', status: 'Reportada', note: `Gestión creada desde malla para ${item.client} / ${item.point}.` });
+      if (/Inasistencia|Incapacidad|Desvinculación|Proceso disciplinario|Contratación/i.test(type)) {
+        state.cases.unshift({ id: uid('CAS'), type, quicker: item.quicker, period: item.date, status: 'Creado desde malla', owner: 'Coordinador' });
+      }
+      log('Malla', `Creó gestión ${type}`, `${item.date} · ${item.quicker}`);
+    }
+    if (actionName === 'reportQuickerNovelty') {
+      const item = find('availabilities');
+      state.novelties.unshift({ id: uid('NOV'), type: 'Reporte Quicker', origin: 'Quicker', ref: `${item.date} · ${item.quicker}`, severity: 'Media', status: 'Reportada', note: 'Novedad reportada desde la app del mensajero.' });
+      log('Novedad', 'Reporte desde mensajero', id);
+    }
+    saveState('Estado actualizado');
+  }
+
+  function exportCSV(collection) {
+    const datasets = collection === 'all'
+      ? { clients: state.clients, users: state.users, quickers: state.quickers, availabilities: state.availabilities, novelties: state.novelties, tickets: state.tickets, cases: state.cases, evidences: state.evidences, parkingReports: state.parkingReports, logs: state.logs }
+      : { [collection]: state[collection] || [] };
+    const chunks = Object.entries(datasets).map(([name, rows]) => {
+      if (!rows.length) return `${name}\n`;
+      const headers = Object.keys(rows[0]);
+      const lines = rows.map(r => headers.map(h => `"${String(r[h] ?? '').replaceAll('"', '""')}"`).join(','));
+      return `${name}\n${headers.join(',')}\n${lines.join('\n')}`;
+    });
+    const blob = new Blob([chunks.join('\n\n')], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `quick_lastmile_${collection}_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('CSV generado');
+  }
+
+  function defaultFormForPage() {
+    return ({ dashboard: 'ticket', mallas: 'malla', mapa: 'novedad', novedades: 'novedad', tickets: 'ticket', quickers: 'quicker', mensajero: 'novedad', casos: 'caso', config: 'cliente' })[activeModule] || 'ticket';
+  }
+
+  function toast(message) {
+    const el = document.getElementById('app-toast');
+    el.textContent = message;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 1800);
+  }
+
+  function moveMallaColumn(key, dir) {
+    const cols = state.prefs.mallaColumns;
+    const index = cols.indexOf(key);
+    const target = index + Number(dir);
+    if (index < 0 || target < 0 || target >= cols.length) return;
+    [cols[index], cols[target]] = [cols[target], cols[index]];
+    log('Configuración', 'Movió columna de malla', key);
+    saveState('Columna movida');
+  }
+
+  function addMallaColumn() {
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = 'Agregar título a la malla';
+    document.getElementById('modal-subtitle').textContent = 'Define qué información almacena y qué usuarios pueden verla/editarla.';
+    form.innerHTML = `<div class="form-grid">
+      <div class="form-field"><label>Nombre del título</label><input name="label" required></div>
+      <div class="form-field"><label>Tipo de dato</label><select name="type" required><option value="texto">Texto</option><option value="lista">Lista desplegable</option><option value="numero">Número</option><option value="fecha">Fecha</option></select></div>
+      <div class="form-field full"><label>Opciones si es lista desplegable, separadas por coma</label><input name="options" placeholder="Ej: Aprobado, Pendiente, Rechazado"></div>
+      <div class="form-field"><label>Estado</label><select name="enabled"><option value="true">Habilitado</option><option value="false">Inhabilitado</option></select></div>
+      <div class="form-field"><label>Visible para</label><select name="roles"><option value="Administrador,Coordinador">Admin y coordinador</option><option value="Administrador,Coordinador,Cliente Admin">Admin, coordinador y cliente</option><option value="Administrador">Solo administrador</option></select></div>
+    </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar título</button></div>`;
+    form.onsubmit = event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const key = `custom_${Date.now().toString(36)}`;
+      state.prefs.customMallaColumns.push({ key, label: data.label, type: data.type, options: data.options, enabled: data.enabled === 'true', roles: data.roles.split(',') });
+      const actionIndex = state.prefs.mallaColumns.indexOf('actions');
+      state.prefs.mallaColumns.splice(actionIndex >= 0 ? actionIndex : state.prefs.mallaColumns.length, 0, key);
+      state.availabilities.forEach(item => item.custom = { ...(item.custom || {}), [key]: '' });
+      closeModal();
+      log('Configuración', 'Agregó columna de malla', data.label);
+      saveState('Título agregado');
+    };
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('app-modal').classList.add('open');
+    document.getElementById('app-modal').setAttribute('aria-hidden', 'false');
+  }
+
+  function resetMallaColumns() {
+    state.prefs.mallaColumns = [...seed.prefs.mallaColumns];
+    state.prefs.customMallaColumns = [];
+    log('Configuración', 'Restauró columnas de malla', 'Default');
+    saveState('Columnas restauradas');
+  }
+
+  function openMallaManagement(id) {
+    const item = state.availabilities.find(d => d.id === id);
+    if (!item) return;
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = `Gestionar malla · ${item.quicker}`;
+    document.getElementById('modal-subtitle').textContent = `${item.date} · ${item.client} · ${item.point}`;
+    form.innerHTML = `<div class="form-grid">
+      <div class="form-field"><label>Estado operativo</label><select name="status"><option>En turno</option><option>Finalizado</option><option>Finalizado con novedad</option><option>No colocado</option><option>Permiso</option><option>Incapacidad</option><option>Desvinculación</option></select></div>
+      <div class="form-field"><label>Tipo de inasistencia/proceso</label><select name="processType"><option>Sin novedad</option><option>Inasistencia injustificada</option><option>Permiso autorizado</option><option>Incapacidad</option><option>Proceso disciplinario</option><option>Desvinculación</option><option>Reemplazo requerido</option></select></div>
+      <div class="form-field"><label>Inicio real</label><input name="realStart" type="time" value="${escapeHTML(item.realStart || '')}"></div>
+      <div class="form-field"><label>Fin real</label><input name="realEnd" type="time" value="${escapeHTML(item.realEnd || '')}"></div>
+      <div class="form-field full"><label>Detalle para novedades</label><textarea name="note" placeholder="Describe qué ocurrió y qué gestión debe seguir el coordinador."></textarea></div>
+    </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Actualizar malla</button></div>`;
+    form.elements.status.value = item.status === 'Iniciado' ? 'En turno' : item.status;
+    form.onsubmit = event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      item.status = data.status;
+      item.realStart = data.realStart || item.realStart;
+      item.realEnd = data.realEnd || item.realEnd;
+      if (data.processType !== 'Sin novedad') {
+        state.novelties.unshift({ id: uid('NOV'), type: data.processType, origin: 'Coordinador', ref: `${item.date} · ${item.quicker}`, severity: /Desvinculación|disciplinario|injustificada/i.test(data.processType) ? 'Alta' : 'Media', status: 'Reportada', note: data.note || `Gestión creada desde malla: ${data.processType}.` });
+        if (/Incapacidad|Permiso|Desvinculación|disciplinario|Inasistencia/i.test(data.processType)) {
+          state.cases.unshift({ id: uid('CAS'), type: data.processType, quicker: item.quicker, period: item.date, status: 'Creado desde malla', owner: state.session?.name || 'Coordinador' });
+        }
+      }
+      closeModal();
+      log('Malla', 'Gestionó malla', `${item.date} · ${item.quicker}`);
+      saveState('Malla actualizada');
+    };
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('app-modal').classList.add('open');
+  }
+
+  function openDuplicateMalla(id) {
+    const item = state.availabilities.find(d => d.id === id);
+    if (!item) return;
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = `Duplicar malla · ${item.quicker}`;
+    document.getElementById('modal-subtitle').textContent = 'Crea un rango de fechas para permisos, incapacidades o programación repetida.';
+    form.innerHTML = `<div class="form-grid">
+      <div class="form-field"><label>Fecha inicio</label><input name="startDate" type="date" value="${escapeHTML(item.date)}" required></div>
+      <div class="form-field"><label>Fecha fin</label><input name="endDate" type="date" value="${escapeHTML(item.date)}" required></div>
+      <div class="form-field"><label>Estado para el rango</label><select name="status"><option>Creado</option><option>Permiso</option><option>Incapacidad</option><option>No colocado</option></select></div>
+      <div class="form-field"><label>Crear novedad/caso</label><select name="caseType"><option>Sin caso</option><option>Permiso autorizado</option><option>Incapacidad</option><option>Inasistencia</option></select></div>
+    </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Duplicar</button></div>`;
+    form.onsubmit = event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const start = new Date(`${data.startDate}T00:00:00`);
+      const end = new Date(`${data.endDate}T00:00:00`);
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        const date = d.toISOString().slice(0, 10);
+        const copy = { ...item, id: uid('DIS'), date, status: data.status, realStart: '', realEnd: '', evidencePhoto: '', custom: { ...(item.custom || {}) } };
+        state.availabilities.unshift(copy);
+      }
+      if (data.caseType !== 'Sin caso') {
+        state.novelties.unshift({ id: uid('NOV'), type: data.caseType, origin: 'Coordinador', ref: `${data.startDate} a ${data.endDate} · ${item.quicker}`, severity: 'Media', status: 'Reportada', note: 'Rango creado desde duplicación de malla.' });
+        state.cases.unshift({ id: uid('CAS'), type: data.caseType, quicker: item.quicker, period: `${data.startDate} a ${data.endDate}`, status: 'Creado desde rango', owner: state.session?.name || 'Coordinador' });
+      }
+      closeModal();
+      log('Malla', 'Duplicó rango', `${data.startDate} a ${data.endDate} · ${item.quicker}`);
+      saveState('Malla duplicada');
+    };
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('app-modal').classList.add('open');
+  }
+
+  document.addEventListener('click', event => {
+    const open = event.target.closest('[data-open]');
+    if (open) openForm(open.dataset.open);
+    const exp = event.target.closest('[data-export]');
+    if (exp) exportCSV(exp.dataset.export);
+    const act = event.target.closest('[data-action]');
+    if (act) handleAction(act.dataset.action, act.dataset.id);
+    const move = event.target.closest('[data-move-col]');
+    if (move) moveMallaColumn(move.dataset.moveCol, move.dataset.dir);
+    const addCol = event.target.closest('[data-add-column="mallas"]');
+    if (addCol) addMallaColumn();
+    const resetCols = event.target.closest('[data-reset-columns="mallas"]');
+    if (resetCols) resetMallaColumns();
+  });
+
+  document.addEventListener('change', event => {
+    if (event.target.matches('[data-sort-mallas]')) {
+      state.prefs.sortMallas = event.target.value;
+      saveState('Orden actualizado');
+    }
+    if (event.target.matches('[data-map-style]')) {
+      state.prefs.mapStyle = event.target.value;
+      saveState('Visual de mapa actualizada');
+    }
+    if (event.target.matches('[data-map-quicker]')) {
+      state.prefs.mapQuicker = event.target.value;
+      saveState('Filtro de mensajero aplicado');
+    }
+    if (event.target.matches('[data-map-zone]')) {
+      state.prefs.mapZone = event.target.value;
+      saveState('Filtro de zona aplicado');
+    }
+    if (event.target.matches('[data-kml-input]')) {
+      const file = event.target.files?.[0];
+      state.prefs.kmlName = file?.name || '';
+      if (file && /\.kml$/i.test(file.name)) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          state.prefs.kmlText = String(reader.result || '').slice(0, 50000);
+          log('Mapa KML', 'Leyó archivo KML', state.prefs.kmlName);
+          saveState('KML adjuntado');
+        };
+        reader.readAsText(file);
+      } else {
+        log('Mapa KML', 'Adjuntó archivo KMZ/KML', state.prefs.kmlName);
+        saveState('KML adjuntado');
+      }
+    }
+    if (event.target.matches('[data-custom-cell]')) {
+      const id = event.target.dataset.customCell;
+      const key = event.target.dataset.customKey;
+      const item = state.availabilities.find(d => d.id === id);
+      if (item) {
+        item.custom = { ...(item.custom || {}), [key]: event.target.value };
+        log('Malla', 'Actualizó campo personalizado', key);
+        saveState('Campo actualizado');
+      }
+    }
+  });
+
+  document.getElementById('quick-create')?.addEventListener('click', () => openForm(defaultFormForPage()));
+  document.getElementById('export-current')?.addEventListener('click', () => {
+    const map = { mallas: 'availabilities', mapa: 'availabilities', novedades: 'novelties', tickets: 'tickets', evidencias: 'evidences', quickers: 'quickers', mensajero: 'availabilities', casos: 'cases', config: 'clients' };
+    exportCSV(map[activeModule] || 'all');
+  });
+  document.getElementById('modal-close')?.addEventListener('click', closeModal);
+  document.getElementById('app-modal')?.addEventListener('click', event => { if (event.target.id === 'app-modal') closeModal(); });
+  document.getElementById('global-search')?.addEventListener('input', event => {
+    const term = event.target.value.toLowerCase();
+    document.querySelectorAll('.functional-panel tbody tr').forEach(tr => {
+      tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
+    });
+  });
+
+  function applySession() {
+    const session = state.session;
+    const login = document.getElementById('login-screen');
+    if (!session) {
+      login?.classList.add('open');
+      return;
+    }
+    login?.classList.remove('open');
+    document.querySelector('.top-avatar').textContent = initials(session.name);
+    document.querySelector('.sb-user-name').textContent = session.name;
+    document.querySelector('.sb-user-role').textContent = session.profile;
+    const allowed = permissionsFor(session.profile);
+    document.querySelectorAll('.nav-item[onclick^="nav"]').forEach(item => {
+      const match = item.getAttribute('onclick').match(/nav\('([^']+)'/);
+      const id = match?.[1];
+      item.style.display = allowed.includes(id) ? '' : 'none';
+    });
+    if (!allowed.includes(activeModule)) {
+      const first = allowed[0] || 'dashboard';
+      const item = [...document.querySelectorAll('.nav-item')].find(el => el.getAttribute('onclick')?.includes(`'${first}'`));
+      window.nav(first, item);
+    }
+  }
+
+  function permissionsFor(profile) {
+    if (profile === 'Quicker') return ['mensajero'];
+    if (profile === 'Cliente Admin') return ['dashboard', 'mallas', 'novedades', 'evidencias', 'reportes'];
+    if (profile === 'Usuario Punto') return ['mallas', 'novedades', 'evidencias'];
+    if (profile === 'Gerencia') return ['dashboard', 'mapa', 'reportes'];
+    if (profile === 'Coordinador') return ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'evidencias', 'quickers', 'mensajero', 'casos', 'reportes'];
+    return ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'evidencias', 'quickers', 'mensajero', 'casos', 'reportes', 'bd', 'config'];
+  }
+
+  function initials(name) {
+    return String(name || 'AD').split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase();
+  }
+
+  document.getElementById('login-form')?.addEventListener('submit', event => {
+    event.preventDefault();
+    const username = document.getElementById('login-user').value.trim();
+    const password = document.getElementById('login-pass').value;
+    const user = state.users.find(u => u.username === username && (u.password || '1234') === password);
+    if (!user) {
+      toast('Usuario o contraseña incorrectos');
+      return;
+    }
+    state.session = { id: user.id, name: user.name, username: user.username, profile: user.profile, scope: user.scope };
+    saveState(`Bienvenido ${user.name}`);
+    applySession();
+  });
+
+  document.querySelectorAll('[data-demo-login]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('login-user').value = btn.dataset.demoLogin;
+      document.getElementById('login-pass').value = '1234';
+    });
+  });
+
+  document.getElementById('toggle-login-pass')?.addEventListener('click', () => {
+    const input = document.getElementById('login-pass');
+    const icon = document.querySelector('#toggle-login-pass .ti');
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    icon.className = show ? 'ti ti-eye-off' : 'ti ti-eye';
+  });
+
+  applySession();
+  renderAll();
+})();
+</script>
+</body>
+</html>
