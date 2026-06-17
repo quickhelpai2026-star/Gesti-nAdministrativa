@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   /* ───── RESET & BASE ───── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -695,6 +697,24 @@
   .map-dot-live.warn { background: #F5C518; box-shadow: 0 0 0 8px rgba(245,197,24,.12),0 0 24px rgba(245,197,24,.45); }
   .map-dot-live.bad { background: #EF4444; box-shadow: 0 0 0 8px rgba(239,68,68,.12),0 0 24px rgba(239,68,68,.45); }
   .map-caption { position: absolute; left: 14px; bottom: 14px; padding: 9px 12px; border-radius: 12px; background: rgba(0,0,0,.58); color: #fff; font-size: 11px; }
+  .leaflet-map { min-height: 560px; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); background: #111; }
+  .map-layout { display: grid; grid-template-columns: minmax(0,1fr) 280px; gap: 12px; }
+  .map-side { border: 1px solid var(--border); border-radius: 18px; background: rgba(0,0,0,.22); padding: 12px; overflow: auto; max-height: 560px; }
+  .map-side h3 { font-size: 12px; margin: 0 0 10px; color: var(--text-1); }
+  .map-person { display: grid; grid-template-columns: 34px 1fr; gap: 9px; align-items: center; padding: 9px; border-radius: 13px; border: 1px solid var(--border); margin-bottom: 8px; background: var(--card-bg); }
+  .map-person strong { display: block; font-size: 12px; color: var(--text-1); }
+  .map-avatar { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: rgba(245,197,24,.16); color: var(--q); font-weight: 900; }
+  .map-dot-legend { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 7px; background: var(--q); }
+  .evidence-preview { width: 54px; height: 38px; object-fit: cover; border-radius: 9px; border: 1px solid rgba(245,197,24,.45); background: #111; display: inline-block; vertical-align: middle; }
+  .config-split { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .permission-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+  .permission-tile { border: 1px solid var(--border); border-radius: 12px; padding: 9px; background: var(--card-bg); color: var(--text-1); display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .permission-tile input { width: auto; }
+  .point-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .point-chip { border: 1px solid rgba(245,197,24,.28); background: rgba(245,197,24,.08); color: var(--text-1); padding: 5px 8px; border-radius: 999px; font-size: 11px; }
+  .light-mode .map-side { background: rgba(255,255,255,.88); }
+  .light-mode .leaflet-map { border-color: rgba(18,18,18,.38); }
+  @media (max-width: 980px) { .map-layout { grid-template-columns: 1fr; } .map-side { max-height: none; } .permission-grid { grid-template-columns: 1fr; } }
   .login-overlay {
     position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center;
     padding: 20px; background: radial-gradient(circle at 80% 10%,rgba(245,197,24,.45),transparent 32%),linear-gradient(135deg,#060606,#17130a);
@@ -1385,19 +1405,20 @@ function toggleMode() {
 
   const seed = {
     clients: [
-      { id: 'CLI-001', idProyecto: 'CC-1024', name: 'Farmacias Andina', delayRule: 30, lunch: 'Si', approval: 'Activa', evidenceRule: 'Inicio 2 fotos / cierre 1 foto', alerts: 'KML + permanencia 30m' },
-      { id: 'CLI-002', idProyecto: 'CC-2032', name: 'Retail Express', delayRule: 120, lunch: 'No', approval: 'No aplica', evidenceRule: 'Foto cierre opcional', alerts: 'Retardo + no colocado' }
+      { id: 'CLI-001', idProyecto: 'CC-1024', name: 'Farmacias Andina', delayRule: 30, lunch: 'Si', approval: 'Activa', evidenceRule: 'Inicio 2 fotos / cierre 1 foto', alerts: 'KML + permanencia 30m', points: ['Santa Bárbara', 'Chapinero'], lat: 4.687, lng: -74.050 },
+      { id: 'CLI-002', idProyecto: 'CC-2032', name: 'Retail Express', delayRule: 120, lunch: 'No', approval: 'No aplica', evidenceRule: 'Foto cierre opcional', alerts: 'Retardo + no colocado', points: ['Portal 80'], lat: 4.710, lng: -74.110 }
     ],
     users: [
-      { id: 'USR-001', name: 'Diana Gómez', email: 'diana.gomez@quick.com.co', phone: '3000000001', username: 'diana.coord', password: 'Coord2026!', profile: 'Coordinador', scope: 'Farmacias Andina' },
-      { id: 'USR-002', name: 'Admin Quick', email: 'admin@quick.com.co', phone: '3000000002', username: 'admin.quick', password: 'Quick2026!', profile: 'Administrador', scope: 'Global' },
-      { id: 'USR-003', name: 'Carlos Mejía', email: 'carlos.mejia@mail.com', phone: '3105550101', username: 'carlos.qk', password: 'Mensajero2026!', profile: 'Quicker', scope: 'Carlos Mejía' },
-      { id: 'USR-004', name: 'Cliente Demo', email: 'cliente.demo@cliente.com', phone: '3000000004', username: 'cliente.demo', password: 'Cliente2026!', profile: 'Cliente Admin', scope: 'Farmacias Andina' }
+      { id: 'USR-001', name: 'Diana Gómez', email: 'diana.gomez@quick.com.co', phone: '3000000001', username: 'diana.coord', password: 'Coord2026!', profile: 'Coordinador', scope: 'Farmacias Andina', client: 'Farmacias Andina', point: '', permissions: [] },
+      { id: 'USR-002', name: 'Admin Quick', email: 'admin@quick.com.co', phone: '3000000002', username: 'admin.quick', password: 'Quick2026!', profile: 'Administrador', scope: 'Global', client: 'Global', point: '', permissions: [] },
+      { id: 'USR-003', name: 'Carlos Mejía', email: 'carlos.mejia@mail.com', phone: '3105550101', username: 'carlos.qk', password: 'Mensajero2026!', profile: 'Quicker', scope: 'Carlos Mejía', client: 'Farmacias Andina', point: 'Santa Bárbara', permissions: [] },
+      { id: 'USR-004', name: 'Cliente Demo', email: 'cliente.demo@cliente.com', phone: '3000000004', username: 'cliente.demo', password: 'Cliente2026!', profile: 'Cliente Admin', scope: 'Farmacias Andina', client: 'Farmacias Andina', point: '', permissions: [] },
+      { id: 'USR-005', name: 'Regente Santa Bárbara', email: 'regente.sb@cliente.com', phone: '3000000005', username: 'regente.sb', password: 'Punto2026!', profile: 'Usuario Punto', scope: 'Santa Bárbara', client: 'Farmacias Andina', point: 'Santa Bárbara', permissions: ['mallas', 'evidencias'] }
     ],
     quickers: [
-      { id: 'QK-1001', cedula: '1018456789', name: 'Carlos Mejía', phone: '3105550101', email: 'carlos.mejia@mail.com', client: 'Farmacias Andina', point: 'Santa Bárbara', zone: 'KML Norte', docName: 'SOAT moto', docExpires: '2026-06-25', status: 'Activo' },
-      { id: 'QK-1002', cedula: '1020456123', name: 'Lina Torres', phone: '3105550102', email: 'lina.torres@mail.com', client: 'Retail Express', point: 'Portal 80', zone: 'KML Centro', docName: 'Licencia conducción', docExpires: '2026-09-18', status: 'Activo' },
-      { id: 'QK-1003', cedula: '79999123', name: 'Andrés Silva', phone: '3105550103', email: 'andres.silva@mail.com', client: 'Farmacias Andina', point: 'Chapinero', zone: 'KML Sur', docName: 'Tecnomecánica', docExpires: '2026-06-15', status: 'Bloqueado' }
+      { id: 'QK-1001', cedula: '1018456789', name: 'Carlos Mejía', phone: '3105550101', email: 'carlos.mejia@mail.com', client: 'Farmacias Andina', point: 'Santa Bárbara', zone: 'KML Norte', docName: 'SOAT moto', docExpires: '2026-06-25', status: 'Activo', lat: 4.6872, lng: -74.0488 },
+      { id: 'QK-1002', cedula: '1020456123', name: 'Lina Torres', phone: '3105550102', email: 'lina.torres@mail.com', client: 'Retail Express', point: 'Portal 80', zone: 'KML Centro', docName: 'Licencia conducción', docExpires: '2026-09-18', status: 'Activo', lat: 4.7082, lng: -74.1115 },
+      { id: 'QK-1003', cedula: '79999123', name: 'Andrés Silva', phone: '3105550103', email: 'andres.silva@mail.com', client: 'Farmacias Andina', point: 'Chapinero', zone: 'KML Sur', docName: 'Tecnomecánica', docExpires: '2026-06-15', status: 'Bloqueado', lat: 4.6464, lng: -74.0631 }
     ],
     availabilities: [
       { id: 'DIS-001', date: '2026-06-17', client: 'Farmacias Andina', point: 'Santa Bárbara', quicker: 'Carlos Mejía', plannedStart: '08:00', plannedEnd: '18:00', realStart: '08:03', realEnd: '', serviceType: 'Fijo', approval: 'Pendiente punto', evidencePhoto: 'inicio_carlos.jpg', status: 'Iniciado', custom: {} },
@@ -1457,7 +1478,10 @@ function toggleMode() {
 
   function normalizeState(value) {
     const next = { ...JSON.parse(JSON.stringify(seed)), ...(value || {}) };
-    next.clients = value?.clients || seed.clients;
+    next.clients = (value?.clients || seed.clients).map(c => {
+      const base = seed.clients.find(s => s.name === c.name) || {};
+      return { ...c, points: Array.isArray(c.points) ? c.points : (base.points || []), lat: c.lat || base.lat || 4.711, lng: c.lng || base.lng || -74.072 };
+    });
     next.users = value?.users || seed.users;
     next.quickers = value?.quickers || seed.quickers;
     next.availabilities = value?.availabilities || seed.availabilities;
@@ -1474,9 +1498,16 @@ function toggleMode() {
     next.users = [...next.users, ...missingUsers].map((u, i) => {
       const seedUser = seed.users.find(s => s.username === u.username);
       const password = !u.password || u.password === '1234' ? (seedUser?.password || '') : u.password;
-      return { ...u, password, username: u.username || `usuario${i + 1}` };
+      return {
+        ...u,
+        password,
+        username: u.username || `usuario${i + 1}`,
+        client: u.client || (u.scope === 'Global' ? 'Global' : u.scope || ''),
+        point: u.point || '',
+        permissions: Array.isArray(u.permissions) ? u.permissions : []
+      };
     });
-    next.quickers = next.quickers.map((q, i) => ({ cedula: q.cedula || `100000000${i + 1}`, ...q }));
+    next.quickers = next.quickers.map((q, i) => ({ cedula: q.cedula || `100000000${i + 1}`, lat: q.lat || (4.66 + i * .018), lng: q.lng || (-74.07 - i * .022), ...q }));
     next.availabilities = next.availabilities.map((d, i) => ({
       date: d.date || '2026-06-17',
       evidencePhoto: d.evidencePhoto || (i === 0 ? 'foto_inicio.jpg' : ''),
@@ -1561,7 +1592,7 @@ function toggleMode() {
   }
 
   function sortedMallas() {
-    const items = [...state.availabilities];
+    const items = scopedItems(state.availabilities, item => ({ client: item.client, point: item.point, quicker: item.quicker }));
     const mode = state.prefs.sortMallas;
     const by = (fn, dir = 1) => items.sort((a, b) => String(fn(a)).localeCompare(String(fn(b)), 'es') * dir);
     if (mode === 'date-desc') by(a => a.date || '', -1);
@@ -1570,6 +1601,24 @@ function toggleMode() {
     if (mode === 'client-asc') by(a => a.client || '', 1);
     if (mode === 'status-asc') by(a => a.status || '', 1);
     return items;
+  }
+
+  function currentUser() {
+    return state.users.find(u => u.id === state.session?.id || u.username === state.session?.username) || state.session || {};
+  }
+
+  function inUserScope(scope) {
+    const user = currentUser();
+    if (!user.profile || user.profile === 'Administrador' || user.profile === 'Gerencia') return true;
+    if (user.profile === 'Quicker') return scope.quicker === user.name;
+    if (user.profile === 'Usuario Punto') return (!user.client || scope.client === user.client) && (!user.point || scope.point === user.point);
+    if (user.profile === 'Cliente Admin') return !user.client || user.client === 'Global' || scope.client === user.client;
+    if (user.profile === 'Coordinador') return !user.client || user.client === 'Global' || scope.client === user.client;
+    return true;
+  }
+
+  function scopedItems(items, getScope) {
+    return [...(items || [])].filter(item => inUserScope(getScope(item)));
   }
 
   function visibleMallaColumns() {
@@ -1583,8 +1632,15 @@ function toggleMode() {
   }
 
   function evidenceCell(d) {
+    const evidence = state.evidences.find(e => e.availability === d.id && e.photoData);
+    if (evidence?.photoData) return `<img class="evidence-preview" src="${evidence.photoData}" alt="Evidencia ${escapeHTML(d.quicker)}">`;
     if (!d.evidencePhoto) return '<span class="fp-sub">Pendiente</span>';
     return `<span class="evidence-thumb" title="${escapeHTML(d.evidencePhoto)}"><i class="ti ti-photo"></i></span>`;
+  }
+
+  function evidencePreview(e) {
+    if (e.photoData) return `<img class="evidence-preview" src="${e.photoData}" alt="Evidencia ${escapeHTML(e.quicker)}">`;
+    return escapeHTML(e.file || e.status || '');
   }
 
   function customCell(d, col) {
@@ -1670,7 +1726,7 @@ function toggleMode() {
   }
 
   function renderMapa() {
-    const filtered = state.availabilities.filter(d => {
+    const filtered = scopedItems(state.availabilities, d => ({ client: d.client, point: d.point, quicker: d.quicker })).filter(d => {
       const q = state.quickers.find(item => item.name === d.quicker) || {};
       return (state.prefs.mapQuicker === 'Todos' || d.quicker === state.prefs.mapQuicker) &&
         (state.prefs.mapZone === 'Todas' || q.zone === state.prefs.mapZone);
@@ -1688,7 +1744,12 @@ function toggleMode() {
       ]);
     });
     const zones = ['Todas', ...new Set(state.quickers.map(q => q.zone).filter(Boolean))];
-    const quickers = ['Todos', ...state.quickers.map(q => q.name)];
+    const quickers = ['Todos', ...scopedItems(state.quickers, q => q).map(q => q.name)];
+    const sidePeople = filtered.map(d => {
+      const q = state.quickers.find(item => item.name === d.quicker) || {};
+      const stateLabel = d.status === 'No colocado' ? 'Sin señal GPS' : d.status === 'Con novedad' ? 'Alerta activa' : 'En zona';
+      return `<div class="map-person"><div class="map-avatar">${initials(d.quicker)}</div><div><strong>${escapeHTML(d.quicker)}</strong><span class="fp-sub">${escapeHTML(d.point)} · ${escapeHTML(q.zone || 'Sin zona')}</span><br><span class="fp-sub"><span class="map-dot-legend" style="background:${d.status === 'No colocado' ? '#EF4444' : d.status === 'Con novedad' ? '#F5C518' : '#22C55E'}"></span>${stateLabel}</span></div></div>`;
+    }).join('');
     panel('mapa', 'Monitoreo operativo por zona KML', 'Prototipo de reglas: ping cada 15 minutos, zona asignada y alerta de permanencia.',
       `<button class="dev-btn" data-open="novedad"><i class="ti ti-alert-triangle"></i> Crear novedad</button>`,
       `<div class="toolbar-line">
@@ -1698,12 +1759,9 @@ function toggleMode() {
         <label class="dev-btn"><i class="ti ti-file-upload"></i> Adjuntar KML<input type="file" accept=".kml,.kmz" data-kml-input style="display:none"></label>
         <span class="fp-sub">${state.prefs.kmlName ? `KML: ${escapeHTML(state.prefs.kmlName)}` : 'Sin KML cargado'}</span>
       </div>
-      <div class="sat-map map-${state.prefs.mapStyle === 'road' ? 'road' : state.prefs.mapStyle === 'dark' ? 'dark' : 'satellite'}">
-        ${kmlOverlay()}
-        <div class="sat-road" style="left:9%;top:28%;width:80%;transform:rotate(12deg)"></div><div class="sat-road" style="left:12%;top:70%;width:74%;transform:rotate(-18deg)"></div><div class="sat-road" style="left:48%;top:8%;width:68%;transform:rotate(92deg)"></div>
-        <div class="map-caption" style="left:56%;top:14%;bottom:auto">Bogotá D.C.</div><div class="map-caption" style="left:18%;top:22%;bottom:auto">Suba</div><div class="map-caption" style="left:70%;top:36%;bottom:auto">Usaquén</div><div class="map-caption" style="left:42%;top:62%;bottom:auto">Chapinero</div>
-        ${filtered.map((d, i) => `<button class="map-dot-live ${d.status === 'No colocado' ? 'bad' : d.status === 'Con novedad' ? 'warn' : ''}" style="left:${24 + i * 18 % 58}%;top:${30 + i * 21 % 45}%" title="${escapeHTML(d.quicker)}"></button>`).join('')}
-        <div class="map-caption"><i class="ti ti-satellite"></i> Vista ${state.prefs.mapStyle} · polígonos KML · filtros activos</div>
+      <div class="map-layout">
+        <div id="admin-leaflet-map" class="leaflet-map" aria-label="Mapa en vivo"></div>
+        <aside class="map-side"><h3>En mapa ahora</h3>${sidePeople || '<p class="fp-sub">No hay mensajeros con los filtros actuales.</p>'}</aside>
       </div>
       <div style="margin-top:12px">${table(['Mensajero', 'Cédula', 'Cliente', 'Punto', 'Zona KML', 'Ubicación', 'Alerta'], rows)}</div>`
     );
@@ -1713,6 +1771,40 @@ function toggleMode() {
     if (style) style.value = state.prefs.mapStyle;
     if (quicker) quicker.value = state.prefs.mapQuicker;
     if (zone) zone.value = state.prefs.mapZone;
+    setTimeout(() => initAdminMap(filtered), 0);
+  }
+
+  function initAdminMap(items) {
+    const el = document.getElementById('admin-leaflet-map');
+    if (!el) return;
+    if (!window.L) {
+      el.innerHTML = `<div class="sat-map map-${state.prefs.mapStyle === 'road' ? 'road' : 'satellite'}">${kmlOverlay()}<div class="map-caption">Mapa real no cargó. Revisa conexión a internet para Leaflet.</div></div>`;
+      return;
+    }
+    if (el._leaflet_id) el._leaflet_id = null;
+    el.innerHTML = '';
+    const map = L.map(el, { zoomControl: true }).setView([4.711, -74.072], 10);
+    const road = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' });
+    const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Tiles &copy; Esri' });
+    (state.prefs.mapStyle === 'road' ? road : satellite).addTo(map);
+    L.control.layers({ 'Mapa normal': road, 'Satelital': satellite }, {}, { position: 'topleft' }).addTo(map);
+    const bounds = [];
+    const zone = kmlLatLngs();
+    if (zone.length > 2) {
+      L.polygon(zone, { color: '#F5C518', weight: 2, dashArray: '7 5', fillColor: '#F5C518', fillOpacity: .18 }).addTo(map).bindPopup(state.prefs.kmlName || 'Zona KML');
+      zone.forEach(p => bounds.push(p));
+    }
+    items.forEach((d, i) => {
+      const q = state.quickers.find(item => item.name === d.quicker) || {};
+      const lat = Number(q.lat) || (4.66 + i * .02);
+      const lng = Number(q.lng) || (-74.07 - i * .025);
+      const color = d.status === 'No colocado' ? '#EF4444' : d.status === 'Con novedad' ? '#F5C518' : '#22C55E';
+      const icon = L.divIcon({ className: '', html: `<span style="width:18px;height:18px;display:block;border-radius:50%;background:${color};border:3px solid #111;box-shadow:0 0 0 9px ${color}33"></span>`, iconSize: [18,18] });
+      L.marker([lat, lng], { icon }).addTo(map).bindPopup(`<strong>${escapeHTML(d.quicker)}</strong><br>${escapeHTML(d.client)} · ${escapeHTML(d.point)}<br>${escapeHTML(d.status)}`);
+      bounds.push([lat, lng]);
+    });
+    if (bounds.length) map.fitBounds(bounds, { padding: [30, 30], maxZoom: 13 });
+    setTimeout(() => map.invalidateSize(), 80);
   }
 
   function kmlOverlay() {
@@ -1731,6 +1823,24 @@ function toggleMode() {
     return `<svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none"><polygon points="${points}" fill="rgba(245,197,24,.16)" stroke="#F5C518" stroke-width=".7" stroke-dasharray="2 1"/></svg>`;
   }
 
+  function kmlLatLngs() {
+    const text = state.prefs.kmlText || '';
+    const match = text.match(/<coordinates[^>]*>([\s\S]*?)<\/coordinates>/i);
+    if (!match) return [];
+    return match[1].trim().split(/\s+/).map(pair => {
+      const [lng, lat] = pair.split(',').map(Number);
+      return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null;
+    }).filter(Boolean).slice(0, 400);
+  }
+
+  function kmlPlacemarkNames() {
+    const text = state.prefs.kmlText || '';
+    return [...text.matchAll(/<Placemark[\s\S]*?<name[^>]*>([\s\S]*?)<\/name>/gi)]
+      .map(m => m[1].replace(/<[^>]+>/g, '').trim())
+      .filter(Boolean)
+      .slice(0, 80);
+  }
+
   function renderNovedades() {
     const rows = state.novelties.map(n => row([
       escapeHTML(n.id), escapeHTML(n.type), escapeHTML(n.origin), escapeHTML(n.ref), pill(n.severity), pill(n.status), escapeHTML(n.note),
@@ -1743,7 +1853,10 @@ function toggleMode() {
   }
 
   function renderTickets() {
-    const rows = state.tickets.map(t => row([
+    const rows = state.tickets.filter(t => {
+      const user = currentUser();
+      return user.profile !== 'Coordinador' || !user.name || t.coordinator === user.name || t.coordinator === 'Admin Quick';
+    }).map(t => row([
       escapeHTML(t.id), escapeHTML(t.coordinator), escapeHTML(t.type), escapeHTML(t.activity), pill(t.complexity), escapeHTML(t.sla), pill(t.status),
       `<div class="row-actions">${action('Tomar', 'takeTicket', t.id)}${action('Cerrar', 'closeTicket', t.id)}</div>`
     ]));
@@ -1754,7 +1867,7 @@ function toggleMode() {
   }
 
   function renderQuickers() {
-    const rows = state.quickers.map(q => {
+    const rows = scopedItems(state.quickers, q => q).map(q => {
       const expired = q.docExpires && new Date(q.docExpires) < new Date('2026-06-17T00:00:00');
       return row([
         escapeHTML(q.id), escapeHTML(q.name), escapeHTML(q.phone), escapeHTML(q.email), escapeHTML(q.client), escapeHTML(q.point), escapeHTML(q.zone),
@@ -1792,17 +1905,20 @@ function toggleMode() {
   }
 
   function renderEvidencias() {
-    const rows = state.evidences.map(e => row([
-      escapeHTML(e.id), escapeHTML(e.availability), escapeHTML(e.quicker), escapeHTML(e.stage), escapeHTML(e.type), pill(e.required), pill(e.status), escapeHTML(e.address || ''),
+    const rows = scopedItems(state.evidences, e => {
+      const d = state.availabilities.find(item => item.id === e.availability) || {};
+      return { client: d.client, point: d.point, quicker: e.quicker };
+    }).map(e => row([
+      escapeHTML(e.id), escapeHTML(e.availability), escapeHTML(e.quicker), escapeHTML(e.stage), escapeHTML(e.type), evidencePreview(e), pill(e.required), pill(e.status), escapeHTML(e.address || ''),
       `<div class="row-actions">${action('Aprobar', 'approveEvidence', e.id)}${action('Rechazar', 'rejectEvidence', e.id)}</div>`
     ]));
-    const parkingRows = (state.parkingReports || []).map(p => row([
+    const parkingRows = scopedItems(state.parkingReports || [], p => ({ client: p.client, point: p.point, quicker: p.quicker })).map(p => row([
       escapeHTML(p.quicker), escapeHTML(p.client), escapeHTML(p.point), `$${escapeHTML(p.amount || 0)}`, escapeHTML(p.file || 'Sin soporte'), escapeHTML(p.address || ''), pill(p.status),
       `<div class="row-actions">${action('Aprobar', 'approveParking', p.id)}${action('Rechazar', 'rejectParking', p.id)}</div>`
     ]));
     panel('evidencias', 'Evidencias y soportes', 'Control de fotos, archivos, obligatoriedad, estado y validación.',
       `<button class="dev-btn" data-export="evidences">Exportar CSV</button>`,
-      table(['ID', 'Disponibilidad', 'Quicker', 'Etapa', 'Tipo', 'Obligatoria', 'Estado', 'Dirección/GPS', 'Acciones'], rows) +
+      table(['ID', 'Disponibilidad', 'Quicker', 'Etapa', 'Tipo', 'Foto/soporte', 'Obligatoria', 'Estado', 'Dirección/GPS', 'Acciones'], rows) +
       `<div class="fp-title" style="margin:14px 0 8px">Parqueaderos enviados por mensajero</div>` +
       table(['Mensajero', 'Cliente', 'Punto', 'Valor', 'Soporte', 'Dirección/GPS', 'Estado', 'Acciones'], parkingRows)
     );
@@ -1832,12 +1948,29 @@ function toggleMode() {
   }
 
   function renderConfig() {
-    const clients = state.clients.map(c => row([escapeHTML(c.idProyecto), escapeHTML(c.name), `${escapeHTML(c.delayRule)} min`, escapeHTML(c.lunch), escapeHTML(c.approval), escapeHTML(c.evidenceRule), escapeHTML(c.alerts)]));
-    const users = state.users.map(u => row([escapeHTML(u.name), escapeHTML(u.email), escapeHTML(u.phone), escapeHTML(u.username), pill(u.profile), escapeHTML(u.scope)]));
+    const clients = state.clients.map(c => row([
+      escapeHTML(c.idProyecto), escapeHTML(c.name), `${escapeHTML(c.delayRule)} min`, escapeHTML(c.lunch), escapeHTML(c.approval),
+      `<div class="point-list">${(c.points || []).map(p => `<span class="point-chip">${escapeHTML(p)}</span>`).join('') || '<span class="fp-sub">Sin puntos</span>'}</div>`,
+      escapeHTML(c.alerts),
+      `<div class="row-actions">${action('Editar', 'editClient', c.id)}${action('Punto', 'addPoint', c.id)}${action('Eliminar', 'deleteClient', c.id)}</div>`
+    ]));
+    const users = state.users.map(u => row([
+      escapeHTML(u.name), escapeHTML(u.email), escapeHTML(u.phone), escapeHTML(u.username), pill(u.profile), escapeHTML(u.client || u.scope || ''), escapeHTML(u.point || ''),
+      `<div class="row-actions">${action('Editar', 'editUser', u.id)}${action('Permisos', 'permissionsUser', u.id)}${action('Eliminar', 'deleteUser', u.id)}</div>`
+    ]));
+    const existing = state.users.map(u => `<option value="${escapeHTML(u.id)}">${escapeHTML(u.name)} · ${escapeHTML(u.username)}</option>`).join('');
     panel('config', 'Configuración funcional', 'Parametriza clientes, reglas por cliente y usuarios base del sistema.',
       `<button class="dev-btn primary" data-open="cliente"><i class="ti ti-building-plus"></i> Cliente</button><button class="dev-btn" data-open="usuario"><i class="ti ti-user-plus"></i> Usuario</button>`,
-      `<div class="fp-title" style="margin-bottom:8px">Clientes y reglas</div>${table(['ID Proyecto', 'Cliente', 'Retardo', 'Almuerzo', 'Aprobación', 'Evidencias', 'Alertas'], clients)}
-       <div class="fp-title" style="margin:14px 0 8px">Usuarios y perfiles</div>${table(['Nombre', 'Correo', 'Teléfono', 'Usuario', 'Perfil', 'Alcance'], users)}`
+      `<div class="config-split">
+        <section>
+          <div class="fp-title" style="margin-bottom:8px">Clientes, reglas y puntos de venta</div>
+          ${table(['ID Proyecto', 'Cliente', 'Retardo', 'Almuerzo', 'Aprobación', 'Puntos de venta', 'Alertas', 'Acciones'], clients)}
+        </section>
+        <section>
+          <div class="toolbar-line"><span class="fp-title">Usuarios y accesos</span><select data-edit-user-select><option value="">Editar usuario existente...</option>${existing}</select><button class="dev-btn" data-edit-selected-user>Editar seleccionado</button></div>
+          ${table(['Nombre', 'Correo', 'Teléfono', 'Usuario', 'Perfil', 'Cliente asignado', 'Punto asignado', 'Acciones'], users)}
+        </section>
+      </div>`
     );
   }
 
@@ -2036,6 +2169,29 @@ function toggleMode() {
 
   function handleAction(actionName, id) {
     const find = (key) => state[key].find(item => item.id === id);
+    if (actionName === 'editClient') { openClientForm(id); return; }
+    if (actionName === 'addPoint') { openPointForm(id); return; }
+    if (actionName === 'editUser') { openUserForm(id); return; }
+    if (actionName === 'permissionsUser') { openPermissionsForm(id); return; }
+    if (actionName === 'deleteClient') {
+      const client = find('clients');
+      if (client && confirm(`¿Eliminar cliente ${client.name}?`)) {
+        state.clients = state.clients.filter(c => c.id !== id);
+        log('Cliente', 'Eliminó cliente', client.name);
+        saveState('Cliente eliminado');
+      }
+      return;
+    }
+    if (actionName === 'deleteUser') {
+      const user = find('users');
+      if (user?.id === state.session?.id) { toast('No puedes eliminar el usuario activo'); return; }
+      if (user && confirm(`¿Eliminar usuario ${user.username}?`)) {
+        state.users = state.users.filter(u => u.id !== id);
+        log('Usuario', 'Eliminó usuario', user.username);
+        saveState('Usuario eliminado');
+      }
+      return;
+    }
     if (actionName === 'manageMalla') { openMallaManagement(id); return; }
     if (actionName === 'duplicateMalla') { openDuplicateMalla(id); return; }
     if (actionName === 'startAvailability') {
@@ -2235,9 +2391,134 @@ function toggleMode() {
     document.getElementById('app-modal').classList.add('open');
   }
 
+  function pointOptionsFor(clientName, selected = '') {
+    const client = state.clients.find(c => c.name === clientName) || {};
+    const points = client.points?.length ? client.points : ['Todos'];
+    return [''].concat(points).map(p => `<option value="${escapeHTML(p)}" ${p === selected ? 'selected' : ''}>${p ? escapeHTML(p) : 'Todos los puntos'}</option>`).join('');
+  }
+
+  function openClientForm(id = '') {
+    const item = state.clients.find(c => c.id === id) || { id: '', idProyecto: '', name: '', delayRule: 30, lunch: 'Si', approval: 'Activa', evidenceRule: '', alerts: '', points: [] };
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = id ? `Editar cliente · ${item.name}` : 'Nuevo cliente';
+    document.getElementById('modal-subtitle').textContent = 'Configura reglas exactas por cliente y puntos de venta.';
+    form.innerHTML = `<div class="form-grid">
+      <div class="form-field"><label>ID Proyecto / centro de costos</label><input name="idProyecto" value="${escapeHTML(item.idProyecto)}" required></div>
+      <div class="form-field"><label>Cliente</label><input name="name" value="${escapeHTML(item.name)}" required></div>
+      <div class="form-field"><label>Regla retardo en minutos</label><input name="delayRule" type="number" value="${escapeHTML(item.delayRule)}" required></div>
+      <div class="form-field"><label>Almuerzo</label><select name="lunch"><option ${item.lunch === 'Si' ? 'selected' : ''}>Si</option><option ${item.lunch === 'No' ? 'selected' : ''}>No</option></select></div>
+      <div class="form-field"><label>Aprobación punto</label><select name="approval"><option ${item.approval === 'Activa' ? 'selected' : ''}>Activa</option><option ${item.approval === 'No aplica' ? 'selected' : ''}>No aplica</option></select></div>
+      <div class="form-field"><label>Alertas</label><input name="alerts" value="${escapeHTML(item.alerts)}" placeholder="KML, permanencia 30m, salida de zona"></div>
+      <div class="form-field full"><label>Regla evidencias</label><input name="evidenceRule" value="${escapeHTML(item.evidenceRule)}" placeholder="Inicio 2 fotos / cierre 1 foto"></div>
+      <div class="form-field full"><label>Puntos de venta separados por coma</label><input name="points" value="${escapeHTML((item.points || []).join(', '))}" placeholder="Santa Bárbara, Chapinero"></div>
+    </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar cliente</button></div>`;
+    form.onsubmit = event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const payload = { ...item, id: item.id || uid('CLI'), ...data, points: data.points.split(',').map(p => p.trim()).filter(Boolean) };
+      if (id) state.clients = state.clients.map(c => c.id === id ? payload : c);
+      else state.clients.unshift(payload);
+      closeModal();
+      log('Cliente', id ? 'Editó cliente' : 'Creó cliente', payload.name);
+      saveState('Cliente guardado');
+    };
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('app-modal').classList.add('open');
+  }
+
+  function openPointForm(clientId) {
+    const client = state.clients.find(c => c.id === clientId);
+    if (!client) return;
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = `Agregar punto · ${client.name}`;
+    document.getElementById('modal-subtitle').textContent = 'Este punto podrá asignarse a usuarios, Quickers y mallas.';
+    const kmlNames = kmlPlacemarkNames();
+    form.innerHTML = `<div class="form-grid">
+      <div class="form-field full"><label>Nombre punto de venta</label><input name="point" placeholder="Ej: Sede Norte"></div>
+      <div class="form-field full"><label>Tomar nombre desde KML cargado</label><select name="fromKml"><option value="">No usar KML</option>${kmlNames.map(n => `<option value="${escapeHTML(n)}">${escapeHTML(n)}</option>`).join('')}</select></div>
+    </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar punto</button></div>`;
+    form.onsubmit = event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const point = (data.point || data.fromKml || '').trim();
+      if (!point) { toast('Escribe un punto o selecciona uno del KML'); return; }
+      client.points = [...new Set([...(client.points || []), point])];
+      closeModal();
+      log('Cliente', 'Agregó punto de venta', `${client.name} · ${point}`);
+      saveState('Punto agregado');
+    };
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('app-modal').classList.add('open');
+  }
+
+  function openUserForm(id = '') {
+    const item = state.users.find(u => u.id === id) || { id: '', name: '', email: '', phone: '', username: '', password: '', profile: 'Coordinador', client: '', point: '', scope: '', permissions: [] };
+    const clients = ['Global', ...state.clients.map(c => c.name)];
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = id ? `Editar usuario · ${item.username}` : 'Nuevo usuario';
+    document.getElementById('modal-subtitle').textContent = 'El usuario y sus permisos determinan qué visual tendrá al ingresar.';
+    form.innerHTML = `<div class="form-grid">
+      <div class="form-field"><label>Nombre</label><input name="name" value="${escapeHTML(item.name)}" required></div>
+      <div class="form-field"><label>Correo</label><input name="email" type="email" value="${escapeHTML(item.email)}" required></div>
+      <div class="form-field"><label>Teléfono</label><input name="phone" value="${escapeHTML(item.phone)}" required></div>
+      <div class="form-field"><label>Usuario</label><input name="username" value="${escapeHTML(item.username)}" required></div>
+      <div class="form-field"><label>Contraseña</label><input name="password" type="text" value="${escapeHTML(item.password)}" placeholder="Define la contraseña" required></div>
+      <div class="form-field"><label>Perfil base</label><select name="profile"><option>Administrador</option><option>Coordinador</option><option>Quicker</option><option>Cliente Admin</option><option>Usuario Punto</option><option>Gerencia</option></select></div>
+      <div class="form-field"><label>Cliente a cargo</label><select name="client" id="user-client">${clients.map(c => `<option value="${escapeHTML(c)}" ${c === (item.client || item.scope) ? 'selected' : ''}>${escapeHTML(c)}</option>`).join('')}</select></div>
+      <div class="form-field"><label>Punto de venta</label><select name="point" id="user-point">${pointOptionsFor(item.client || item.scope, item.point)}</select></div>
+    </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar usuario</button></div>`;
+    form.elements.profile.value = item.profile || 'Coordinador';
+    document.getElementById('user-client').onchange = event => {
+      document.getElementById('user-point').innerHTML = pointOptionsFor(event.target.value);
+    };
+    form.onsubmit = event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const payload = { ...item, id: item.id || uid('USR'), ...data, scope: data.point || data.client, permissions: item.permissions || [] };
+      if (id) state.users = state.users.map(u => u.id === id ? payload : u);
+      else state.users.unshift(payload);
+      closeModal();
+      log('Usuario', id ? 'Editó usuario' : 'Creó usuario', payload.username);
+      saveState('Usuario guardado');
+    };
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('app-modal').classList.add('open');
+  }
+
+  function openPermissionsForm(userId) {
+    const user = state.users.find(u => u.id === userId);
+    if (!user) return;
+    const modules = ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'evidencias', 'quickers', 'mensajero', 'casos', 'reportes', 'bd', 'config'];
+    const active = new Set(user.permissions?.length ? user.permissions : permissionsFor(user.profile, user));
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = `Permisos · ${user.name}`;
+    document.getElementById('modal-subtitle').textContent = 'El administrador puede habilitar o inhabilitar módulos por usuario.';
+    form.innerHTML = `<div class="permission-grid">${modules.map(m => `<label class="permission-tile"><input type="checkbox" name="perm" value="${m}" ${active.has(m) ? 'checked' : ''}> ${m}</label>`).join('')}</div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar permisos</button></div>`;
+    form.onsubmit = event => {
+      event.preventDefault();
+      user.permissions = [...form.querySelectorAll('input[name="perm"]:checked')].map(i => i.value);
+      closeModal();
+      log('Usuario', 'Actualizó permisos', user.username);
+      saveState('Permisos actualizados');
+      applySession();
+    };
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('app-modal').classList.add('open');
+  }
+
   document.addEventListener('click', event => {
     const open = event.target.closest('[data-open]');
-    if (open) openForm(open.dataset.open);
+    if (open) {
+      if (open.dataset.open === 'cliente') openClientForm();
+      else if (open.dataset.open === 'usuario') openUserForm();
+      else openForm(open.dataset.open);
+    }
+    const editSelected = event.target.closest('[data-edit-selected-user]');
+    if (editSelected) {
+      const id = document.querySelector('[data-edit-user-select]')?.value;
+      if (id) openUserForm(id);
+      else toast('Selecciona un usuario existente');
+    }
     const exp = event.target.closest('[data-export]');
     if (exp) exportCSV(exp.dataset.export);
     const act = event.target.closest('[data-action]');
@@ -2295,7 +2576,12 @@ function toggleMode() {
     }
   });
 
-  document.getElementById('quick-create')?.addEventListener('click', () => openForm(defaultFormForPage()));
+  document.getElementById('quick-create')?.addEventListener('click', () => {
+    const type = defaultFormForPage();
+    if (type === 'cliente') openClientForm();
+    else if (type === 'usuario') openUserForm();
+    else openForm(type);
+  });
   document.getElementById('export-current')?.addEventListener('click', () => {
     const map = { mallas: 'availabilities', mapa: 'availabilities', novedades: 'novelties', tickets: 'tickets', evidencias: 'evidences', quickers: 'quickers', mensajero: 'availabilities', casos: 'cases', config: 'clients' };
     exportCSV(map[activeModule] || 'all');
@@ -2320,7 +2606,7 @@ function toggleMode() {
     document.querySelector('.top-avatar').textContent = initials(session.name);
     document.querySelector('.sb-user-name').textContent = session.name;
     document.querySelector('.sb-user-role').textContent = session.profile;
-    const allowed = permissionsFor(session.profile);
+    const allowed = permissionsFor(session.profile, currentUser());
     document.querySelectorAll('.nav-item[onclick^="nav"]').forEach(item => {
       const match = item.getAttribute('onclick').match(/nav\('([^']+)'/);
       const id = match?.[1];
@@ -2333,10 +2619,11 @@ function toggleMode() {
     }
   }
 
-  function permissionsFor(profile) {
+  function permissionsFor(profile, user = null) {
+    if (user?.permissions?.length) return user.permissions;
     if (profile === 'Quicker') return ['mensajero'];
     if (profile === 'Cliente Admin') return ['dashboard', 'mallas', 'novedades', 'evidencias', 'reportes'];
-    if (profile === 'Usuario Punto') return ['mallas', 'novedades', 'evidencias'];
+    if (profile === 'Usuario Punto') return ['mallas', 'evidencias'];
     if (profile === 'Gerencia') return ['dashboard', 'mapa', 'reportes'];
     if (profile === 'Coordinador') return ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'evidencias', 'quickers', 'mensajero', 'casos', 'reportes'];
     return ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'evidencias', 'quickers', 'mensajero', 'casos', 'reportes', 'bd', 'config'];
