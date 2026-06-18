@@ -593,6 +593,25 @@
   .data-table td { font-size: 11px; color: var(--text-1); }
   .data-table th,.data-table td,.tbl th,.tbl td { white-space: nowrap; }
   .data-table tr:hover { background: rgba(245,197,24,.055); }
+  .module-tabs { display:flex; gap:8px; flex-wrap:wrap; margin: 0 0 14px; border-bottom:1px solid var(--border); padding-bottom:10px; }
+  .module-tab { border:1px solid var(--border); background:var(--card-bg); color:var(--text-2); border-radius:12px; padding:9px 12px; font-size:11px; font-weight:900; letter-spacing:.25px; text-transform:uppercase; cursor:pointer; }
+  .module-tab.on { background:linear-gradient(135deg,rgba(245,197,24,.9),rgba(214,170,0,.85)); color:#090909; border-color:rgba(245,197,24,.7); box-shadow:0 10px 28px rgba(245,197,24,.16); }
+  .nov-dashboard { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:14px; }
+  .nov-kpi { border:1px solid var(--border); border-radius:14px; padding:12px; background:linear-gradient(145deg,rgba(245,197,24,.09),rgba(255,255,255,.035)); }
+  .nov-kpi small { display:block; color:var(--text-3); font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+  .nov-kpi strong { display:block; color:var(--text-1); font-size:22px; line-height:1; }
+  .nov-filterbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:0 0 12px; }
+  .nov-filterbar select,.nov-filterbar input,.form-config-select { min-height:38px; border:1px solid var(--border); border-radius:11px; background:var(--card-bg); color:var(--text-1); padding:0 12px; font-weight:750; }
+  .detail-list { display:grid; gap:8px; margin:10px 0; }
+  .detail-row { display:grid; grid-template-columns:180px minmax(0,1fr); gap:10px; border:1px solid var(--border); border-radius:12px; padding:9px 10px; background:rgba(255,255,255,.035); }
+  .detail-row span:first-child { color:var(--text-3); font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.45px; }
+  .detail-row span:last-child { color:var(--text-1); font-weight:750; overflow:hidden; text-overflow:ellipsis; }
+  .form-builder-list { display:grid; gap:8px; margin-top:10px; }
+  .form-field-card { display:grid; grid-template-columns:minmax(180px,1fr) 130px 130px auto; align-items:center; gap:8px; border:1px solid var(--border); border-radius:12px; padding:10px; background:rgba(255,255,255,.035); }
+  .form-field-card strong { color:var(--text-1); }
+  .form-field-card span { color:var(--text-2); font-size:11px; }
+  .light-mode .module-tab,.light-mode .nov-kpi,.light-mode .detail-row,.light-mode .form-field-card { background:rgba(255,255,255,.92); border-color:rgba(18,18,18,.2); }
+  .light-mode .nov-filterbar select,.light-mode .nov-filterbar input,.light-mode .form-config-select { background:#fff; color:#15130c; border-color:#ded5b8; }
   #page-mallas > :not(.functional-panel),
   #page-calendario > :not(.functional-panel),
   #page-archivos > :not(.functional-panel),
@@ -1603,7 +1622,13 @@ function toggleMode() {
       mapStyle: 'satellite',
       mapQuicker: 'Todos',
       mapZone: 'Todas',
-      kmlName: ''
+      kmlName: '',
+      kmlText: '',
+      novedadesTab: 'inasistencias',
+      novedadesFilterMode: 'dia',
+      novedadesFilterDate: '2026-06-18',
+      formConfigType: 'INASISTENCIA',
+      formFieldConfig: {}
     },
     session: null
   };
@@ -1645,6 +1670,7 @@ function toggleMode() {
     next.evidences = value?.evidences || seed.evidences;
     next.logs = value?.logs || seed.logs;
     next.parkingReports = value?.parkingReports || [];
+    next.overtimeReports = value?.overtimeReports || [];
     next.locationPings = value?.locationPings || [];
     next.calendarEvents = value?.calendarEvents || [];
     next.files = value?.files || [];
@@ -1658,6 +1684,11 @@ function toggleMode() {
     if (!next.prefs.managementTypes.includes('Quick Go')) next.prefs.managementTypes.push('Quick Go');
     next.prefs.ingressGraceMinutes = Number(next.prefs.ingressGraceMinutes || seed.prefs.ingressGraceMinutes);
     next.prefs.mallaTemplates = next.prefs.mallaTemplates || [];
+    next.prefs.novedadesTab = next.prefs.novedadesTab || 'inasistencias';
+    next.prefs.novedadesFilterMode = next.prefs.novedadesFilterMode || 'dia';
+    next.prefs.novedadesFilterDate = next.prefs.novedadesFilterDate || new Date().toISOString().slice(0, 10);
+    next.prefs.formConfigType = next.prefs.formConfigType || 'INASISTENCIA';
+    next.prefs.formFieldConfig = next.prefs.formFieldConfig || {};
     next.prefs.mallaBlankResetDone = true;
     next.session = null;
     if (!next.users.some(u => u.profile === 'Administrador')) next.users.unshift({ ...adminBootstrap, id: uid('USR') });
@@ -2361,14 +2392,206 @@ function toggleMode() {
     reader.readAsArrayBuffer(file);
   }
 
+  function getNoveltyFormFields(type) {
+    return state.prefs.formFieldConfig?.[type] || noveltyFormFields[type] || noveltyFormFields['INASISTENCIA'];
+  }
+
+  function noveltyGestionStatus(item) {
+    return item.gestionStatus || item.caseStatus || (item.status === 'Reportada' ? 'Pendiente' : item.status || 'Pendiente');
+  }
+
+  function noveltyDate(item) {
+    const av = state.availabilities.find(d => d.id === item.ref) || {};
+    return item.date || item.createdAt?.slice?.(0, 10) || item.formData?.fechaNovedad || item.formData?.fechaInicio || item.formData?.fechaEvento || av.date || '';
+  }
+
+  function noveltyContext(item) {
+    const av = state.availabilities.find(d => d.id === item.ref) || {};
+    return {
+      date: noveltyDate(item),
+      client: item.client || av.client || '',
+      point: item.point || av.point || '',
+      cedula: item.cedula || av.cedula || '',
+      quicker: item.quicker || av.quicker || '',
+      observation: item.note || av.observations || ''
+    };
+  }
+
+  function passesNovedadesDateFilter(dateValue) {
+    const mode = state.prefs.novedadesFilterMode || 'dia';
+    if (mode === 'todo') return true;
+    const base = state.prefs.novedadesFilterDate || new Date().toISOString().slice(0, 10);
+    const date = String(dateValue || '').slice(0, 10);
+    if (!date) return true;
+    if (mode === 'dia') return date === base;
+    if (mode === 'mes') return date.slice(0, 7) === base.slice(0, 7);
+    if (mode === 'ano') return date.slice(0, 4) === base.slice(0, 4);
+    return true;
+  }
+
+  function getGeneralNoveltyRows() {
+    return state.novelties
+      .filter(n => !/retardo|retraso|hora extra|adicional|parqueadero|periferia|transferencia/i.test(`${n.type} ${n.subtype || ''}`))
+      .map(n => ({ ...n, ...noveltyContext(n), gestionStatus: noveltyGestionStatus(n) }))
+      .filter(n => passesNovedadesDateFilter(n.date));
+  }
+
+  function getDelayRows() {
+    const stored = state.novelties
+      .filter(n => /retardo|retraso/i.test(`${n.type} ${n.subtype || ''}`))
+      .map(n => ({ ...n, ...noveltyContext(n), delayStatus: n.delayStatus || 'Pendiente', source: 'novelty' }));
+    const storedRefs = new Set(stored.map(n => n.ref));
+    const computed = state.availabilities
+      .filter(d => d.realStart && minutesBetween(d.plannedStart, d.realStart) > 0 && !storedRefs.has(d.id))
+      .map(d => ({
+        id: `DELAY-${d.id}`,
+        type: 'Retraso',
+        subtype: `${minutesBetween(d.plannedStart, d.realStart)} min`,
+        ref: d.id,
+        date: d.date,
+        client: d.client,
+        point: d.point,
+        cedula: d.cedula,
+        quicker: d.quicker,
+        observation: d.observations || computeIngress(d).note,
+        delayStatus: 'Pendiente',
+        source: 'malla'
+      }));
+    return [...stored, ...computed].filter(n => passesNovedadesDateFilter(n.date));
+  }
+
+  function getOvertimeRows() {
+    const saved = (state.overtimeReports || []).map(h => ({ ...h, type: h.type || 'Hora extra', date: h.date || h.createdAt?.slice?.(0, 10) || '', status: h.status || 'Pendiente' }));
+    const fromNovelties = state.novelties
+      .filter(n => /hora extra/i.test(`${n.type} ${n.subtype || ''}`))
+      .map(n => ({ ...n, ...noveltyContext(n), status: noveltyGestionStatus(n), justification: n.note || '' }));
+    return [...saved, ...fromNovelties].filter(n => passesNovedadesDateFilter(n.date));
+  }
+
+  function getAdditionalRows() {
+    const parking = (state.parkingReports || []).map(p => ({
+      ...p,
+      type: p.type || 'Parqueadero',
+      date: p.date || p.createdAt?.slice?.(0, 10) || '',
+      client: p.client || '',
+      point: p.point || '',
+      quicker: p.quicker || '',
+      cedula: p.cedula || '',
+      amount: p.amount || '',
+      status: p.status || 'Pendiente',
+      observation: p.address || p.note || '',
+      source: 'parkingReports'
+    }));
+    const fromNovelties = state.novelties
+      .filter(n => /adicional|parqueadero|periferia|transferencia/i.test(`${n.type} ${n.subtype || ''}`))
+      .map(n => ({ ...n, ...noveltyContext(n), status: noveltyGestionStatus(n), amount: n.formData?.valor || '' }));
+    return [...parking, ...fromNovelties].filter(n => passesNovedadesDateFilter(n.date));
+  }
+
+  function novedadesCurrentRows() {
+    const tab = state.prefs.novedadesTab || 'inasistencias';
+    if (tab === 'retrasos') return getDelayRows();
+    if (tab === 'horas') return getOvertimeRows();
+    if (tab === 'adicionales') return getAdditionalRows();
+    return getGeneralNoveltyRows();
+  }
+
+  function avgGestionHours(items) {
+    const hours = items.map(item => {
+      const start = item.createdAt || item.gestionNotes?.[0]?.time || item.date;
+      if (!start || !String(start).includes('T')) return null;
+      const diff = (Date.now() - new Date(start).getTime()) / 36e5;
+      return Number.isFinite(diff) && diff >= 0 ? diff : null;
+    }).filter(v => v !== null);
+    if (!hours.length) return '0h';
+    return `${Math.round(hours.reduce((a, b) => a + b, 0) / hours.length)}h`;
+  }
+
+  function exportCurrentNovedades() {
+    const tab = state.prefs.novedadesTab || 'inasistencias';
+    const rows = novedadesCurrentRows().map(item => ({
+      Fecha: item.date || '',
+      Tipo: item.type || '',
+      Subtipo: item.subtype || item.causal || '',
+      Cliente: item.client || '',
+      Punto: item.point || '',
+      Nombre: item.quicker || item.name || '',
+      Cedula: item.cedula || '',
+      Estado: item.gestionStatus || item.status || item.delayStatus || '',
+      ID_OASIS: item.oasisId || '',
+      Responsable: item.gestionOwner || item.owner || '',
+      Observacion: item.observation || item.note || item.justification || '',
+      Valor: item.amount || ''
+    }));
+    downloadCSV({ [`Novedades ${tab}`]: rows }, `novedades_${tab}`);
+  }
+
   function renderNovedades() {
-    const rows = state.novelties.map(n => row([
-      escapeHTML(n.id), escapeHTML(n.type), escapeHTML(n.subtype || ''), escapeHTML(n.origin), escapeHTML(n.ref), escapeHTML(n.cedula || ''), escapeHTML(n.quicker || ''), pill(n.severity), pill(n.status), escapeHTML(n.note),
-      `<div class="row-actions">${action('Aprobar', 'approveNovelty', n.id)}${action('Cerrar', 'closeNovelty', n.id)}${action('Ticket', 'ticketFromNovelty', n.id)}</div>`
-    ]));
-    panel('novedades', 'Novedades con aprobación del coordinador', 'El cliente o punto reporta, pero el coordinador valida y aprueba.',
-      `<button class="dev-btn primary" data-open="novedad"><i class="ti ti-plus"></i> Nueva novedad</button><button class="dev-btn" data-export="novelties">Exportar CSV</button>`,
-      table(['ID', 'Tipo', 'Subtipo', 'Origen', 'Ref.', 'Cédula', 'Quicker', 'Severidad', 'Estado', 'Nota', 'Acciones'], rows)
+    const active = state.prefs.novedadesTab || 'inasistencias';
+    const tabs = [
+      ['inasistencias', 'Inasistencias / novedades'],
+      ['retrasos', 'Retrasos'],
+      ['horas', 'Horas extras'],
+      ['adicionales', 'Adicionales']
+    ];
+    const allGeneral = getGeneralNoveltyRows();
+    const delays = getDelayRows();
+    const hours = getOvertimeRows();
+    const adds = getAdditionalRows();
+    const allRows = [...allGeneral, ...delays, ...hours, ...adds];
+    const pending = allRows.filter(n => /pendiente|reportada|validación/i.test(`${n.gestionStatus || n.status || n.delayStatus || ''}`)).length;
+    const owners = new Set(allRows.map(n => n.gestionOwner || n.owner).filter(Boolean)).size || 1;
+    const dashboard = `<div class="nov-dashboard">
+      <div class="nov-kpi"><small>Pendientes</small><strong>${pending}</strong></div>
+      <div class="nov-kpi"><small>Tiempo gestión prom.</small><strong>${avgGestionHours(allRows)}</strong></div>
+      <div class="nov-kpi"><small>Adicionales por aprobar</small><strong>${adds.filter(a => /pendiente|reportada/i.test(a.status || '')).length}</strong></div>
+      <div class="nov-kpi"><small>Responsables activos</small><strong>${owners}</strong></div>
+    </div>`;
+    const filterbar = `<div class="nov-filterbar">
+      <select data-novedades-filter-mode>
+        ${['dia','mes','ano','todo'].map(mode => `<option value="${mode}" ${state.prefs.novedadesFilterMode === mode ? 'selected' : ''}>${mode === 'dia' ? 'Día' : mode === 'mes' ? 'Mes' : mode === 'ano' ? 'Año' : 'Todo'}</option>`).join('')}
+      </select>
+      <input type="date" data-novedades-filter-date value="${escapeHTML(state.prefs.novedadesFilterDate || new Date().toISOString().slice(0, 10))}">
+      <button class="dev-btn" data-export-current-novedades><i class="ti ti-file-spreadsheet"></i> Exportar Excel</button>
+    </div>`;
+    const tabbar = `<div class="module-tabs">${tabs.map(([key, label]) => `<button class="module-tab ${active === key ? 'on' : ''}" data-novedades-tab="${key}">${label}</button>`).join('')}</div>`;
+    let body = '';
+    if (active === 'retrasos') {
+      const user = currentUser();
+      const showClient = user.profile === 'Administrador' || !user.profile || user.profile === 'Gerencia';
+      const rows = delays.map(n => row([
+        escapeHTML(n.type || 'Retraso'),
+        ...(showClient ? [escapeHTML(n.client || '')] : []),
+        escapeHTML(n.date || ''),
+        escapeHTML(n.quicker || ''),
+        escapeHTML(n.cedula || ''),
+        escapeHTML(n.observation || n.note || ''),
+        pill(n.delayStatus || 'Pendiente'),
+        `<div class="row-actions">${iconAction('Gestionar retraso', 'viewDelay', n.id, 'ti-eye')}${iconAction('Justificado', 'justifyDelay', n.id, 'ti-circle-check')}${iconAction('No justificado', 'rejectDelay', n.id, 'ti-circle-x')}</div>`
+      ]));
+      body = table(['Tipo', ...(showClient ? ['Cliente'] : []), 'Fecha', 'Nombre', 'Cédula', 'Observación', 'Estado', 'Acciones'], rows);
+    } else if (active === 'horas') {
+      const rows = hours.map(n => row([
+        escapeHTML(n.date || ''), escapeHTML(n.quicker || n.name || ''), escapeHTML(n.cedula || ''), escapeHTML(n.client || ''), escapeHTML(n.hours || n.amount || ''), escapeHTML(n.justification || n.note || ''), pill(n.status || 'Pendiente'),
+        `<div class="row-actions">${iconAction('Ver detalle', 'viewOvertime', n.id, 'ti-eye')}${iconAction('Aprobar', 'approveOvertime', n.id, 'ti-circle-check')}${iconAction('Rechazar', 'rejectOvertime', n.id, 'ti-circle-x')}</div>`
+      ]));
+      body = table(['Fecha', 'Nombre', 'Cédula', 'Cliente', 'Horas', 'Justificación', 'Estado', 'Acciones'], rows);
+    } else if (active === 'adicionales') {
+      const rows = adds.map(n => row([
+        escapeHTML(n.date || ''), escapeHTML(n.type || ''), escapeHTML(n.quicker || ''), escapeHTML(n.cedula || ''), escapeHTML(n.client || ''), escapeHTML(n.point || ''), escapeHTML(n.amount || ''), pill(n.status || 'Pendiente'),
+        `<div class="row-actions">${iconAction('Ver soporte', 'viewAdditional', n.id, 'ti-eye')}${iconAction('Aprobar', 'approveAdditional', n.id, 'ti-circle-check')}${iconAction('Rechazar', 'rejectAdditional', n.id, 'ti-circle-x')}</div>`
+      ]));
+      body = table(['Fecha', 'Tipo', 'Nombre', 'Cédula', 'Cliente', 'Punto', 'Valor', 'Estado', 'Acciones'], rows);
+    } else {
+      const rows = allGeneral.map(n => row([
+        escapeHTML(n.type || ''), escapeHTML(n.subtype || ''), escapeHTML(n.date || ''), escapeHTML(n.quicker || ''), escapeHTML(n.cedula || ''), pill(n.gestionStatus || 'Pendiente'), escapeHTML(n.oasisId || ''),
+        `<div class="row-actions">${iconAction('Ver y gestionar', 'viewNoveltyCase', n.id, 'ti-eye')}${iconAction('Ticket', 'ticketFromNovelty', n.id, 'ti-ticket')}</div>`
+      ]));
+      body = table(['Tipo', 'Subtipo', 'Fecha', 'Nombre', 'Cédula', 'Estado gestión', 'ID OASIS', 'Acciones'], rows);
+    }
+    panel('novedades', 'Novedades', '',
+      `<button class="dev-btn primary" data-open="novedad"><i class="ti ti-plus"></i> Nueva novedad</button>`,
+      `${tabbar}${dashboard}${filterbar}${body}`
     );
   }
 
@@ -2529,6 +2752,15 @@ function toggleMode() {
       <div class="row-actions" style="margin-top:10px">${action('Editar', 'editMessenger', q.id)}${action('Eliminar', 'deleteMessenger', q.id)}${action('Seguimiento', 'followQuicker', q.id)}${action('Bloquear', 'blockQuicker', q.id)}</div>
     </div>`).join('');
     const customCols = (state.prefs.customMallaColumns || []).map(c => `<div class="module-pill"><span>${escapeHTML(c.label)}<br><small class="fp-sub">${escapeHTML(c.type)} · ${c.enabled === false ? 'Inhabilitado' : 'Activo'}</small></span><span>${escapeHTML((c.roles || []).join(', ') || 'Todos')}</span></div>`).join('');
+    const formType = state.prefs.formConfigType || 'INASISTENCIA';
+    const formOptions = noveltyTypes.filter(Boolean).map(type => `<option value="${escapeHTML(type)}" ${formType === type ? 'selected' : ''}>${escapeHTML(type)}</option>`).join('');
+    const formFields = getNoveltyFormFields(formType);
+    const formCards = formFields.map((field, index) => `<div class="form-field-card">
+      <div><strong>${escapeHTML(field.label)}</strong><br><span>${escapeHTML(field.name)}${field.options?.length ? ` · ${escapeHTML(field.options.join(', '))}` : ''}</span></div>
+      <span>${escapeHTML(field.type || 'text')}</span>
+      <span>${field.optional ? 'Opcional' : 'Obligatorio'}</span>
+      <div class="row-actions">${iconAction('Editar pregunta', 'editFormQuestion', `${formType}::${index}`, 'ti-pencil')}${iconAction('Eliminar pregunta', 'deleteFormQuestion', `${formType}::${index}`, 'ti-trash')}</div>
+    </div>`).join('');
     const sections = {
       miUsuario: accountSection,
       clientes: `<section class="settings-block"><div class="settings-actions"><button class="dev-btn primary" data-open="cliente"><i class="ti ti-building-plus"></i> Nuevo cliente</button><select data-points-client>${clientOptions}</select><label class="dev-btn"><i class="ti ti-upload"></i> Importar puntos<input type="file" accept=".xlsx,.xls,.csv" data-import-points style="display:none"></label><button class="dev-btn" data-export-points><i class="ti ti-download"></i> Exportar puntos</button></div><div class="record-grid">${clientCards || '<div class="fp-sub">No hay clientes creados.</div>'}</div></section>`,
@@ -2539,7 +2771,10 @@ function toggleMode() {
         <button class="dev-btn" data-add-column="mallas"><i class="ti ti-columns"></i> Agregar título</button>
         <button class="dev-btn" data-new-malla-template><i class="ti ti-template"></i> Agregar plantilla</button>
         <button class="dev-btn" data-reset-columns="mallas"><i class="ti ti-refresh"></i> Reset columnas</button>
-      </div><div class="settings-block-title">Columnas adicionales de la malla</div><div class="module-pill-grid">${customCols || '<div class="fp-sub">No hay títulos adicionales creados.</div>'}</div></section>`
+      </div><div class="settings-block-title">Columnas adicionales de la malla</div><div class="module-pill-grid">${customCols || '<div class="fp-sub">No hay títulos adicionales creados.</div>'}</div>
+      <div class="settings-block-title" style="margin-top:18px">Formularios de novedades</div>
+      <div class="settings-actions"><select class="form-config-select" data-form-config-type>${formOptions}</select><button class="dev-btn primary" data-add-form-question><i class="ti ti-plus"></i> Agregar pregunta</button></div>
+      <div class="form-builder-list">${formCards || '<div class="fp-sub">Este formulario no tiene preguntas configuradas.</div>'}</div></section>`
     };
     panel('config', 'Configuración', '', '',
       `<div class="settings-shell">
@@ -2609,6 +2844,124 @@ function toggleMode() {
         ['Autenticación', 'Identity Platform', 'MFA por perfil']
       ])
     );
+  }
+
+  function openModal(title, subtitle, html, onsubmit = null, wide = false) {
+    const modal = document.getElementById('app-modal');
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-subtitle').textContent = subtitle || '';
+    form.innerHTML = html;
+    form.onsubmit = onsubmit;
+    document.getElementById('cancel-form')?.addEventListener('click', closeModal);
+    modal.classList.toggle('wide', !!wide);
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function objectDetailsHTML(data) {
+    const entries = Object.entries(data || {}).filter(([, value]) => value !== undefined && value !== null && value !== '');
+    if (!entries.length) return '<div class="fp-sub">Sin información adicional.</div>';
+    return `<div class="detail-list">${entries.map(([key, value]) => `<div class="detail-row"><span>${escapeHTML(key)}</span><span>${escapeHTML(Array.isArray(value) ? value.join(', ') : value)}</span></div>`).join('')}</div>`;
+  }
+
+  function ensureDelayNovelty(id) {
+    if (!String(id).startsWith('DELAY-')) return state.novelties.find(n => n.id === id);
+    const avId = id.replace('DELAY-', '');
+    const item = state.availabilities.find(d => d.id === avId);
+    if (!item) return null;
+    const created = {
+      id: uid('NOV'),
+      type: 'Retraso',
+      subtype: `${minutesBetween(item.plannedStart, item.realStart)} min`,
+      origin: 'Malla',
+      ref: item.id,
+      date: item.date,
+      client: item.client,
+      point: item.point,
+      cedula: item.cedula,
+      quicker: item.quicker,
+      severity: 'Media',
+      status: 'Reportada',
+      delayStatus: 'Pendiente',
+      note: item.observations || computeIngress(item).note
+    };
+    state.novelties.unshift(created);
+    return created;
+  }
+
+  function openNoveltyCaseDetail(id) {
+    const item = state.novelties.find(n => n.id === id);
+    if (!item) { toast('No se encontró la novedad'); return; }
+    const ctx = noveltyContext(item);
+    const notes = (item.gestionNotes || []).map(n => `<div class="detail-row"><span>${escapeHTML(n.time || '')}</span><span>${escapeHTML(n.text || '')}</span></div>`).join('');
+    openModal(`Gestión · ${item.type}`, `${ctx.date || 'Sin fecha'} · ${ctx.quicker || 'Sin nombre'} · ${ctx.cedula || 'Sin cédula'}`,
+      `<div class="form-grid">
+        <div class="form-field"><label>ID seguimiento OASIS</label><input name="oasisId" value="${escapeHTML(item.oasisId || '')}" placeholder="Ej: OAS-12345"></div>
+        <div class="form-field"><label>Estado de gestión</label><select name="gestionStatus">${['Pendiente','En proceso','Finalizado','Cancelado'].map(v => `<option ${noveltyGestionStatus(item) === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        <div class="form-field"><label>Responsable</label><input name="gestionOwner" value="${escapeHTML(item.gestionOwner || state.session?.name || '')}"></div>
+        <div class="form-field full"><label>Nueva observación</label><textarea name="gestionObservation" placeholder="Agrega seguimiento interno"></textarea></div>
+        <div class="form-field full"><label>Información registrada</label>${objectDetailsHTML({ tipo:item.type, subtipo:item.subtype, cliente:ctx.client, punto:ctx.point, referencia:item.ref, observacion:item.note, ...(item.formData || {}) })}</div>
+        <div class="form-field full"><label>Historial de observaciones</label><div class="detail-list">${notes || '<div class="fp-sub">Sin observaciones de gestión.</div>'}</div></div>
+      </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar gestión</button></div>`,
+      event => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+        item.oasisId = data.oasisId || '';
+        item.gestionStatus = data.gestionStatus || 'Pendiente';
+        item.status = item.gestionStatus;
+        item.gestionOwner = data.gestionOwner || '';
+        if (data.gestionObservation) item.gestionNotes = [...(item.gestionNotes || []), { time: todayTime(), text: data.gestionObservation, user: state.session?.name || 'Usuario' }];
+        closeModal();
+        log('Novedad', 'Actualizó gestión OASIS', item.id);
+        saveState('Gestión actualizada');
+      }, true);
+  }
+
+  function openDelayDetail(id) {
+    const item = ensureDelayNovelty(id);
+    if (!item) { toast('No se encontró el retraso'); return; }
+    const ctx = noveltyContext(item);
+    openModal('Gestión de retraso', `${ctx.date || 'Sin fecha'} · ${ctx.quicker || 'Sin nombre'} · ${ctx.cedula || 'Sin cédula'}`,
+      `<div class="form-grid">
+        <div class="form-field"><label>Estado</label><select name="delayStatus">${['Pendiente','Justificado','No justificado'].map(v => `<option ${item.delayStatus === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        <div class="form-field"><label>Responsable</label><input name="gestionOwner" value="${escapeHTML(item.gestionOwner || state.session?.name || '')}"></div>
+        <div class="form-field full"><label>Observación</label><textarea name="delayNote">${escapeHTML(item.delayNote || item.note || '')}</textarea></div>
+        <div class="form-field full"><label>Detalle</label>${objectDetailsHTML({ cliente:ctx.client, punto:ctx.point, fecha:ctx.date, tipo:item.type, subtipo:item.subtype, observacion:ctx.observation })}</div>
+      </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar retraso</button></div>`,
+      event => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+        item.delayStatus = data.delayStatus || 'Pendiente';
+        item.status = item.delayStatus;
+        item.gestionOwner = data.gestionOwner || '';
+        item.delayNote = data.delayNote || '';
+        closeModal();
+        log('Retraso', 'Actualizó gestión', item.id);
+        saveState('Retraso actualizado');
+      });
+  }
+
+  function openSupportDetail(collection, id, title) {
+    const item = (state[collection] || []).find(x => x.id === id) || state.novelties.find(n => n.id === id);
+    if (!item) { toast('No se encontró el registro'); return; }
+    openModal(title, `${item.date || item.createdAt || ''} · ${item.quicker || item.name || ''}`,
+      `<div class="form-grid">
+        <div class="form-field"><label>Estado</label><select name="status">${['Pendiente','Aprobado','Rechazado','En proceso','Finalizado'].map(v => `<option ${item.status === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        <div class="form-field"><label>Responsable</label><input name="owner" value="${escapeHTML(item.owner || item.gestionOwner || state.session?.name || '')}"></div>
+        <div class="form-field full"><label>Observación</label><textarea name="note">${escapeHTML(item.reviewNote || item.note || '')}</textarea></div>
+        <div class="form-field full"><label>Información completa</label>${objectDetailsHTML({ ...item, formData: '' })}</div>
+      </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar</button></div>`,
+      event => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+        item.status = data.status || item.status || 'Pendiente';
+        item.owner = data.owner || '';
+        item.reviewNote = data.note || '';
+        closeModal();
+        log(title, 'Actualizó registro', item.id);
+        saveState('Registro actualizado');
+      }, true);
   }
 
   function renderAll() {
@@ -2681,7 +3034,7 @@ function toggleMode() {
         ['note', 'Descripción', 'textarea']
       ],
       submit: data => {
-        const item = { id: uid('NOV'), ...data, status: 'Reportada' };
+        const item = { id: uid('NOV'), ...data, status: 'Reportada', gestionStatus: 'Pendiente', createdAt: new Date().toISOString() };
         state.novelties.unshift(item);
         log('Novedad', 'Creó novedad', item.id);
       }
@@ -2900,6 +3253,38 @@ function toggleMode() {
     if (actionName === 'permissionsUser') { openPermissionsForm(id); return; }
     if (actionName === 'editMessenger') { openMessengerUserForm(id); return; }
     if (actionName === 'viewEvidence') { openEvidenceModal(id); return; }
+    if (actionName === 'viewNoveltyCase') { openNoveltyCaseDetail(id); return; }
+    if (actionName === 'viewDelay') { openDelayDetail(id); return; }
+    if (actionName === 'viewOvertime') { openSupportDetail('overtimeReports', id, 'Horas extras'); return; }
+    if (actionName === 'viewAdditional') { openSupportDetail('parkingReports', id, 'Adicional reportado'); return; }
+    if (actionName === 'editFormQuestion') {
+      const [type, rawIndex] = String(id || '').split('::');
+      openFormQuestionForm(type, Number(rawIndex));
+      return;
+    }
+    if (actionName === 'deleteFormQuestion') { deleteFormQuestion(id); return; }
+    if (actionName === 'justifyDelay' || actionName === 'rejectDelay') {
+      const item = ensureDelayNovelty(id);
+      if (item) {
+        item.delayStatus = actionName === 'justifyDelay' ? 'Justificado' : 'No justificado';
+        item.status = item.delayStatus;
+        log('Retraso', item.delayStatus, item.id);
+      }
+    }
+    if (actionName === 'approveOvertime' || actionName === 'rejectOvertime') {
+      const item = find('overtimeReports') || find('novelties');
+      if (item) {
+        item.status = actionName === 'approveOvertime' ? 'Aprobado' : 'Rechazado';
+        log('HorasExtra', item.status, id);
+      }
+    }
+    if (actionName === 'approveAdditional' || actionName === 'rejectAdditional') {
+      const item = find('parkingReports') || find('novelties');
+      if (item) {
+        item.status = actionName === 'approveAdditional' ? 'Aprobado' : 'Rechazado';
+        log('Adicional', item.status, id);
+      }
+    }
     if (actionName === 'deleteMessenger') {
       const q = find('quickers');
       if (q && confirm(`¿Eliminar mensajero ${q.name}?`)) {
@@ -3028,7 +3413,7 @@ function toggleMode() {
       return;
     }
     const datasets = collection === 'all'
-      ? { clients: state.clients, users: state.users, quickers: state.quickers, availabilities: state.availabilities, novelties: state.novelties, tickets: state.tickets, cases: state.cases, calendarEvents: state.calendarEvents, files: state.files, hsqReports: state.hsqReports, assetMatrix: state.assetMatrix, evidences: state.evidences, parkingReports: state.parkingReports, logs: state.logs }
+      ? { clients: state.clients, users: state.users, quickers: state.quickers, availabilities: state.availabilities, novelties: state.novelties, tickets: state.tickets, cases: state.cases, calendarEvents: state.calendarEvents, files: state.files, hsqReports: state.hsqReports, assetMatrix: state.assetMatrix, evidences: state.evidences, parkingReports: state.parkingReports, overtimeReports: state.overtimeReports, logs: state.logs }
       : { [collection]: state[collection] || [] };
     downloadCSV(datasets, collection);
   }
@@ -3720,7 +4105,7 @@ function toggleMode() {
   function openMallaNoveltyForm(availabilityId, type) {
     const item = state.availabilities.find(d => d.id === availabilityId);
     if (!item || !type) return;
-    const fields = noveltyFormFields[type] || noveltyFormFields['INASISTENCIA'];
+    const fields = getNoveltyFormFields(type);
     const asset = findAssetByCedula(item.cedula) || {};
     const form = document.getElementById('modal-form');
     document.getElementById('modal-title').textContent = `${type} · ${item.quicker || 'Pendiente de asignación'}`;
@@ -3764,9 +4149,10 @@ function toggleMode() {
       item.noveltyType = type;
       item.status = 'Con novedad';
       state.novelties.unshift({
-        id: uid('NOV'), type, subtype: data.causal || data.motivo || data.tipo || data.sucedio || '', origin: 'Malla', ref: item.id, cedula: item.cedula, quicker: item.quicker,
+        id: uid('NOV'), type, subtype: data.causal || data.motivo || data.tipo || data.sucedio || '', origin: 'Malla', ref: item.id, cedula: item.cedula, quicker: item.quicker, createdAt: new Date().toISOString(),
+        date: item.date, client: item.client, point: item.point,
         severity: /robo|desvinculación|terminación|ausencia injustificada|accidente|proceso/i.test(JSON.stringify(data)) ? 'Alta' : 'Media',
-        status: 'Reportada', note: data.observacion || data.descripcion || data.relato || item.observations || type, formData: data
+        status: 'Reportada', gestionStatus: 'Pendiente', note: data.observacion || data.descripcion || data.relato || item.observations || type, formData: data
       });
       if (!/Descuento|Accidente/i.test(type)) {
         state.cases.unshift({ id: uid('CAS'), type, quicker: item.quicker, period: item.date, status: 'Creado desde malla', owner: state.session?.name || 'Coordinador' });
@@ -4017,6 +4403,50 @@ function toggleMode() {
     document.getElementById('app-modal').classList.add('open');
   }
 
+  function openFormQuestionForm(type = state.prefs.formConfigType || 'INASISTENCIA', index = -1) {
+    const fields = [...getNoveltyFormFields(type)];
+    const current = fields[index] || { name: '', label: '', type: 'text', options: [], optional: false };
+    openModal(index >= 0 ? `Editar pregunta · ${type}` : `Nueva pregunta · ${type}`, 'Estas preguntas alimentan los formularios que se abren desde la malla y Novedades.',
+      `<div class="form-grid">
+        <div class="form-field"><label>Nombre interno</label><input name="name" value="${escapeHTML(current.name || '')}" placeholder="ej: fechaInicio" required></div>
+        <div class="form-field"><label>Título visible</label><input name="label" value="${escapeHTML(current.label || '')}" placeholder="Ej: Fecha inicio" required></div>
+        <div class="form-field"><label>Tipo de campo</label><select name="type">${['text','textarea','select','date','time','number','file'].map(v => `<option value="${v}" ${current.type === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        <div class="form-field"><label>Obligatoriedad</label><select name="optional"><option value="false" ${!current.optional ? 'selected' : ''}>Obligatorio</option><option value="true" ${current.optional ? 'selected' : ''}>Opcional</option></select></div>
+        <div class="form-field full"><label>Opciones si es lista desplegable</label><textarea name="options" placeholder="Una opción por línea o separadas por coma">${escapeHTML((current.options || []).join('\n'))}</textarea></div>
+      </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar pregunta</button></div>`,
+      event => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+        const payload = {
+          name: data.name.trim().replace(/\s+/g, '_'),
+          label: data.label.trim(),
+          type: data.type,
+          optional: data.optional === 'true'
+        };
+        if (payload.type === 'select') payload.options = String(data.options || '').split(/\n|,/).map(v => v.trim()).filter(Boolean);
+        if (!payload.options?.length) delete payload.options;
+        const nextFields = [...getNoveltyFormFields(type)];
+        if (index >= 0) nextFields[index] = payload;
+        else nextFields.push(payload);
+        state.prefs.formFieldConfig = { ...(state.prefs.formFieldConfig || {}), [type]: nextFields };
+        closeModal();
+        log('Configuración', index >= 0 ? 'Editó pregunta de formulario' : 'Agregó pregunta de formulario', `${type} · ${payload.label}`);
+        saveState('Pregunta guardada');
+      });
+  }
+
+  function deleteFormQuestion(encoded) {
+    const [type, rawIndex] = String(encoded || '').split('::');
+    const index = Number(rawIndex);
+    const fields = [...getNoveltyFormFields(type)];
+    if (!type || !Number.isFinite(index) || !fields[index]) return;
+    if (!confirm(`¿Eliminar la pregunta "${fields[index].label}"?`)) return;
+    fields.splice(index, 1);
+    state.prefs.formFieldConfig = { ...(state.prefs.formFieldConfig || {}), [type]: fields };
+    log('Configuración', 'Eliminó pregunta de formulario', type);
+    saveState('Pregunta eliminada');
+  }
+
   document.addEventListener('click', event => {
     const open = event.target.closest('[data-open]');
     if (open) {
@@ -4031,6 +4461,15 @@ function toggleMode() {
       state.prefs.configTab = cfgTab.dataset.configTab;
       saveState('Pestaña actualizada');
     }
+    const novedadesTab = event.target.closest('[data-novedades-tab]');
+    if (novedadesTab) {
+      state.prefs.novedadesTab = novedadesTab.dataset.novedadesTab;
+      saveState('Pestaña de novedades actualizada');
+    }
+    const exportNovedades = event.target.closest('[data-export-current-novedades]');
+    if (exportNovedades) exportCurrentNovedades();
+    const addFormQuestion = event.target.closest('[data-add-form-question]');
+    if (addFormQuestion) openFormQuestionForm(state.prefs.formConfigType || 'INASISTENCIA');
     const editSelected = event.target.closest('[data-edit-selected-user]');
     if (editSelected) {
       const id = document.querySelector('[data-edit-user-select]')?.value;
@@ -4134,6 +4573,18 @@ function toggleMode() {
     if (event.target.matches('[data-map-zone]')) {
       state.prefs.mapZone = event.target.value;
       saveState('Filtro de zona aplicado');
+    }
+    if (event.target.matches('[data-novedades-filter-mode]')) {
+      state.prefs.novedadesFilterMode = event.target.value;
+      saveState('Filtro actualizado');
+    }
+    if (event.target.matches('[data-novedades-filter-date]')) {
+      state.prefs.novedadesFilterDate = event.target.value || new Date().toISOString().slice(0, 10);
+      saveState('Fecha de filtro actualizada');
+    }
+    if (event.target.matches('[data-form-config-type]')) {
+      state.prefs.formConfigType = event.target.value;
+      saveState('Formulario seleccionado');
     }
     if (event.target.matches('[data-kml-input]')) {
       const file = event.target.files?.[0];
