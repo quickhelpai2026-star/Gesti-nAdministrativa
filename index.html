@@ -1745,8 +1745,18 @@ function toggleMode() {
     return cloudDb.collection(FIREBASE_SETTINGS.collection || 'quick_lastmile').doc(FIREBASE_SETTINGS.documentId || 'platform_state');
   }
 
+  function cleanForFirestore(value) {
+    if (value === undefined) return null;
+    if (value === null) return null;
+    if (Array.isArray(value)) return value.map(cleanForFirestore);
+    if (value && typeof value === 'object') {
+      return Object.fromEntries(Object.entries(value).map(([key, val]) => [key, cleanForFirestore(val)]));
+    }
+    return value;
+  }
+
   function publicState() {
-    return { ...state, session: null };
+    return cleanForFirestore({ ...state, session: null });
   }
 
   function firebaseConfigReady() {
@@ -2872,10 +2882,35 @@ function toggleMode() {
     modal.setAttribute('aria-hidden', 'false');
   }
 
+  function readFileAsAttachment(file) {
+    return new Promise(resolve => {
+      if (!file) { resolve(null); return; }
+      const reader = new FileReader();
+      reader.onload = () => resolve({ name: file.name, type: file.type || 'archivo', size: file.size || 0, dataUrl: String(reader.result || '') });
+      reader.onerror = () => resolve({ name: file.name, type: file.type || 'archivo', size: file.size || 0, dataUrl: '' });
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function isAttachmentValue(value) {
+    return value && typeof value === 'object' && (value.dataUrl || value.name);
+  }
+
+  function detailValueHTML(value) {
+    if (Array.isArray(value)) return escapeHTML(value.map(v => isAttachmentValue(v) ? v.name : v).join(', '));
+    if (isAttachmentValue(value)) {
+      const name = escapeHTML(value.name || 'Soporte adjunto');
+      const href = escapeHTML(value.dataUrl || '#');
+      const disabled = value.dataUrl ? '' : ' style="pointer-events:none;opacity:.55"';
+      return `<span>${name}</span><div class="row-actions" style="margin-top:6px"><a class="mini-action" href="${href}" target="_blank" rel="noopener"${disabled}>Ver</a><a class="mini-action" href="${href}" download="${name}"${disabled}>Descargar</a></div>`;
+    }
+    return escapeHTML(value);
+  }
+
   function objectDetailsHTML(data) {
     const entries = Object.entries(data || {}).filter(([, value]) => value !== undefined && value !== null && value !== '');
     if (!entries.length) return '<div class="fp-sub">Sin información adicional.</div>';
-    return `<div class="detail-list">${entries.map(([key, value]) => `<div class="detail-row"><span>${escapeHTML(key)}</span><span>${escapeHTML(Array.isArray(value) ? value.join(', ') : value)}</span></div>`).join('')}</div>`;
+    return `<div class="detail-list">${entries.map(([key, value]) => `<div class="detail-row"><span>${escapeHTML(key)}</span><span>${detailValueHTML(value)}</span></div>`).join('')}</div>`;
   }
 
   function ensureDelayNovelty(id) {
@@ -2908,12 +2943,17 @@ function toggleMode() {
     if (!item) { toast('No se encontró la novedad'); return; }
     const ctx = noveltyContext(item);
     const notes = (item.gestionNotes || []).map(n => `<div class="detail-row"><span>${escapeHTML(n.time || '')}</span><span>${escapeHTML(n.text || '')}</span></div>`).join('');
+    const attachments = Object.entries(item.formData || {}).filter(([, value]) => isAttachmentValue(value));
+    const attachmentsHTML = attachments.length
+      ? `<div class="detail-list">${attachments.map(([key, value]) => `<div class="detail-row"><span>${escapeHTML(key)}</span><span>${detailValueHTML(value)}</span></div>`).join('')}</div>`
+      : '<div class="fp-sub">Esta novedad no tiene soportes adjuntos guardados.</div>';
     openModal(`Gestión · ${item.type}`, `${ctx.date || 'Sin fecha'} · ${ctx.quicker || 'Sin nombre'} · ${ctx.cedula || 'Sin cédula'}`,
       `<div class="form-grid">
         <div class="form-field"><label>ID seguimiento OASIS</label><input name="oasisId" value="${escapeHTML(item.oasisId || '')}" placeholder="Ej: OAS-12345"></div>
         <div class="form-field"><label>Estado de gestión</label><select name="gestionStatus">${['Pendiente','En proceso','Finalizado','Cancelado'].map(v => `<option ${noveltyGestionStatus(item) === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
         <div class="form-field"><label>Responsable</label><input name="gestionOwner" value="${escapeHTML(item.gestionOwner || state.session?.name || '')}"></div>
         <div class="form-field full"><label>Nueva observación</label><textarea name="gestionObservation" placeholder="Agrega seguimiento interno"></textarea></div>
+        <div class="form-field full"><label>Soportes para OASIS</label>${attachmentsHTML}</div>
         <div class="form-field full"><label>Información registrada</label>${objectDetailsHTML({ tipo:item.type, subtipo:item.subtype, cliente:ctx.client, punto:ctx.point, referencia:item.ref, observacion:item.note, ...(item.formData || {}) })}</div>
         <div class="form-field full"><label>Historial de observaciones</label><div class="detail-list">${notes || '<div class="fp-sub">Sin observaciones de gestión.</div>'}</div></div>
       </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar gestión</button></div>`,
@@ -4182,13 +4222,21 @@ function toggleMode() {
       return `<div class="form-field"><label>${escapeHTML(field.label)}</label><input name="${field.name}" type="${field.type}" value="${escapeHTML(value)}" ${field.optional ? '' : 'required'}></div>`;
     }).join('');
     form.innerHTML = `<div class="form-grid">${fixed}${html}</div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Registrar novedad</button></div>`;
-    form.onsubmit = event => {
+    form.onsubmit = async event => {
       event.preventDefault();
       const data = {};
+      const fileReads = [];
       [...form.elements].forEach(el => {
         if (!el.name) return;
-        data[el.name] = el.type === 'file' ? (el.files?.[0]?.name || '') : el.value;
+        if (el.type === 'file') {
+          const file = el.files?.[0];
+          if (file) fileReads.push(readFileAsAttachment(file).then(attachment => { data[el.name] = attachment; }));
+          else data[el.name] = '';
+        } else {
+          data[el.name] = el.value;
+        }
       });
+      await Promise.all(fileReads);
       item.noveltyType = type;
       item.status = 'Con novedad';
       state.novelties.unshift({
