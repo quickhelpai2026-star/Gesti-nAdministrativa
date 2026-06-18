@@ -160,7 +160,9 @@
     background: linear-gradient(135deg,#F5C518,#C9A200);
     display: flex; align-items: center; justify-content: center;
     font-size: 12px; font-weight: 700; color: #000; flex-shrink: 0;
+    overflow: hidden;
   }
+  .sb-avatar img, .top-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .sb-user-name { font-size: 12px; font-weight: 600; color: var(--text-1); }
   .sb-user-role { font-size: 10px; color: var(--text-2); }
 
@@ -567,6 +569,13 @@
   .fp-title { font-size: 14px; font-weight: 800; color: var(--text-1); }
   .fp-sub { margin-top: 3px; font-size: 11px; color: var(--text-2); }
   .fp-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .malla-command-bar { display: grid; grid-template-columns: minmax(260px,1fr) auto; gap: 14px; align-items: start; margin-bottom: 14px; }
+  .malla-command-title { font-size: 18px; font-weight: 900; color: var(--text-1); }
+  .malla-command-note { margin-top: 4px; color: var(--text-2); font-size: 12px; }
+  .malla-action-groups { display: grid; grid-template-columns: repeat(2,minmax(180px,1fr)); gap: 10px; min-width: min(650px,100%); }
+  .action-group { border: 1px solid var(--border); background: rgba(0,0,0,.12); border-radius: 14px; padding: 10px; }
+  .action-group-label { margin-bottom: 8px; color: var(--text-3); font-size: 10px; font-weight: 900; letter-spacing: .7px; text-transform: uppercase; }
+  .action-group-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
   .fp-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; margin-bottom: 12px; }
   .fp-card { border: 1px solid var(--border); border-radius: 14px; background: var(--card-bg); padding: 12px; }
   .fp-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: .7px; color: var(--text-3); }
@@ -579,7 +588,8 @@
   .data-table td { font-size: 11px; color: var(--text-1); }
   .data-table th,.data-table td,.tbl th,.tbl td { white-space: nowrap; }
   .data-table tr:hover { background: rgba(245,197,24,.055); }
-  #page-mallas > :not(.functional-panel) { display: none !important; }
+  #page-mallas > :not(.functional-panel),
+  #page-config > :not(.functional-panel) { display: none !important; }
   .sort-head { border: 0; background: transparent; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; }
   .row-actions { display: flex; gap: 5px; flex-wrap: nowrap; }
   .mini-action { border: 1px solid var(--border); background: var(--card-bg); color: var(--text-1); border-radius: 8px; padding: 4px 7px; font-size: 10px; font-weight: 700; }
@@ -713,6 +723,33 @@
   .map-dot-legend { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 7px; background: var(--q); }
   .evidence-preview { width: 54px; height: 38px; object-fit: cover; border-radius: 9px; border: 1px solid rgba(245,197,24,.45); background: #111; display: inline-block; vertical-align: middle; }
   .config-split { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .settings-shell { display: grid; grid-template-columns: 260px minmax(0,1fr); min-height: 620px; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: rgba(0,0,0,.14); }
+  .settings-nav { border-right: 1px solid var(--border); padding: 16px 12px; background: rgba(0,0,0,.16); overflow: auto; }
+  .settings-section-label { margin: 12px 10px 8px; color: var(--text-3); font-size: 10px; font-weight: 900; letter-spacing: .8px; text-transform: uppercase; }
+  .settings-tab { width: 100%; min-height: 42px; border: 0; border-radius: 11px; padding: 9px 10px; background: transparent; color: var(--text-2); display: flex; align-items: center; gap: 10px; text-align: left; font-weight: 800; cursor: pointer; }
+  .settings-tab:hover { background: var(--card-bg); color: var(--text-1); }
+  .settings-tab.on { color: var(--text-1); background: rgba(245,197,24,.15); border: 1px solid rgba(245,197,24,.25); }
+  .settings-tab .ti { color: var(--q); font-size: 18px; }
+  .settings-main { padding: 24px; overflow: auto; }
+  .settings-title { font-size: 26px; line-height: 1.1; font-weight: 900; margin-bottom: 6px; }
+  .settings-desc { color: var(--text-2); font-size: 13px; margin-bottom: 22px; }
+  .settings-block { border-top: 1px solid var(--border); padding-top: 18px; margin-top: 18px; }
+  .settings-block:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+  .settings-block-title { font-size: 15px; font-weight: 900; margin-bottom: 12px; }
+  .record-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .record-card { border: 1px solid var(--border); border-radius: 14px; padding: 12px; background: var(--card-bg); cursor: pointer; }
+  .record-card:hover { border-color: rgba(245,197,24,.42); background: var(--card-bg-hover); }
+  .record-title { font-size: 13px; font-weight: 900; color: var(--text-1); margin-bottom: 4px; }
+  .record-meta { color: var(--text-2); font-size: 11px; line-height: 1.45; }
+  .settings-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .profile-row { display: grid; grid-template-columns: 88px minmax(0,1fr); gap: 18px; align-items: start; }
+  .profile-photo { width: 78px; height: 78px; border-radius: 22px; background: linear-gradient(135deg,#F5C518,#C9A200); color: #111; display: grid; place-items: center; font-size: 22px; font-weight: 900; overflow: hidden; border: 1px solid rgba(245,197,24,.35); }
+  .profile-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .point-editor { display: grid; gap: 8px; }
+  .point-row { display: grid; grid-template-columns: 1fr 1.4fr .8fr 34px; gap: 8px; align-items: center; }
+  .point-row input { width: 100%; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-1); border-radius: 10px; padding: 9px 10px; outline: 0; }
+  .module-pill-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+  .module-pill { border: 1px solid var(--border); border-radius: 13px; padding: 10px; background: var(--card-bg); display: flex; justify-content: space-between; gap: 8px; color: var(--text-1); }
   .permission-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
   .permission-tile { border: 1px solid var(--border); border-radius: 12px; padding: 9px; background: var(--card-bg); color: var(--text-1); display: flex; align-items: center; gap: 8px; font-size: 12px; }
   .permission-tile input { width: auto; }
@@ -723,9 +760,20 @@
   .subtab.on { color: #0b0b0b; background: linear-gradient(135deg,#F5C518,#C9A200); border-color: transparent; }
   .dropzone { border: 1px dashed rgba(245,197,24,.45); border-radius: 16px; padding: 14px; background: rgba(245,197,24,.07); display: grid; gap: 8px; }
   .dropzone input { max-width: 420px; }
+  .light-mode .settings-shell,
+  .light-mode .settings-nav,
+  .light-mode .record-card,
+  .light-mode .action-group,
+  .light-mode .module-pill { background: rgba(255,255,255,.9); border-color: rgba(18,18,18,.22); }
+  .light-mode .point-row input { background: #fff; color: #15130c; border-color: #ded5b8; }
   .light-mode .map-side { background: rgba(255,255,255,.88); }
   .light-mode .leaflet-map { border-color: rgba(18,18,18,.38); }
-  @media (max-width: 980px) { .map-layout { grid-template-columns: 1fr; } .map-side { max-height: none; } .permission-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 980px) {
+    .malla-command-bar, .settings-shell { grid-template-columns: 1fr; }
+    .malla-action-groups, .record-grid, .module-pill-grid { grid-template-columns: 1fr; }
+    .settings-nav { border-right: 0; border-bottom: 1px solid var(--border); }
+    .map-layout { grid-template-columns: 1fr; } .map-side { max-height: none; } .permission-grid { grid-template-columns: 1fr; }
+  }
   .login-overlay {
     position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center;
     padding: 20px; background: radial-gradient(circle at 80% 10%,rgba(245,197,24,.45),transparent 32%),linear-gradient(135deg,#060606,#17130a);
@@ -2021,9 +2069,33 @@ function toggleMode() {
     });
     const headers = visibleMallaColumns().map(key => headerCell(key));
     const canEditTitles = hasPermission('perm:editarTitulosMalla');
-    panel('mallas', 'Gestión real de mallas y turnos', 'Crea disponibilidades y cambia estados. Los cambios quedan guardados en localStorage.',
-      `<button class="dev-btn primary" data-open="malla"><i class="ti ti-plus"></i> Nueva malla</button><label class="dev-btn"><i class="ti ti-upload"></i> Importar malla<input type="file" accept=".xlsx,.xls,.csv" data-import-malla style="display:none"></label><button class="dev-btn" data-download-malla-template><i class="ti ti-download"></i> Descargar base</button><button class="dev-btn" data-replicate-mass><i class="ti ti-copy"></i> Replicar masivo</button>${canEditTitles ? '<button class="dev-btn" data-open-malla-lists><i class="ti ti-list-details"></i> Listas malla</button><button class="dev-btn" data-add-column="mallas"><i class="ti ti-columns"></i> Agregar título</button><button class="dev-btn" data-new-malla-template><i class="ti ti-template"></i> Nueva plantilla</button><button class="dev-btn" data-reset-columns="mallas"><i class="ti ti-refresh"></i> Reset columnas</button>' : ''}<button class="dev-btn" data-export="availabilities">Exportar CSV</button><button class="dev-btn" data-export="quickgo"><i class="ti ti-file-export"></i> Exportar Quick Go</button>`,
-      `<div class="toolbar-line"><span class="fp-sub">Clic en un encabezado para ordenar. Usa ‹ › para mover columnas. Tolerancia ingreso:</span><input type="number" data-ingress-grace value="${escapeHTML(state.prefs.ingressGraceMinutes || 30)}" style="width:74px"><span class="fp-sub">minutos</span></div>` +
+    const adminTools = canEditTitles ? `<div class="action-group"><div class="action-group-label">Estructura</div><div class="action-group-buttons">
+      <button class="dev-btn" data-open-malla-lists><i class="ti ti-list-details"></i> Listas malla</button>
+      <button class="dev-btn" data-add-column="mallas"><i class="ti ti-columns"></i> Agregar título</button>
+      <button class="dev-btn" data-reset-columns="mallas"><i class="ti ti-refresh"></i> Reset columnas</button>
+    </div></div>` : '';
+    panel('mallas', 'Mallas', '',
+      '',
+      `<div class="malla-command-bar">
+        <div>
+          <div class="malla-command-title">Programación diaria</div>
+          <div class="malla-command-note">Carga, organiza, replica y exporta la malla operativa del día.</div>
+        </div>
+        <div class="malla-action-groups">
+          <div class="action-group"><div class="action-group-label">Carga</div><div class="action-group-buttons">
+            <button class="dev-btn primary" data-open="malla"><i class="ti ti-plus"></i> Nueva malla</button>
+            <label class="dev-btn"><i class="ti ti-upload"></i> Importar malla<input type="file" accept=".xlsx,.xls,.csv" data-import-malla style="display:none"></label>
+            <button class="dev-btn" data-download-malla-template><i class="ti ti-download"></i> Descargar base</button>
+          </div></div>
+          <div class="action-group"><div class="action-group-label">Operación</div><div class="action-group-buttons">
+            <button class="dev-btn" data-replicate-mass><i class="ti ti-copy"></i> Replicar masivo</button>
+            <button class="dev-btn" data-export="availabilities"><i class="ti ti-file-export"></i> Exportar CSV</button>
+            <button class="dev-btn" data-export="quickgo"><i class="ti ti-file-export"></i> Exportar Quick Go</button>
+          </div></div>
+          ${adminTools}
+        </div>
+      </div>
+      <div class="toolbar-line"><span class="fp-sub">Clic en un encabezado para ordenar. Usa ‹ › para mover columnas. Tolerancia ingreso:</span><input type="number" data-ingress-grace value="${escapeHTML(state.prefs.ingressGraceMinutes || 30)}" style="width:74px"><span class="fp-sub">minutos</span></div>` +
       (!rows.length ? `<div class="dropzone" style="margin-bottom:12px"><strong>Malla sin información</strong><span class="fp-sub">Crea una nueva malla, importa un archivo masivo o descarga la base para empezar a cargar datos.</span></div>` : '') + table(headers, rows)
     );
     const page = document.getElementById('page-mallas');
@@ -2305,39 +2377,71 @@ function toggleMode() {
   }
 
   function renderConfig() {
-    const tab = state.prefs.configTab || 'clientes';
-    const clients = state.clients.map(c => row([
-      escapeHTML(c.idProyecto), escapeHTML(c.name), `${escapeHTML(c.delayRule)} min`, escapeHTML(c.lunch), escapeHTML(c.approval),
-      `<div class="point-list">${(c.points || []).map(p => `<span class="point-chip">${escapeHTML(pointName(p))} · ${escapeHTML(p.city || '')}</span>`).join('') || '<span class="fp-sub">Sin puntos</span>'}</div>`,
-      escapeHTML(c.alerts),
-      `<div class="row-actions">${action('Editar', 'editClient', c.id)}${action('Punto', 'addPoint', c.id)}${action('Eliminar', 'deleteClient', c.id)}</div>`
-    ]));
-    const users = state.users.map(u => row([
-      escapeHTML(u.name), escapeHTML(u.email), escapeHTML(u.phone), escapeHTML(u.username), pill(u.profile), escapeHTML(u.client || u.scope || ''), escapeHTML(u.point || ''),
-      `<div class="row-actions">${action('Editar', 'editUser', u.id)}${action('Permisos', 'permissionsUser', u.id)}${action('Eliminar', 'deleteUser', u.id)}</div>`
-    ]));
-    const quickers = state.quickers.map(q => row([
-      escapeHTML(q.cedula), escapeHTML(q.name), escapeHTML(q.phone), escapeHTML(q.email), escapeHTML(q.client), escapeHTML(q.point), escapeHTML(q.paymentEnabled || 'No'), escapeHTML((q.paymentTypes || []).join(', ')),
-      `<div class="row-actions">${action('Seguimiento', 'followQuicker', q.id)}${action('Bloquear', 'blockQuicker', q.id)}</div>`
-    ]));
+    const user = currentUser();
+    const profile = user.profile || state.session?.profile || '';
+    const isAdmin = profile === 'Administrador' || !profile;
+    const isCoordinator = profile === 'Coordinador';
+    const allowedTabs = ['miUsuario', ...(isAdmin ? ['clientes', 'usuarios', 'quickers', 'modulos'] : []), ...(isCoordinator ? ['quickers'] : [])];
+    const tab = allowedTabs.includes(state.prefs.configTab) ? state.prefs.configTab : 'miUsuario';
+    const navBtn = (id, icon, label) => `<button class="settings-tab ${tab === id ? 'on' : ''}" data-config-tab="${id}"><i class="ti ${icon}"></i><span>${label}</span></button>`;
+    const userPhoto = user.avatarUrl ? `<img src="${user.avatarUrl}" alt="${escapeHTML(user.name)}">` : initials(user.name);
+    const accountSection = `<section class="settings-block">
+      <div class="settings-block-title">Mi usuario</div>
+      <div class="profile-row">
+        <div><div class="profile-photo">${userPhoto}</div><label class="dev-btn" style="margin-top:10px"><i class="ti ti-camera"></i> Foto<input type="file" accept="image/*" data-profile-photo style="display:none"></label></div>
+        <form class="form-grid" data-account-form>
+          <div class="form-field"><label>Nombre</label><input name="name" value="${escapeHTML(user.name || '')}" ${isAdmin ? '' : 'readonly'}></div>
+          <div class="form-field"><label>Correo / usuario</label><input name="email" type="email" value="${escapeHTML(user.email || user.username || '')}" ${isAdmin ? '' : 'readonly'}></div>
+          <div class="form-field"><label>Teléfono</label><input name="phone" value="${escapeHTML(user.phone || '')}" ${isAdmin ? '' : 'readonly'}></div>
+          <div class="form-field"><label>Nueva contraseña</label><input name="password" type="password" placeholder="${isAdmin ? 'Cambiar contraseña' : 'Solo administrador'}" ${isAdmin ? '' : 'readonly'}></div>
+          <div class="form-field full"><button class="dev-btn primary" type="button" data-save-account><i class="ti ti-device-floppy"></i> Guardar cambios</button></div>
+        </form>
+      </div>
+    </section>`;
+    const clientCards = state.clients.map(c => `<div class="record-card">
+      <div class="record-title">${escapeHTML(c.name)}</div>
+      <div class="record-meta">ID Proyecto: ${escapeHTML(c.idProyecto || '')}<br>Almuerzo: ${escapeHTML(c.lunch || 'No')} · Aprobación: ${escapeHTML(c.approval || 'No aplica')}<br>Alertas: ${escapeHTML(c.alerts || 'Ninguno')}<br>Puntos: ${(c.points || []).map(p => escapeHTML(pointName(p))).join(', ') || 'Sin puntos'}</div>
+      <div class="row-actions" style="margin-top:10px">${action('Ver / editar', 'editClient', c.id)}${action('Agregar punto', 'addPoint', c.id)}${action('Eliminar', 'deleteClient', c.id)}</div>
+    </div>`).join('');
     const existing = state.users.map(u => `<option value="${escapeHTML(u.id)}">${escapeHTML(u.name)} · ${escapeHTML(u.username)}</option>`).join('');
-    const configActions = `${hasPermission('perm:crearClientes') ? '<button class="dev-btn primary" data-open="cliente"><i class="ti ti-building-plus"></i> Cliente</button>' : ''}${hasPermission('perm:crearUsuarios') ? '<button class="dev-btn" data-open="usuario"><i class="ti ti-user-plus"></i> Usuario</button><button class="dev-btn" data-open="messengerUser"><i class="ti ti-user-bolt"></i> Mensajero</button>' : ''}`;
-    panel('config', 'Configuración funcional', 'Parametriza clientes, reglas por cliente y usuarios base del sistema.',
-      configActions,
-      `<div class="subtabs"><button class="subtab ${tab === 'clientes' ? 'on' : ''}" data-config-tab="clientes">Clientes</button><button class="subtab ${tab === 'usuarios' ? 'on' : ''}" data-config-tab="usuarios">Usuarios</button><button class="subtab ${tab === 'mensajeros' ? 'on' : ''}" data-config-tab="mensajeros">Mensajeros</button></div>
-      <div class="config-split">
-        <section style="${tab === 'clientes' ? '' : 'display:none'}">
-          <div class="fp-title" style="margin-bottom:8px">Clientes, reglas y puntos de venta</div>
-          ${table(['ID Proyecto', 'Cliente', 'Retardo', 'Almuerzo', 'Aprobación', 'Puntos de venta', 'Alertas', 'Acciones'], clients)}
-        </section>
-        <section style="${tab === 'usuarios' ? '' : 'display:none'}">
-          <div class="toolbar-line"><span class="fp-title">Usuarios y accesos</span><select data-edit-user-select><option value="">Editar usuario existente...</option>${existing}</select><button class="dev-btn" data-edit-selected-user>Editar seleccionado</button></div>
-          ${table(['Nombre', 'Correo', 'Teléfono', 'Usuario', 'Perfil', 'Cliente asignado', 'Punto asignado', 'Acciones'], users)}
-        </section>
-        <section style="${tab === 'mensajeros' ? '' : 'display:none'}">
-          <div class="toolbar-line"><span class="fp-title">Usuarios mensajeros desde matriz</span><button class="dev-btn primary" data-open="messengerUser"><i class="ti ti-user-plus"></i> Crear mensajero</button></div>
-          ${table(['Cédula', 'Nombre', 'Teléfono', 'Correo', 'Cliente', 'Punto', 'Pagos adicionales', 'Tipos pago', 'Acciones'], quickers)}
-        </section>
+    const userCards = state.users.map(u => `<div class="record-card">
+      <div class="record-title">${escapeHTML(u.name)}</div>
+      <div class="record-meta">${escapeHTML(u.email || u.username)}<br>${escapeHTML(u.phone || 'Sin teléfono')}<br>${escapeHTML(u.profile)} · ${escapeHTML(u.client || u.scope || 'Global')} ${u.point ? `· ${escapeHTML(u.point)}` : ''}</div>
+      <div class="row-actions" style="margin-top:10px">${action('Editar', 'editUser', u.id)}${action('Permisos', 'permissionsUser', u.id)}${action('Eliminar', 'deleteUser', u.id)}</div>
+    </div>`).join('');
+    const quickers = scopedItems(state.quickers, q => q).map(q => `<div class="record-card">
+      <div class="record-title">${escapeHTML(q.name)}</div>
+      <div class="record-meta">Cédula: ${escapeHTML(q.cedula || '')}<br>${escapeHTML(q.email || '')} · ${escapeHTML(q.phone || '')}<br>${escapeHTML(q.client || '')} · ${escapeHTML(q.point || 'Todos los puntos')}<br>Pagos adicionales: ${escapeHTML(q.paymentEnabled || 'No')} ${q.paymentTypes?.length ? `(${escapeHTML(q.paymentTypes.join(', '))})` : ''}</div>
+      <div class="row-actions" style="margin-top:10px">${action('Seguimiento', 'followQuicker', q.id)}${action('Bloquear', 'blockQuicker', q.id)}</div>
+    </div>`).join('');
+    const customCols = (state.prefs.customMallaColumns || []).map(c => `<div class="module-pill"><span>${escapeHTML(c.label)}<br><small class="fp-sub">${escapeHTML(c.type)} · ${c.enabled === false ? 'Inhabilitado' : 'Activo'}</small></span><span>${escapeHTML((c.roles || []).join(', ') || 'Todos')}</span></div>`).join('');
+    const sections = {
+      miUsuario: accountSection,
+      clientes: `<section class="settings-block"><div class="settings-actions"><button class="dev-btn primary" data-open="cliente"><i class="ti ti-building-plus"></i> Nuevo cliente</button></div><div class="record-grid">${clientCards || '<div class="fp-sub">No hay clientes creados.</div>'}</div></section>`,
+      usuarios: `<section class="settings-block"><div class="settings-actions"><button class="dev-btn primary" data-open="usuario"><i class="ti ti-user-plus"></i> Nuevo usuario</button><select data-edit-user-select><option value="">Editar usuario existente...</option>${existing}</select><button class="dev-btn" data-edit-selected-user>Editar seleccionado</button></div><div class="record-grid">${userCards || '<div class="fp-sub">No hay usuarios creados.</div>'}</div></section>`,
+      quickers: `<section class="settings-block"><div class="settings-actions"><button class="dev-btn primary" data-open="messengerUser"><i class="ti ti-user-bolt"></i> Crear mensajero</button></div><div class="record-grid">${quickers || '<div class="fp-sub">No hay mensajeros creados.</div>'}</div></section>`,
+      modulos: `<section class="settings-block"><div class="settings-actions">
+        <button class="dev-btn" data-open-malla-lists><i class="ti ti-list-details"></i> Listas malla</button>
+        <button class="dev-btn" data-add-column="mallas"><i class="ti ti-columns"></i> Agregar título</button>
+        <button class="dev-btn" data-new-malla-template><i class="ti ti-template"></i> Agregar plantilla</button>
+        <button class="dev-btn" data-reset-columns="mallas"><i class="ti ti-refresh"></i> Reset columnas</button>
+      </div><div class="settings-block-title">Columnas adicionales de la malla</div><div class="module-pill-grid">${customCols || '<div class="fp-sub">No hay títulos adicionales creados.</div>'}</div></section>`
+    };
+    panel('config', 'Configuración', '', '',
+      `<div class="settings-shell">
+        <aside class="settings-nav">
+          <div class="settings-section-label">Cuenta</div>
+          ${navBtn('miUsuario', 'ti-user-circle', user.name || 'Mi usuario')}
+          ${(isAdmin || isCoordinator) ? '<div class="settings-section-label">Espacio de trabajo</div>' : ''}
+          ${isAdmin ? navBtn('clientes', 'ti-building-store', 'Clientes') + navBtn('usuarios', 'ti-users', 'Usuarios') : ''}
+          ${(isAdmin || isCoordinator) ? navBtn('quickers', 'ti-motorbike', 'Quickers') : ''}
+          ${isAdmin ? '<div class="settings-section-label">Módulos</div>' + navBtn('modulos', 'ti-layout-grid-add', 'Módulos') : ''}
+        </aside>
+        <main class="settings-main">
+          <div class="settings-title">${tab === 'miUsuario' ? 'Mi usuario' : tab === 'clientes' ? 'Clientes' : tab === 'usuarios' ? 'Usuarios' : tab === 'quickers' ? 'Quickers' : 'Módulos'}</div>
+          <div class="settings-desc">${tab === 'miUsuario' ? 'Administra la información de la cuenta con la que ingresaste.' : tab === 'clientes' ? 'Crea clientes, reglas de operación y puntos de venta.' : tab === 'usuarios' ? 'Crea usuarios, perfiles, alcance operativo y permisos.' : tab === 'quickers' ? 'Crea usuarios mensajeros desde matriz de activos y habilita pagos adicionales.' : 'Configura títulos, plantillas y listas que alimentan la malla.'}</div>
+          ${sections[tab] || sections.miUsuario}
+        </main>
       </div>`
     );
   }
@@ -3022,27 +3126,68 @@ function toggleMode() {
     return [''].concat(points).map(p => `<option value="${escapeHTML(p)}" ${p === selected ? 'selected' : ''}>${p ? escapeHTML(p) : 'Todos los puntos'}</option>`).join('');
   }
 
+  function moduleLabel(key) {
+    return ({
+      dashboard: 'Dashboard',
+      mallas: 'Mallas',
+      mapa: 'Mapa en vivo',
+      novedades: 'Novedades',
+      tickets: 'Tickets',
+      quickers: 'Quickers',
+      matriz: 'Matriz activos',
+      hsq: 'HSQ',
+      casos: 'Casos admin',
+      reportes: 'Reportes',
+      config: 'Configuración',
+      mensajero: 'App mensajero',
+      'perm:editarTitulosMalla': 'Editar títulos malla',
+      'perm:crearUsuarios': 'Crear usuarios',
+      'perm:crearClientes': 'Crear clientes'
+    })[key] || key;
+  }
+
+  function avatarMarkup(user) {
+    return user?.avatarUrl ? `<img src="${user.avatarUrl}" alt="${escapeHTML(user.name || '')}">` : initials(user?.name || 'AD');
+  }
+
   function openClientForm(id = '') {
-    const item = state.clients.find(c => c.id === id) || { id: '', idProyecto: '', name: '', delayRule: 30, lunch: 'Si', approval: 'Activa', evidenceRule: '', alerts: '', points: [] };
+    const item = state.clients.find(c => c.id === id) || { id: '', idProyecto: '', name: '', delayRule: 30, lunch: 'No', approval: 'No aplica', evidenceRule: '', evidenceTypes: [], alerts: 'Ninguno', points: [] };
     const form = document.getElementById('modal-form');
     document.getElementById('modal-title').textContent = id ? `Editar cliente · ${item.name}` : 'Nuevo cliente';
     document.getElementById('modal-subtitle').textContent = 'Configura reglas exactas por cliente y puntos de venta.';
+    const evidence = item.evidenceTypes || String(item.evidenceRule || '').split(',').map(v => v.trim()).filter(Boolean);
+    const pointRows = (item.points?.length ? item.points : [{ name: '', address: '', city: '' }]).map(p => `<div class="point-row">
+      <input name="pointName" value="${escapeHTML(pointName(p))}" placeholder="Nombre punto">
+      <input name="pointAddress" value="${escapeHTML(p.address || '')}" placeholder="Dirección">
+      <input name="pointCity" value="${escapeHTML(p.city || '')}" placeholder="Ciudad">
+      <button class="col-btn" type="button" data-remove-point-row title="Quitar">×</button>
+    </div>`).join('');
     form.innerHTML = `<div class="form-grid">
-      <div class="form-field"><label>ID Proyecto / centro de costos</label><input name="idProyecto" value="${escapeHTML(item.idProyecto)}" required></div>
+      <div class="form-field"><label>ID Proyecto</label><input name="idProyecto" value="${escapeHTML(item.idProyecto)}" required></div>
       <div class="form-field"><label>Cliente</label><input name="name" value="${escapeHTML(item.name)}" required></div>
       <div class="form-field"><label>Regla retardo en minutos</label><input name="delayRule" type="number" value="${escapeHTML(item.delayRule)}" required></div>
-      <div class="form-field"><label>Almuerzo</label><select name="lunch"><option ${item.lunch === 'Si' ? 'selected' : ''}>Si</option><option ${item.lunch === 'No' ? 'selected' : ''}>No</option></select></div>
-      <div class="form-field"><label>Aprobación punto</label><select name="approval"><option ${item.approval === 'Activa' ? 'selected' : ''}>Activa</option><option ${item.approval === 'No aplica' ? 'selected' : ''}>No aplica</option></select></div>
-      <div class="form-field"><label>Alertas</label><input name="alerts" value="${escapeHTML(item.alerts)}" placeholder="KML, permanencia 30m, salida de zona"></div>
-      <div class="form-field full"><label>Regla evidencias</label><input name="evidenceRule" value="${escapeHTML(item.evidenceRule)}" placeholder="Inicio 2 fotos / cierre 1 foto"></div>
-      <div class="form-field full"><label>Puntos de venta separados por coma</label><input name="points" value="${escapeHTML((item.points || []).map(pointName).join(', '))}" placeholder="Santa Bárbara, Chapinero"></div>
+      <div class="form-field"><label>Se requiere registro de almuerzo</label><select name="lunch"><option ${item.lunch === 'No' ? 'selected' : ''}>No</option><option ${item.lunch === 'Si' ? 'selected' : ''}>Si</option></select></div>
+      <div class="form-field"><label>Aprobación de punto</label><select name="approval"><option ${item.approval === 'Activa' ? 'selected' : ''}>Activa</option><option ${item.approval === 'No aplica' ? 'selected' : ''}>No aplica</option></select></div>
+      <div class="form-field"><label>Alertas</label><select name="alerts"><option ${item.alerts === 'Ninguno' ? 'selected' : ''}>Ninguno</option><option ${item.alerts === 'Fuera de zona' ? 'selected' : ''}>Fuera de zona</option><option ${item.alerts === 'Permanencia de 30 min' ? 'selected' : ''}>Permanencia de 30 min</option></select></div>
+      <div class="form-field"><label>Cantidad de evidencias</label><select name="evidenceTypes" multiple size="5">
+        ${['Ingreso', 'Salida', 'Documento', 'Nomenclatura', 'Edificio'].map(v => `<option value="${v}" ${evidence.includes(v) ? 'selected' : ''}>${v}</option>`).join('')}
+      </select></div>
+      <div class="form-field full"><label>Puntos de venta</label><div class="point-editor" data-point-editor>${pointRows}</div><button class="dev-btn" type="button" data-add-point-row><i class="ti ti-plus"></i> Agregar otro punto</button></div>
     </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar cliente</button></div>`;
     form.onsubmit = event => {
       event.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
       const previous = item.points || [];
-      const points = data.points.split(',').map(p => p.trim()).filter(Boolean).map(name => previous.find(old => pointName(old) === name) || { name, city: 'Bogotá', address: '', lunch: data.lunch, approval: data.approval === 'Activa' ? 'Si' : 'No', hasKml: 'No', photosIn: 2, photosOut: 2, extraPhotos: '' });
-      const payload = { ...item, id: item.id || uid('CLI'), ...data, points };
+      const pointNames = [...form.querySelectorAll('[name="pointName"]')];
+      const pointAddresses = [...form.querySelectorAll('[name="pointAddress"]')];
+      const pointCities = [...form.querySelectorAll('[name="pointCity"]')];
+      const points = pointNames.map((input, index) => {
+        const name = input.value.trim();
+        const old = previous.find(p => pointName(p) === name) || {};
+        return name ? { ...old, name, address: pointAddresses[index]?.value || '', city: pointCities[index]?.value || '', lunch: data.lunch, approval: data.approval === 'Activa' ? 'Si' : 'No', hasKml: old.hasKml || 'No', photosIn: old.photosIn || 2, photosOut: old.photosOut || 2, extraPhotos: old.extraPhotos || '' } : null;
+      }).filter(Boolean);
+      const evidenceTypes = [...form.querySelectorAll('[name="evidenceTypes"] option:checked')].map(o => o.value);
+      const payload = { ...item, id: item.id || uid('CLI'), ...data, evidenceTypes, evidenceRule: evidenceTypes.join(', '), points };
       if (id) state.clients = state.clients.map(c => c.id === id ? payload : c);
       else state.clients.unshift(payload);
       closeModal();
@@ -3089,27 +3234,31 @@ function toggleMode() {
   function openUserForm(id = '') {
     const item = state.users.find(u => u.id === id) || { id: '', name: '', email: '', phone: '', username: '', password: '', profile: 'Coordinador', client: '', point: '', scope: '', permissions: [] };
     const clients = ['Global', ...state.clients.map(c => c.name)];
+    const modules = ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'quickers', 'matriz', 'hsq', 'casos', 'reportes', 'config', 'perm:editarTitulosMalla', 'perm:crearUsuarios', 'perm:crearClientes'];
+    const active = new Set(item.permissions?.length ? item.permissions : permissionsFor(item.profile, item));
     const form = document.getElementById('modal-form');
     document.getElementById('modal-title').textContent = id ? `Editar usuario · ${item.username}` : 'Nuevo usuario';
     document.getElementById('modal-subtitle').textContent = 'El usuario y sus permisos determinan qué visual tendrá al ingresar.';
     form.innerHTML = `<div class="form-grid">
       <div class="form-field"><label>Nombre</label><input name="name" value="${escapeHTML(item.name)}" required></div>
-      <div class="form-field"><label>Correo</label><input name="email" type="email" value="${escapeHTML(item.email)}" required></div>
+      <div class="form-field"><label>Correo / usuario de ingreso</label><input name="email" type="email" value="${escapeHTML(item.email || item.username)}" required></div>
       <div class="form-field"><label>Teléfono</label><input name="phone" value="${escapeHTML(item.phone)}" required></div>
-      <div class="form-field"><label>Usuario</label><input name="username" value="${escapeHTML(item.username)}" required></div>
       <div class="form-field"><label>Contraseña</label><input name="password" type="text" value="${escapeHTML(item.password)}" placeholder="Define la contraseña" required></div>
-      <div class="form-field"><label>Perfil base</label><select name="profile"><option>Administrador</option><option>Coordinador</option><option>Quicker</option><option>Cliente Admin</option><option>Usuario Punto</option><option>Gerencia</option><option>HSQ</option></select></div>
+      <div class="form-field"><label>Perfil</label><select name="profile"><option>Administrador</option><option>Coordinador</option><option>Cliente</option><option>Usuario Punto</option><option>HSQ</option></select></div>
       <div class="form-field"><label>Cliente a cargo</label><select name="client" id="user-client">${clients.map(c => `<option value="${escapeHTML(c)}" ${c === (item.client || item.scope) ? 'selected' : ''}>${escapeHTML(c)}</option>`).join('')}</select></div>
       <div class="form-field"><label>Punto de venta</label><select name="point" id="user-point">${pointOptionsFor(item.client || item.scope, item.point)}</select></div>
+      <div class="form-field full"><label>Permisos</label><div class="permission-grid">${modules.map(m => `<label class="permission-tile"><input type="checkbox" name="perm" value="${m}" ${active.has(m) ? 'checked' : ''}> ${moduleLabel(m)}</label>`).join('')}</div></div>
     </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar usuario</button></div>`;
-    form.elements.profile.value = item.profile || 'Coordinador';
+    form.elements.profile.value = item.profile === 'Cliente Admin' ? 'Cliente' : (item.profile || 'Coordinador');
     document.getElementById('user-client').onchange = event => {
       document.getElementById('user-point').innerHTML = pointOptionsFor(event.target.value);
     };
     form.onsubmit = event => {
       event.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
-      const payload = { ...item, id: item.id || uid('USR'), ...data, scope: data.point || data.client, permissions: item.permissions || [] };
+      const profile = data.profile === 'Cliente' ? 'Cliente Admin' : data.profile;
+      const permissions = [...form.querySelectorAll('input[name="perm"]:checked')].map(i => i.value);
+      const payload = { ...item, id: item.id || uid('USR'), ...data, username: data.email, profile, scope: data.point || data.client, permissions };
       if (id) state.users = state.users.map(u => u.id === id ? payload : u);
       else state.users.unshift(payload);
       closeModal();
@@ -3128,7 +3277,8 @@ function toggleMode() {
     const form = document.getElementById('modal-form');
     document.getElementById('modal-title').textContent = 'Crear usuario mensajero';
     document.getElementById('modal-subtitle').textContent = 'Busca por cédula en la matriz de activos y crea el Quicker + usuario de ingreso.';
-    const clients = state.clients.map(c => c.name);
+    const user = currentUser();
+    const clients = user.profile === 'Coordinador' && user.client && user.client !== 'Global' ? [user.client] : state.clients.map(c => c.name);
     form.innerHTML = `<div class="form-grid">
       <div class="form-field"><label>Cédula</label><input name="cedula" id="messenger-cedula" required></div>
       <div class="form-field" style="align-self:end"><button class="dev-btn" type="button" id="lookup-asset"><i class="ti ti-search"></i> Buscar matriz</button></div>
@@ -3141,7 +3291,7 @@ function toggleMode() {
       <div class="form-field"><label>Cliente asignado</label><select name="client" id="messenger-client">${clients.map(c => `<option>${escapeHTML(c)}</option>`).join('')}</select></div>
       <div class="form-field"><label>Punto de venta</label><select name="point" id="messenger-point">${pointOptionsFor(clients[0] || '')}</select></div>
       <div class="form-field"><label>Reporta pagos adicionales</label><select name="paymentEnabled"><option>No</option><option>Si</option></select></div>
-      <div class="form-field"><label>Tipos de pago habilitados</label><input name="paymentTypes" value="Parqueaderos, Periferias, Transferencias"></div>
+      <div class="form-field"><label>Tipos de pago habilitados</label><select name="paymentTypes" multiple size="3"><option selected>Parqueaderos · valor y factura</option><option selected>Periferias · guía y foto servicio</option><option selected>Transferencias · guía y foto documento</option></select></div>
     </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Crear mensajero</button></div>`;
     document.getElementById('messenger-client').onchange = event => {
       document.getElementById('messenger-point').innerHTML = pointOptionsFor(event.target.value);
@@ -3163,7 +3313,7 @@ function toggleMode() {
         id: uid('QK'), cedula: data.cedula, name: data.name, phone: data.phone, email: data.email,
         client: data.client, point: data.point, zone: '', docName: 'Documentos base', docExpires: '', status: 'Activo',
         projectName: data.projectName, dateIngress: data.dateIngress, paymentEnabled: data.paymentEnabled,
-        paymentTypes: data.paymentTypes.split(',').map(v => v.trim()).filter(Boolean)
+        paymentTypes: [...form.querySelectorAll('select[name="paymentTypes"] option:checked')].map(o => o.value)
       };
       state.quickers.unshift(q);
       state.users.unshift({ id: uid('USR'), name: data.name, email: data.email, phone: data.phone, username: data.email, password: data.password, profile: 'Quicker', scope: data.name, client: data.client, point: data.point, permissions: ['mensajero'] });
@@ -3183,7 +3333,7 @@ function toggleMode() {
     const form = document.getElementById('modal-form');
     document.getElementById('modal-title').textContent = `Permisos · ${user.name}`;
     document.getElementById('modal-subtitle').textContent = 'El administrador puede habilitar o inhabilitar módulos por usuario.';
-    form.innerHTML = `<div class="permission-grid">${modules.map(m => `<label class="permission-tile"><input type="checkbox" name="perm" value="${m}" ${active.has(m) ? 'checked' : ''}> ${m}</label>`).join('')}</div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar permisos</button></div>`;
+    form.innerHTML = `<div class="permission-grid">${modules.map(m => `<label class="permission-tile"><input type="checkbox" name="perm" value="${m}" ${active.has(m) ? 'checked' : ''}> ${moduleLabel(m)}</label>`).join('')}</div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar permisos</button></div>`;
     form.onsubmit = event => {
       event.preventDefault();
       user.permissions = [...form.querySelectorAll('input[name="perm"]:checked')].map(i => i.value);
@@ -3214,6 +3364,37 @@ function toggleMode() {
       const id = document.querySelector('[data-edit-user-select]')?.value;
       if (id) openUserForm(id);
       else toast('Selecciona un usuario existente');
+    }
+    const addPointRow = event.target.closest('[data-add-point-row]');
+    if (addPointRow) {
+      const editor = document.querySelector('[data-point-editor]');
+      editor?.insertAdjacentHTML('beforeend', `<div class="point-row">
+        <input name="pointName" placeholder="Nombre punto">
+        <input name="pointAddress" placeholder="Dirección">
+        <input name="pointCity" placeholder="Ciudad">
+        <button class="col-btn" type="button" data-remove-point-row title="Quitar">×</button>
+      </div>`);
+    }
+    const removePointRow = event.target.closest('[data-remove-point-row]');
+    if (removePointRow) removePointRow.closest('.point-row')?.remove();
+    const saveAccount = event.target.closest('[data-save-account]');
+    if (saveAccount) {
+      const user = currentUser();
+      const form = document.querySelector('[data-account-form]');
+      if (!user?.id || !form) return;
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (user.profile === 'Administrador') {
+        user.name = data.name || user.name;
+        user.email = data.email || user.email;
+        user.username = data.email || user.username;
+        user.phone = data.phone || user.phone;
+        if (data.password) user.password = data.password;
+        state.session.name = user.name;
+        state.session.username = user.username;
+      }
+      log('Usuario', 'Actualizó mi usuario', user.username || user.name);
+      saveState('Mi usuario actualizado');
+      applySession();
     }
     const exp = event.target.closest('[data-export]');
     if (exp) exportCSV(exp.dataset.export);
@@ -3274,6 +3455,19 @@ function toggleMode() {
         log('Mapa KML', 'Adjuntó archivo KMZ/KML', state.prefs.kmlName);
         saveState('KML adjuntado');
       }
+    }
+    if (event.target.matches('[data-profile-photo]')) {
+      const file = event.target.files?.[0];
+      const user = currentUser();
+      if (!file || !user?.id) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        user.avatarUrl = String(reader.result || '');
+        log('Usuario', 'Actualizó foto de perfil', user.username || user.name);
+        saveState('Foto de perfil actualizada');
+        applySession();
+      };
+      reader.readAsDataURL(file);
     }
     if (event.target.matches('[data-asset-matrix-input]')) {
       const file = event.target.files?.[0];
@@ -3371,10 +3565,12 @@ function toggleMode() {
       return;
     }
     login?.classList.remove('open');
-    document.querySelector('.top-avatar').textContent = initials(session.name);
+    const user = currentUser();
+    document.querySelector('.top-avatar').innerHTML = avatarMarkup(user);
+    document.querySelector('.sb-avatar').innerHTML = avatarMarkup(user);
     document.querySelector('.sb-user-name').textContent = session.name;
     document.querySelector('.sb-user-role').textContent = session.profile;
-    const allowed = permissionsFor(session.profile, currentUser());
+    const allowed = permissionsFor(session.profile, user);
     document.querySelectorAll('.nav-item[onclick^="nav"]').forEach(item => {
       const match = item.getAttribute('onclick').match(/nav\('([^']+)'/);
       const id = match?.[1];
@@ -3393,7 +3589,7 @@ function toggleMode() {
     if (profile === 'Cliente Admin') return ['dashboard', 'mallas', 'novedades', 'reportes'];
     if (profile === 'Usuario Punto') return ['mallas'];
     if (profile === 'Gerencia') return ['dashboard', 'mapa', 'reportes'];
-    if (profile === 'Coordinador') return ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'quickers', 'casos', 'reportes'];
+    if (profile === 'Coordinador') return ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'quickers', 'casos', 'reportes', 'config'];
     if (profile === 'HSQ') return ['hsq', 'quickers', 'mallas'];
     return ['dashboard', 'mallas', 'mapa', 'novedades', 'tickets', 'quickers', 'matriz', 'hsq', 'casos', 'reportes', 'config', 'perm:editarTitulosMalla', 'perm:crearUsuarios', 'perm:crearClientes'];
   }
