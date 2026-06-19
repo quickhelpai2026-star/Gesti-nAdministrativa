@@ -3521,6 +3521,26 @@ function toggleMode() {
         const item = { id: uid('CAS'), ...data, status: 'Creado' };
         state.cases.unshift(item);
         log('CasoAdmin', 'Creó caso', item.id);
+        // Registrar en novedades para que aparezca en la hoja Novedades
+        const severidadAlta = /Desvinculación|Disciplinario|Descuento|Seguridad|Accidente/i.test(data.type || '');
+        state.novelties.unshift({
+          id: uid('NOV'),
+          type: data.type || 'Caso administrativo',
+          subtype: data.type || '',
+          origin: 'Coordinador',
+          ref: item.id,
+          quicker: data.quicker || '',
+          cedula: (state.quickers.find(q => q.name === data.quicker) || {}).cedula || '',
+          client: (state.quickers.find(q => q.name === data.quicker) || {}).client || '',
+          point: (state.quickers.find(q => q.name === data.quicker) || {}).point || '',
+          date: new Date().toISOString().slice(0, 10),
+          severity: severidadAlta ? 'Alta' : 'Media',
+          status: 'Reportada',
+          gestionStatus: 'Pendiente',
+          note: `Caso administrativo: ${data.type || ''}. Periodo: ${data.period || ''}. Responsable: ${data.owner || ''}.`,
+          createdAt: new Date().toISOString(),
+          formData: data
+        });
       }
     },
     hsq: {
