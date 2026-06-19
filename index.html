@@ -609,6 +609,24 @@
     font-size:21px; cursor:pointer; box-shadow:0 10px 28px rgba(245,197,24,.08);
   }
   .dashboard-icon-btn:hover { background:rgba(245,197,24,.16); transform:translateY(-1px); }
+  /* ── Dashboard lateral mejorado ── */
+  .dash-kpi-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px; }
+  .dash-kpi-card { border-radius:16px; padding:14px 12px; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center; }
+  .dash-kpi-card .dash-kpi-icon { font-size:22px; opacity:.8; }
+  .dash-kpi-val { font-size:28px; font-weight:900; line-height:1; }
+  .dash-kpi-lbl { font-size:11px; opacity:.75; font-weight:600; }
+  .dash-progress-wrap { background:rgba(255,255,255,.045); border:1px solid var(--border); border-radius:14px; padding:12px 16px; margin-bottom:4px; }
+  .dash-progress-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px; }
+  .dash-progress-label { display:flex; align-items:center; gap:6px; }
+  .dash-progress-pct { font-weight:800; color:var(--q); }
+  .dash-progress-track { height:8px; border-radius:999px; background:rgba(255,255,255,.1); overflow:hidden; }
+  .dash-progress-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#F5C518,#22C55E); transition:width .6s ease; }
+  .health-ok { color:#4ade80; } .health-warn { color:#fbbf24; } .health-bad { color:#fb7185; }
+  .dash-top-list { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+  .dash-top-row { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:10px; background:rgba(255,255,255,.04); border:1px solid var(--border); }
+  .dash-top-rank { width:20px; height:20px; border-radius:50%; background:rgba(245,197,24,.18); color:var(--q); font-size:11px; font-weight:900; display:grid; place-items:center; flex-shrink:0; }
+  .dash-top-name { flex:1; font-size:12px; color:var(--text-1); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dash-top-badge { background:rgba(245,197,24,.15); color:var(--q); border:1px solid rgba(245,197,24,.25); border-radius:999px; padding:2px 8px; font-size:11px; font-weight:800; flex-shrink:0; }
   .chart-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:14px; }
   .chart-card { border:1px solid var(--border); border-radius:16px; padding:14px; background:rgba(255,255,255,.045); min-height:190px; }
   .chart-card h4 { font-size:13px; color:var(--text-1); margin-bottom:4px; }
@@ -798,11 +816,13 @@
   .evidence-preview { width: 54px; height: 38px; object-fit: cover; border-radius: 9px; border: 1px solid rgba(245,197,24,.45); background: #111; display: inline-block; vertical-align: middle; }
   .evidence-button { border:0; background:transparent; padding:0; cursor:pointer; }
   .evidence-large { width: min(760px, 100%); max-height: 68vh; object-fit: contain; border-radius: 16px; border: 1px solid var(--border); background: #050505; }
-  .malla-record-list { display:grid; grid-template-columns: 230px minmax(0,1fr); gap:12px; max-height: 68vh; overflow:hidden; }
-  .malla-record-days { border:1px solid var(--border); border-radius:14px; padding:10px; overflow:auto; background:rgba(0,0,0,.12); }
+  .malla-record-list { display:grid; grid-template-columns: 230px minmax(0,1fr); gap:12px; height:68vh; overflow:hidden; }
+  .malla-record-days { border:1px solid var(--border); border-radius:14px; padding:10px; overflow-y:auto; overflow-x:hidden; background:rgba(0,0,0,.12); height:100%; }
+
   .malla-day-btn { width:100%; border:1px solid var(--border); background:var(--card-bg); color:var(--text-1); border-radius:12px; padding:10px; text-align:left; margin-bottom:8px; cursor:pointer; }
   .malla-day-btn:hover, .malla-day-btn.on { border-color:rgba(245,197,24,.45); background:rgba(245,197,24,.11); }
-  .malla-record-sheet { overflow:auto; border:1px solid var(--border); border-radius:14px; background:rgba(255,255,255,.03); }
+  .malla-record-sheet { overflow:auto; border:1px solid var(--border); border-radius:14px; background:rgba(255,255,255,.03); height:100%; display:flex; flex-direction:column; }
+  .malla-record-sheet .data-table-wrap { flex:1; overflow:auto; }
   .malla-record-sheet .data-table-wrap { border:0; border-radius:0; }
   .malla-record-sheet .data-table th { background:#E86F1E; color:#fff; font-size:10px; }
   .malla-record-sheet .data-table td { white-space:nowrap; }
@@ -1820,7 +1840,27 @@ function toggleMode() {
   }
 
   function publicState() {
-    return cleanForFirestore({ ...state, session: null });
+    // Eliminar datos base64 (fotos) antes de guardar en Firestore para no exceder 1MB
+    const stripped = JSON.parse(JSON.stringify({ ...state, session: null }));
+    if (Array.isArray(stripped.evidences)) {
+      stripped.evidences = stripped.evidences.map(e => ({ ...e, photoData: null, dataUrl: null }));
+    }
+    if (Array.isArray(stripped.novelties)) {
+      stripped.novelties = stripped.novelties.map(n => { const f = { ...n }; delete f.formData; return f; });
+    }
+    if (Array.isArray(stripped.parkingReports)) {
+      stripped.parkingReports = stripped.parkingReports.map(p => ({ ...p, photoData: null, dataUrl: null }));
+    }
+    if (Array.isArray(stripped.availabilities)) {
+      stripped.availabilities = stripped.availabilities.map(a => ({ ...a, evidencePhoto: a.evidencePhoto ? '[foto_local]' : '' }));
+    }
+    if (Array.isArray(stripped.quickers)) {
+      stripped.quickers = stripped.quickers.map(q => ({
+        ...q,
+        documents: Object.fromEntries(Object.entries(q.documents || {}).map(([k, v]) => [k, { ...v, dataUrl: null }]))
+      }));
+    }
+    return cleanForFirestore(stripped);
   }
 
   function firebaseConfigReady() {
@@ -2459,23 +2499,34 @@ function toggleMode() {
   function openModuleDashboard(moduleId) {
     const rows = moduleRowsForDashboard(moduleId);
     const pending = rows.filter(isPendingNovelty).length;
+    const closed = rows.filter(r => /cerrad|finaliz|aprob/i.test(r.status || r.gestionStatus || '')).length;
+    const pct = rows.length ? Math.round((closed / rows.length) * 100) : 0;
     const statusEntries = topEntries(countBy(rows, item => dashboardField(item, ['gestionStatus', 'status', 'estado', 'delayStatus'])));
     const ownerEntries = topEntries(countBy(rows, item => dashboardField(item, ['gestionOwner', 'owner', 'responsable', 'coordinator', 'client'])));
     const typeEntries = topEntries(countBy(rows, item => dashboardField(item, ['type', 'tipo', 'subtype', 'activity', 'kind'])));
     const dateEntries = topEntries(countBy(rows, item => String(dashboardField(item, ['date', 'fecha', 'createdAt'], 'Sin fecha')).slice(0, 10)), 14);
-    const kpis = moduleKpiGrid([
-      { label: 'Registros', value: rows.length, note: '<i class="ti ti-database"></i> Total cargado', icon: 'ti-database', yellow: true },
-      { label: 'Pendientes', value: pending, note: '<i class="ti ti-alert-circle"></i> Requieren gestión', icon: 'ti-alert-circle', className: 'grad-orange' },
-      { label: 'Responsables', value: ownerEntries.length, note: '<i class="ti ti-users"></i> Activos en datos', icon: 'ti-users', className: 'grad-purple' },
-      { label: 'Tipos', value: typeEntries.length, note: '<i class="ti ti-tags"></i> Clasificaciones', icon: 'ti-tags', className: 'grad-teal' }
-    ]);
-    openModal(`Dashboard · ${moduleLabel(moduleId)}`, 'Resumen general de la hoja seleccionada.',
-      `${kpis}<div class="chart-grid">
-        ${barChartHTML('Estados', statusEntries)}
-        ${pieChartHTML('Responsables / cliente', ownerEntries)}
-        ${barChartHTML('Tipo de registro', typeEntries)}
-        ${trendChartHTML('Tendencia por fecha', dateEntries)}
-      </div><div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cerrar</button></div>`,
+    const topNames = topEntries(countBy(rows, r => dashboardField(r, ['quicker', 'name', 'nombre', 'coordinator'])), 5);
+    const topNamesHTML = topNames.length ? `<div class="dash-top-list">${topNames.map(([nm, cnt], i) => `<div class="dash-top-row"><span class="dash-top-rank">${i+1}</span><span class="dash-top-name" title="${escapeHTML(nm)}">${escapeHTML(nm)}</span><span class="dash-top-badge">${cnt}</span></div>`).join('')}</div>` : '<span class="fp-sub">Sin datos</span>';
+    const health = pending === 0 ? { label: 'Óptimo', cls: 'health-ok', icon: 'ti-circle-check' } : pending <= 3 ? { label: 'Normal', cls: 'health-warn', icon: 'ti-alert-circle' } : { label: 'Crítico', cls: 'health-bad', icon: 'ti-alert-triangle' };
+    const kpis = `<div class="dash-kpi-strip">
+      <div class="dash-kpi-card q-accent"><i class="ti ti-database dash-kpi-icon"></i><div class="dash-kpi-val">${rows.length}</div><div class="dash-kpi-lbl">Total registros</div></div>
+      <div class="dash-kpi-card grad-orange"><i class="ti ti-alert-circle dash-kpi-icon"></i><div class="dash-kpi-val">${pending}</div><div class="dash-kpi-lbl">Pendientes</div></div>
+      <div class="dash-kpi-card grad-teal"><i class="ti ti-circle-check dash-kpi-icon"></i><div class="dash-kpi-val">${closed}</div><div class="dash-kpi-lbl">Cerrados</div></div>
+      <div class="dash-kpi-card grad-purple"><i class="ti ti-chart-pie dash-kpi-icon"></i><div class="dash-kpi-val">${pct}%</div><div class="dash-kpi-lbl">Resolución</div></div>
+    </div>
+    <div class="dash-progress-wrap">
+      <div class="dash-progress-head"><span class="dash-progress-label"><i class="ti ${health.icon}"></i> Estado general: <strong class="${health.cls}">${health.label}</strong></span><span class="dash-progress-pct">${pct}% resuelto</span></div>
+      <div class="dash-progress-track"><div class="dash-progress-fill" style="width:${pct}%"></div></div>
+    </div>`;
+    openModal(`Dashboard · ${moduleLabel(moduleId)}`, 'Análisis en tiempo real de los registros de esta hoja.',
+      `${kpis}<div class="chart-grid" style="grid-template-columns:1fr 1fr;gap:14px;margin-top:16px">
+        ${barChartHTML('Por estado de gestión', statusEntries)}
+        ${barChartHTML('Por tipo de registro', typeEntries)}
+        ${pieChartHTML('Por responsable / cliente', ownerEntries)}
+        <div class="chart-card"><h4>Top 5 personas</h4><div class="chart-sub">Mayor cantidad de registros</div>${topNamesHTML}</div>
+      </div>
+      <div style="margin-top:14px">${trendChartHTML('Tendencia diaria', dateEntries)}</div>
+      <div class="modal-foot" style="margin-top:16px"><button class="dev-btn" type="button" id="cancel-form">Cerrar</button></div>`,
       null, true);
   }
 
