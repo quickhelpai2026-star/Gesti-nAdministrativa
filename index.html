@@ -157,7 +157,7 @@
   .sb-bottom { margin-top: auto; border-top: 1px solid var(--border); padding: 6px 8px; flex-shrink: 0; }
 
   /* ── Sidebar colapsable ── */
-  #sidebar { transition: width .28s cubic-bezier(.4,0,.2,1); overflow: hidden; }
+  #sidebar { transition: width .28s cubic-bezier(.4,0,.2,1); overflow: hidden; background: linear-gradient(to bottom, #f0f4f8, #e8ecf1); }
   #sidebar.collapsed { width: 58px; }
   #sidebar.collapsed .sb-logo-text,
   #sidebar.collapsed .sb-section,
@@ -783,21 +783,25 @@
 
   /* ── Tablas ── */
   select option { color: #111; background: #fff; }
-  .light-mode .data-table { color: #111827; border-collapse: separate; border-spacing: 0; }
+  .light-mode .data-table { color: #111827; border-collapse: collapse; }
   .light-mode .data-table th {
-    color: #fff; font-weight: 700;
+    color: #fff; font-weight: 800;
     background: #374151;
-    border-color: #374151;
-    border-bottom: 1px solid #d1d5db;
+    border: 1px solid #1f2937;
     padding: 12px 10px;
     font-size: 12px;
     letter-spacing: .5px;
+    text-align: left;
   }
-  .light-mode .data-table td { color: #111827; border-color: #f3f4f6; background: #fff; padding: 12px 10px; }
+  .light-mode .data-table td {
+    color: #111827; border: 1px solid #d1d5db; background: #fff;
+    padding: 12px 10px; font-weight: 500;
+  }
   .light-mode .data-table tbody tr:nth-child(even) td { background: #f9fafb; }
-  .light-mode .data-table tbody tr:hover td { background: #f3f4f6; }
-  .light-mode .tbl { color: #111827; }
-  .light-mode .tbl td { border-color: #f3f4f6; color: #111827; }
+  .light-mode .data-table tbody tr:hover td { background: #f3f4f6; border-color: #3b82f6; }
+  .light-mode .tbl { color: #111827; border-collapse: collapse; }
+  .light-mode .tbl th { border: 1px solid #1f2937; background: #374151; color: #fff; }
+  .light-mode .tbl td { border: 1px solid #d1d5db; color: #111827; padding: 10px; }
 
   /* ── Light Mode — Diseño minimalista ── */
   .light-mode body::before { opacity: 0 !important; }
@@ -1113,39 +1117,42 @@
   .calendar-day { min-height: 132px; border:1px solid var(--border); border-radius:16px; padding:10px; background:rgba(255,255,255,.04); }
   .calendar-day strong { display:block; margin-bottom:8px; color:var(--text-1); }
 
-  /* ── Calendario mensual limpio ── */
-  .cal-layout { display:grid; grid-template-columns: minmax(0,1fr) 300px; gap:16px; }
+  /* ── Calendario mensual con color ── */
+  .cal-layout { display:grid; grid-template-columns: minmax(0,1fr) 320px; gap:16px; }
   .cal-main { display:flex; flex-direction:column; gap:12px; }
   .cal-header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
   .cal-nav { display:flex; align-items:center; gap:6px; }
   .cal-nav-btn {
-    width:36px; height:36px; border-radius:8px; border:1px solid var(--border);
-    background:var(--card-bg); color:var(--text-1); font-size:16px;
+    width:36px; height:36px; border-radius:8px; border:2px solid #374151;
+    background:var(--card-bg); color:#111827; font-size:16px;
     display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s;
   }
-  .cal-nav-btn:hover { background:var(--card-bg-hover); border-color:#3b82f6; color:#3b82f6; }
-  .cal-month-label { font-size:18px; font-weight:700; color:var(--text-1); min-width:200px; text-align:center; }
-  .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:0; margin-bottom:6px; }
-  .cal-wd { text-align:center; font-size:11px; font-weight:700; padding:8px 2px; color:var(--text-3); text-transform:uppercase; }
-  .cal-body { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+  .cal-nav-btn:hover { background:#3b82f6; border-color:#3b82f6; color:#fff; }
+  .cal-month-label { font-size:20px; font-weight:800; color:#111827; min-width:200px; text-align:center; }
+  .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:0; margin-bottom:0; border-bottom:2px solid #374151; }
+  .cal-wd { text-align:center; font-size:12px; font-weight:800; padding:10px 2px; color:#111827; text-transform:uppercase;
+    background:#e5e7eb; border-right:1px solid #374151; }
+  .cal-wd:last-child { border-right:0; }
+  .cal-body { display:grid; grid-template-columns:repeat(7,1fr); gap:0; }
   .cal-cell {
-    min-height:80px; border:1px solid var(--border); border-radius:8px; padding:6px;
-    background:var(--card-bg); cursor:pointer; transition:all .15s; display:flex; flex-direction:column;
+    min-height:100px; border:2px solid #374151; padding:8px; background:#f9fafb;
+    cursor:pointer; transition:all .15s; display:flex; flex-direction:column;
   }
-  .cal-cell:hover { border-color:#3b82f6; background:var(--card-bg-hover); }
-  .cal-cell.today { border:2px solid #3b82f6; background:var(--card-bg-hover); }
-  .cal-cell.other-month { opacity:.4; }
-  .cal-cell-num { font-size:12px; font-weight:700; color:var(--text-1); margin-bottom:3px; }
-  .cal-cell.today .cal-cell-num { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;
-    background:#3b82f6; color:#fff; border-radius:50%; font-size:11px; }
-  .cal-chip { font-size:9px; font-weight:600; border-radius:4px; padding:2px 4px; margin-bottom:1px;
+  .cal-cell:hover { background:#eff6ff; border-color:#3b82f6; }
+  .cal-cell.today { background:#fef3c7; border-color:#f59e0b; }
+  .cal-cell.other-month { background:#e5e7eb; opacity:.6; }
+  .cal-cell.has-events { background:#e8f4f8; }
+  .cal-cell-num { font-size:14px; font-weight:800; color:#111827; margin-bottom:4px; }
+  .cal-cell.today .cal-cell-num { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px;
+    background:#f59e0b; color:#fff; border-radius:50%; font-size:12px; }
+  .cal-chip { font-size:10px; font-weight:700; border-radius:3px; padding:3px 5px; margin-bottom:2px;
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .cal-chip.ev-evento   { background:#dbeafe; color:#0c4a6e; }
   .cal-chip.ev-tarea    { background:#d1fae5; color:#065f46; }
   .cal-chip.ev-seguimiento { background:#fef3c7; color:#92400e; }
   .cal-chip.ev-novedad  { background:#fee2e2; color:#991b1b; }
   .cal-chip.ev-capacitacion { background:#ede9fe; color:#5b21b6; }
-  .cal-more { font-size:9px; color:var(--text-3); font-weight:600; margin-top:auto; }
+  .cal-more { font-size:10px; color:#374151; font-weight:700; margin-top:auto; }
 
   /* Panel lateral */
   .cal-panel { display:flex; flex-direction:column; gap:10px; }
@@ -1164,11 +1171,15 @@
   }
   .cal-note-card.nt-nota        { border-left:3px solid #3b82f6; }
   .cal-note-card.nt-tarea       { border-left:3px solid #10b981; }
+  .cal-note-card.nt-recordatorio { border-left:3px solid #8b5cf6; }
+  .cal-note-card.nt-reunion     { border-left:3px solid #06b6d4; }
   .cal-note-card.nt-seguimiento { border-left:3px solid #f59e0b; }
   .cal-note-card.nt-alerta      { border-left:3px solid #ef4444; }
   .cal-note-type { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
   .cal-note-type.nt-nota        { color:#1e40af; }
   .cal-note-type.nt-tarea       { color:#047857; }
+  .cal-note-type.nt-recordatorio { color:#6d28d9; }
+  .cal-note-type.nt-reunion     { color:#0891b2; }
   .cal-note-type.nt-seguimiento { color:#b45309; }
   .cal-note-type.nt-alerta      { color:#b91c1c; }
   .cal-note-text { font-size:12px; color:var(--text-1); font-weight:500; line-height:1.4; }
@@ -1177,6 +1188,19 @@
   .cal-note-del:hover { color:#ef4444; }
   .cal-done-toggle { width:14px; height:14px; border-radius:4px; border:1.5px solid var(--border); cursor:pointer; appearance:none; }
   .cal-done-toggle:checked { background:#10b981; border-color:#10b981; }
+
+  /* Tags de personas */
+  .cal-person-tag {
+    display:inline-flex; align-items:center; gap:4px;
+    background:#e8f4f8; border:1px solid #3b82f6; color:#0c4a6e;
+    border-radius:16px; padding:4px 8px; font-size:11px; font-weight:600;
+  }
+  .cal-person-tag .ti { font-size:12px; }
+  .cal-person-tag-remove {
+    background:transparent; border:0; color:#0c4a6e; cursor:pointer;
+    font-size:14px; padding:0; line-height:1; display:flex; align-items:center;
+  }
+  .cal-person-tag-remove:hover { color:#3b82f6; }
   .event-chip { display:block; border:1px solid rgba(245,197,24,.28); background:rgba(245,197,24,.1); border-radius:10px; padding:7px; margin-top:6px; font-size:11px; color:var(--text-1); }
   .drive-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap:12px; }
   .drive-card { border:1px solid var(--border); border-radius:16px; padding:14px; background:rgba(255,255,255,.045); display:flex; gap:12px; align-items:flex-start; }
@@ -3634,8 +3658,10 @@ function toggleMode(forceDark) {
       </div>`;
     }).join('');
 
-    const noteTypeColors = { nota: 'nt-nota', tarea: 'nt-tarea', seguimiento: 'nt-seguimiento', alerta: 'nt-alerta' };
-    const notesHTML = notes.length ? notes.map(n => `
+    const noteTypeColors = { nota: 'nt-nota', tarea: 'nt-tarea', recordatorio: 'nt-recordatorio', reunion: 'nt-reunion', seguimiento: 'nt-seguimiento', alerta: 'nt-alerta' };
+    const notesHTML = notes.length ? notes.map(n => {
+      const assigneesStr = Array.isArray(n.assignees) && n.assignees.length ? n.assignees.map(a => `<span style="display:inline-flex;align-items:center;gap:3px"><i class="ti ti-user" style="font-size:10px"></i>${escapeHTML(a)}</span>`).join(', ') : '';
+      return `
       <div class="cal-note-card nt-${n.noteType || 'nota'}">
         <div style="display:flex;align-items:center;gap:6px">
           <input type="checkbox" class="cal-done-toggle" ${n.done ? 'checked' : ''} data-note-done="${n.id}">
@@ -3643,21 +3669,26 @@ function toggleMode(forceDark) {
           <button class="cal-note-del" data-note-del="${n.id}" title="Eliminar">✕</button>
         </div>
         <div class="cal-note-text" style="${n.done ? 'text-decoration:line-through;opacity:.5' : ''}">${escapeHTML(n.text)}</div>
+        ${assigneesStr ? `<div style="font-size:10px;color:var(--text-3);margin:4px 0">${assigneesStr}</div>` : ''}
         <div class="cal-note-meta">
-          ${n.assignee ? `<span><i class="ti ti-user"></i> ${escapeHTML(n.assignee)}</span>` : ''}
           ${n.date ? `<span><i class="ti ti-calendar"></i> ${n.date}</span>` : ''}
         </div>
-      </div>`).join('') : `<div class="fp-sub" style="text-align:center;padding:20px 0">Sin notas aún</div>`;
+      </div>`;
+    }).join('') : `<div class="fp-sub" style="text-align:center;padding:20px 0">Sin notas aún</div>`;
 
     const quickerOptions = (state.quickers || []).map(q => `<option value="${escapeHTML(q.name)}">${escapeHTML(q.name)}</option>`).join('');
+    const userOptions = (state.users || []).map(u => `<option value="${escapeHTML(u.name)}">${escapeHTML(u.name)}</option>`).join('');
 
     const html = `
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
       <div>
-        <div style="font-size:20px;font-weight:900;color:var(--text-1)"><i class="ti ti-calendar-month" style="color:#F5C518"></i> Calendario operativo</div>
+        <div style="font-size:20px;font-weight:900;color:var(--text-1)"><i class="ti ti-calendar-month" style="color:#374151"></i> Calendario operativo</div>
         <div class="fp-sub">Agenda, seguimientos y notas de equipo</div>
       </div>
-      <button class="dev-btn primary" data-calendar-new><i class="ti ti-calendar-plus"></i> Nuevo evento</button>
+      <div style="display:flex;gap:8px">
+        <button class="dev-btn primary" data-calendar-new><i class="ti ti-calendar-plus"></i> Evento</button>
+        <button class="dev-btn primary" id="cal-show-notes-form" style="background:#10b981"><i class="ti ti-notes"></i> Notas</button>
+      </div>
     </div>
     <div class="cal-layout">
       <div class="cal-main">
@@ -3681,21 +3712,26 @@ function toggleMode(forceDark) {
           <div class="cal-panel-sub">Notas, tareas y seguimientos del equipo</div>
         </div>
         <div class="cal-note-form">
-          <select id="cal-note-type">
-            <option value="nota">📝 Nota</option>
-            <option value="tarea">✅ Tarea</option>
-            <option value="seguimiento">🔍 Seguimiento OASIS</option>
-            <option value="alerta">🚨 Alerta</option>
-          </select>
-          <textarea id="cal-note-text" placeholder="Escribe aquí tu nota, tarea o seguimiento..." rows="3"></textarea>
           <div style="display:flex;gap:6px">
-            <select id="cal-note-assignee" style="flex:1">
-              <option value="">Sin asignar</option>
-              ${quickerOptions}
+            <select id="cal-note-type" style="flex:1">
+              <option value="nota">📝 Nota</option>
+              <option value="tarea">✅ Tarea</option>
+              <option value="recordatorio">⏰ Recordatorio</option>
+              <option value="reunion">👥 Reunión</option>
+              <option value="seguimiento">🔍 Seguimiento</option>
+              <option value="alerta">🚨 Alerta</option>
             </select>
             <input type="date" id="cal-note-date" value="${todayISO}" style="flex:1">
           </div>
-          <button class="dev-btn primary" id="cal-note-save" style="width:100%"><i class="ti ti-plus"></i> Agregar</button>
+          <textarea id="cal-note-text" placeholder="Escribe tu nota, tarea, recordatorio..." style="width:100%;resize:none;min-height:70px;border:1px solid var(--border);border-radius:8px;padding:8px;background:var(--card-bg);color:var(--text-1);outline:0;font-family:inherit;font-size:12px"></textarea>
+          <div style="font-size:10px;color:var(--text-3);margin:6px 0;font-weight:700">ASIGNAR A PERSONAS:</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;max-height:60px;overflow-y:auto;padding:4px 0" id="cal-note-tags"></div>
+          <select id="cal-note-assignee" style="width:100%;margin-bottom:6px;border:1px solid var(--border);border-radius:8px;padding:8px;background:var(--card-bg);color:var(--text-1)">
+            <option value="">+ Agregar persona al equipo</option>
+            ${userOptions}
+            ${quickerOptions}
+          </select>
+          <button class="dev-btn primary" id="cal-note-save" style="width:100%;background:#10b981"><i class="ti ti-plus"></i> Guardar nota</button>
         </div>
         <div class="cal-notes-list">${notesHTML}</div>
       </div>
@@ -5760,17 +5796,47 @@ function toggleMode(forceDark) {
       openCalendarEventForm('', calDay.dataset.calDay);
     }
 
+    // Panel de notas: agregar persona a la nota
+    const calNoteAssignee = event.target.closest('#cal-note-assignee');
+    if (calNoteAssignee && calNoteAssignee.value) {
+      const person = calNoteAssignee.value;
+      let tags = JSON.parse(document.getElementById('cal-note-tags')?.dataset.tags || '[]');
+      if (!tags.includes(person)) {
+        tags.push(person);
+        document.getElementById('cal-note-tags').dataset.tags = JSON.stringify(tags);
+        const tagEl = document.createElement('div');
+        tagEl.className = 'cal-person-tag';
+        tagEl.innerHTML = `<i class="ti ti-user"></i> ${escapeHTML(person)} <button class="cal-person-tag-remove" data-remove-tag="${person}">×</button>`;
+        document.getElementById('cal-note-tags').appendChild(tagEl);
+      }
+      calNoteAssignee.value = '';
+    }
+
+    // Remover persona del tag
+    const removeTag = event.target.closest('[data-remove-tag]');
+    if (removeTag) {
+      const person = removeTag.dataset.removeTag;
+      let tags = JSON.parse(document.getElementById('cal-note-tags')?.dataset.tags || '[]');
+      tags = tags.filter(t => t !== person);
+      document.getElementById('cal-note-tags').dataset.tags = JSON.stringify(tags);
+      removeTag.closest('.cal-person-tag').remove();
+    }
+
     // Panel de notas: guardar
     const calNoteSave = event.target.closest('#cal-note-save');
     if (calNoteSave) {
       const text = document.getElementById('cal-note-text')?.value?.trim();
       if (!text) { toast('Escribe una nota antes de guardar'); return; }
       const noteType = document.getElementById('cal-note-type')?.value || 'nota';
-      const assignee = document.getElementById('cal-note-assignee')?.value || '';
       const date = document.getElementById('cal-note-date')?.value || '';
+      const assignees = JSON.parse(document.getElementById('cal-note-tags')?.dataset.tags || '[]');
       state.workNotes = state.workNotes || [];
-      state.workNotes.unshift({ id: uid('NTE'), noteType, text, assignee, date, done: false, createdAt: new Date().toISOString() });
-      log('Calendario', 'Agregó nota', noteType);
+      state.workNotes.unshift({ id: uid('NTE'), noteType, text, assignees, date, done: false, createdAt: new Date().toISOString() });
+      log('Calendario', 'Agregó nota', noteType + (assignees.length ? ` (${assignees.length} personas)` : ''));
+      document.getElementById('cal-note-text').value = '';
+      document.getElementById('cal-note-type').value = 'nota';
+      document.getElementById('cal-note-tags').innerHTML = '';
+      document.getElementById('cal-note-tags').dataset.tags = '[]';
       saveState('Nota guardada');
     }
 
