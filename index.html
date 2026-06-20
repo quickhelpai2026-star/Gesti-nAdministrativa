@@ -734,34 +734,78 @@
   .light-mode .kpi-card,
   .light-mode .settings-card,
   .light-mode .modal-card {
-    background: rgba(255,255,255,.94);
-    color: #15130c;
-    border-color: rgba(18,18,18,.38);
-    box-shadow: 0 14px 40px rgba(72,58,12,.12);
+    background: rgba(255,255,255,.96);
+    color: #111827;
+    border-color: rgba(0,0,0,.12);
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
   }
-  .light-mode .dev-btn { color: #3b2c00; background: #fff9dc; border-color: rgba(176,133,0,.35); }
-  .light-mode .dev-btn.primary { color: #0b0b0b; }
-  .light-mode .data-table th { color: #6c6250; background: #fff7d6; }
+  .light-mode { color: #111827; }
+  .light-mode .dev-btn { color: #1a1200; background: #fefce8; border-color: rgba(161,120,0,.3); }
+  .light-mode .dev-btn.primary { background: linear-gradient(135deg,#F5C518,#C9A200); color: #000; border-color: transparent; }
+  .light-mode .data-table { color: #111827; }
+  .light-mode .data-table th { color: #374151; background: #f9f5e7; border-color: rgba(0,0,0,.1); }
+  .light-mode .data-table td { color: #111827; border-color: rgba(0,0,0,.07); }
+  .light-mode .data-table tbody tr:hover { background: rgba(245,197,24,.08); }
   .light-mode .data-table td,
   .light-mode .form-field input,
   .light-mode .form-field select,
   .light-mode .form-field textarea,
-  .light-mode .tb-search input { color: #15130c; }
+  .light-mode .tb-search input,
+  .light-mode .nov-filterbar select,
+  .light-mode .nov-filterbar input { color: #111827; }
   .light-mode .form-field input,
   .light-mode .form-field select,
-  .light-mode .form-field textarea { background: #fff; border-color: #ded5b8; }
+  .light-mode .form-field textarea,
+  .light-mode .nov-filterbar select,
+  .light-mode .nov-filterbar input { background: #fff; border-color: #d1d5db; }
   select option { color: #111; background: #fff; }
-  .light-mode .kpi-card,
-  .light-mode .card,
-  .light-mode .tbl,
-  .light-mode .settings-card { color: #15130c; }
-  .light-mode .kpi-card:not(.grad-purple):not(.grad-orange):not(.grad-blue):not(.grad-teal):not(.grad-warm):not(.grad-rose) {
-    background: rgba(255,255,255,.88);
-  }
-  .light-mode .kpi-label,
+  .light-mode .kpi-card { color: #fff; }
+  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) { background: #fff; color: #111827; border: 1px solid rgba(0,0,0,.1); }
+  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) .kpi-label { color: #6b7280; }
+  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) .kpi-value { color: #111827; }
+  .light-mode .tbl { color: #111827; }
+  .light-mode .settings-card { color: #111827; }
+  .light-mode .kpi-label { color: rgba(255,255,255,.85); }
   .light-mode .card-sub,
   .light-mode .fp-sub,
-  .light-mode .fp-card-note { color: #6d675b; }
+  .light-mode .fp-card-note { color: #6b7280; }
+  .light-mode .fp-title,
+  .light-mode .card-title,
+  .light-mode .fp-card-value { color: #111827; }
+  .light-mode .fp-card { background: #f9fafb; border-color: rgba(0,0,0,.1); color: #111827; }
+  .light-mode .fp-card-label { color: #374151; }
+  .light-mode .sidebar { background: rgba(255,255,255,.96); border-color: rgba(0,0,0,.1); }
+  .light-mode .nav-item { color: #374151; }
+  .light-mode .nav-item:hover, .light-mode .nav-item.active { background: rgba(245,197,24,.12); color: #92400e; }
+  .light-mode .topbar { background: rgba(255,255,255,.95); border-color: rgba(0,0,0,.1); }
+  .light-mode .tb-search input { background: #f3f4f6; border-color: #d1d5db; color: #111827; }
+  .light-mode .module-tab { color: #374151; border-color: rgba(0,0,0,.12); background: #f9fafb; }
+  .light-mode .module-tab.on { background: var(--q); color: #000; border-color: var(--q); }
+  .light-mode .status-pill { border-color: rgba(0,0,0,.15); }
+  .light-mode .st-ok { background: rgba(34,197,94,.15); color: #15803d; }
+  .light-mode .st-warn { background: rgba(234,179,8,.15); color: #854d0e; }
+  .light-mode .st-bad { background: rgba(239,68,68,.15); color: #b91c1c; }
+  .light-mode .st-info { background: rgba(59,130,246,.15); color: #1d4ed8; }
+  .light-mode .chart-card { background: #f9fafb; border-color: rgba(0,0,0,.1); color: #111827; }
+  .light-mode .chart-card h4 { color: #111827; }
+  .light-mode .chart-sub { color: #6b7280; }
+  .light-mode .chart-bar-label { color: #374151; }
+  .light-mode .chart-bar-track { background: rgba(0,0,0,.08); }
+  .light-mode .modal-card { background: #fff; color: #111827; }
+  .light-mode .modal-title { color: #111827; }
+  .light-mode .form-label { color: #374151; }
+  .light-mode .dropzone { background: #f9fafb; border-color: #d1d5db; color: #374151; }
+  .light-mode .malla-record-days { background: #f3f4f6; }
+  .light-mode .malla-day-btn { background: #fff; color: #111827; border-color: #d1d5db; }
+  .light-mode .record-card { background: #fff; color: #111827; border-color: #e5e7eb; }
+  .light-mode .settings-block-title { color: #111827; }
+  .light-mode .settings-nav { border-color: rgba(0,0,0,.1); }
+  .light-mode .settings-tab { color: #374151; }
+  .light-mode .settings-tab.on { background: rgba(245,197,24,.15); color: #92400e; border-color: rgba(245,197,24,.4); }
+  .light-mode .dash-kpi-card:not([class*="grad-"]):not(.q-accent) { background: #f9fafb; color: #111827; border: 1px solid #e5e7eb; }
+  .light-mode .dash-top-row { background: #f3f4f6; border-color: #e5e7eb; }
+  .light-mode .dash-top-name { color: #111827; }
+  .light-mode .nov-filterbar .dev-btn { color: #1a1200; }
   .toolbar-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
   .toolbar-line select,
   .toolbar-line input {
@@ -1022,10 +1066,6 @@
       <button class="tb-icon-btn" type="button" title="Notificaciones" aria-label="Notificaciones" data-show-notifications>
         <i class="ti ti-bell"></i>
         <div class="notif-dot"></div>
-      </button>
-      <button id="mode-toggle" onclick="toggleMode()">
-        <i class="ti ti-sun" id="mode-icon"></i>
-        <span id="mode-label">Modo claro</span>
       </button>
       <div class="top-avatar" title="Admin Quick">AD</div>
     </div>
@@ -1610,14 +1650,24 @@ function nav(id, el) {
 }
 window.nav = nav;
 
-let dark = true;
-function toggleMode() {
-  dark = !dark;
+// Persistir preferencia de tema en localStorage
+const THEME_KEY = 'quick_theme_pref';
+let dark = localStorage.getItem(THEME_KEY) !== 'light';
+(function applyInitialTheme() {
+  if (!dark) document.body.classList.add('light-mode');
+})();
+function toggleMode(forceDark) {
+  if (typeof forceDark === 'boolean') dark = forceDark;
+  else dark = !dark;
   document.body.classList.toggle('light-mode', !dark);
+  localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+  // Actualizar ícono en topbar si existe
   const icon  = document.getElementById('mode-icon');
   const label = document.getElementById('mode-label');
-  if (dark) { icon.className = 'ti ti-sun';  label.textContent = 'Modo claro'; }
-  else       { icon.className = 'ti ti-moon'; label.textContent = 'Modo oscuro'; }
+  if (icon)  icon.className  = dark ? 'ti ti-sun'  : 'ti ti-moon';
+  if (label) label.textContent = dark ? 'Modo claro' : 'Modo oscuro';
+  // Re-render config si está activa para reflejar estado
+  if (typeof renderAll === 'function') renderAll();
 }
 
 /* ───── MVP LOCAL: DATA, CRUD, STATE & EXPORTS ───── */
@@ -2496,7 +2546,116 @@ function toggleMode() {
     return fallback;
   }
 
+  // Estado de filtros del dashboard lateral de novedades
+  const novDashFilters = { tipo: 'todos', gestion: 'todos', fecha: '' };
+
   function openModuleDashboard(moduleId) {
+    // Dashboard especializado para Novedades con gráficas + filtros interactivos
+    if (moduleId === 'novedades') {
+      const allRows = getGeneralNoveltyRows();
+      // Aplicar filtros
+      const filtered = allRows.filter(n => {
+        const tipoOk  = novDashFilters.tipo    === 'todos' || (n.type||'').toLowerCase() === novDashFilters.tipo.toLowerCase();
+        const gestOk  = novDashFilters.gestion === 'todos' || (n.gestionStatus||'Pendiente').toLowerCase() === novDashFilters.gestion.toLowerCase();
+        const fechaOk = !novDashFilters.fecha  || (n.date||'').slice(0,10) === novDashFilters.fecha;
+        return tipoOk && gestOk && fechaOk;
+      });
+      const pending = filtered.filter(isPendingNovelty).length;
+      const closed  = filtered.filter(r => /cerrad|finaliz|aprob/i.test(r.status||r.gestionStatus||'')).length;
+      const pct = filtered.length ? Math.round((closed/filtered.length)*100) : 0;
+      const health = pending===0 ? {label:'Óptimo',cls:'health-ok',icon:'ti-circle-check'} : pending<=3 ? {label:'Normal',cls:'health-warn',icon:'ti-alert-circle'} : {label:'Crítico',cls:'health-bad',icon:'ti-alert-triangle'};
+
+      // Conteos para gráficas
+      const tipoCounts={}, gestCounts={}, quiCounts={};
+      filtered.forEach(n => {
+        const t=n.type||'Otro', g=n.gestionStatus||'Pendiente', q=n.quicker||'Sin asignar';
+        tipoCounts[t]=(tipoCounts[t]||0)+1;
+        gestCounts[g]=(gestCounts[g]||0)+1;
+        quiCounts[q]=(quiCounts[q]||0)+1;
+      });
+      const TYPE_COLORS={'DESVINCULACIÓN':'#fb7185','Desvinculación':'#fb7185','INASISTENCIA':'#fbbf24','Inasistencia':'#fbbf24','ACCIDENTE':'#f97316','PROCESOS':'#a78bfa','Disciplinario':'#a78bfa','DESCUENTO':'#60a5fa','Descuento':'#60a5fa','OTRO SÍ':'#34d399','Otrosí':'#34d399','Incapacidad':'#94a3b8','Contratación':'#4ade80','Retardo':'#F5C518'};
+      const GEST_COLORS={'Pendiente':'#fbbf24','En proceso':'#60a5fa','Cerrada':'#4ade80','Escalada':'#fb7185','Finalizado':'#4ade80'};
+      const tipoSegs = Object.entries(tipoCounts).map(([k,v])=>({color:TYPE_COLORS[k]||'#94a3b8',value:v,label:k}));
+      const gestBars  = Object.entries(gestCounts).map(([k,v])=>({label:k,value:v,color:GEST_COLORS[k]||'#94a3b8'})).sort((a,b)=>b.value-a.value);
+      const quiBars   = Object.entries(quiCounts).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([k,v])=>({label:k,value:v,color:'#F5C518'}));
+
+      // Tendencia por fecha
+      const dateCounts={};
+      filtered.forEach(n=>{ const d=(n.date||'').slice(0,10); if(d) dateCounts[d]=(dateCounts[d]||0)+1; });
+      const dateBarItems = Object.entries(dateCounts).sort((a,b)=>a[0].localeCompare(b[0])).slice(-14).map(([d,v])=>({label:d.slice(5),value:v,color:'rgba(245,197,24,.7)'}));
+
+      // Opciones únicas de tipo para el select
+      const tiposUnicos = [...new Set(allRows.map(n=>n.type||'').filter(Boolean))];
+
+      const filtersHTML = `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+        <span style="font-size:12px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.5px">Filtrar:</span>
+        <select data-nov-dash-tipo style="min-height:36px;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--text-1);padding:0 12px;font:inherit">
+          <option value="todos">Todos los tipos</option>
+          ${tiposUnicos.map(t=>`<option value="${escapeHTML(t)}" ${novDashFilters.tipo===t?'selected':''}>${escapeHTML(t)}</option>`).join('')}
+        </select>
+        <select data-nov-dash-gestion style="min-height:36px;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--text-1);padding:0 12px;font:inherit">
+          ${['todos','Pendiente','En proceso','Cerrada','Escalada','Finalizado'].map(g=>`<option value="${g}" ${novDashFilters.gestion===g?'selected':''}>${g==='todos'?'Toda gestión':g}</option>`).join('')}
+        </select>
+        <input type="date" data-nov-dash-fecha value="${novDashFilters.fecha}" style="min-height:36px;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--text-1);padding:0 12px;font:inherit">
+        ${(novDashFilters.tipo!=='todos'||novDashFilters.gestion!=='todos'||novDashFilters.fecha) ? `<button class="dev-btn" style="padding:6px 12px;font-size:12px" data-nov-clear-filters><i class="ti ti-x"></i> Limpiar</button>` : ''}
+        <span style="margin-left:auto;font-size:12px;color:var(--text-2)">${filtered.length} de ${allRows.length} novedades</span>
+      </div>`;
+
+      const kpis = `<div class="dash-kpi-strip">
+        <div class="dash-kpi-card q-accent"><i class="ti ti-database dash-kpi-icon"></i><div class="dash-kpi-val">${filtered.length}</div><div class="dash-kpi-lbl">Novedades</div></div>
+        <div class="dash-kpi-card grad-orange"><i class="ti ti-alert-circle dash-kpi-icon"></i><div class="dash-kpi-val">${pending}</div><div class="dash-kpi-lbl">Pendientes</div></div>
+        <div class="dash-kpi-card grad-teal"><i class="ti ti-circle-check dash-kpi-icon"></i><div class="dash-kpi-val">${closed}</div><div class="dash-kpi-lbl">Cerradas</div></div>
+        <div class="dash-kpi-card grad-purple"><i class="ti ti-chart-pie dash-kpi-icon"></i><div class="dash-kpi-val">${pct}%</div><div class="dash-kpi-lbl">Resolución</div></div>
+      </div>
+      <div class="dash-progress-wrap">
+        <div class="dash-progress-head"><span class="dash-progress-label"><i class="ti ${health.icon}"></i> Estado: <strong class="${health.cls}">${health.label}</strong></span><span class="dash-progress-pct">${pct}% resuelto</span></div>
+        <div class="dash-progress-track"><div class="dash-progress-fill" style="width:${pct}%"></div></div>
+      </div>`;
+
+      const chartsHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px">
+        <div class="chart-card">
+          <h4>Distribución por tipo</h4><div class="chart-sub">Total por categoría de novedad</div>
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-top:10px">
+            ${tipoSegs.length ? svgDonut(tipoSegs,100) : '<span class="fp-sub">Sin datos</span>'}
+            <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+              ${tipoSegs.map(s=>`<div style="display:flex;align-items:center;gap:7px;cursor:pointer" data-nov-set-tipo="${s.label}" title="Clic para filtrar por ${s.label}">
+                <span style="width:11px;height:11px;border-radius:50%;background:${s.color};flex-shrink:0;${novDashFilters.tipo===s.label?'box-shadow:0 0 0 2px #fff,0 0 0 3px '+s.color:''}"></span>
+                <span style="font-size:11px;color:var(--text-1);flex:1;${novDashFilters.tipo===s.label?'font-weight:800':''}">${escapeHTML(s.label)}</span>
+                <strong style="font-size:12px;color:${s.color}">${s.value}</strong>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h4>Estado de gestión</h4><div class="chart-sub">Clic en barra para filtrar</div>
+          <div style="margin-top:10px">${gestBars.length ? gestBars.map(b=>`
+            <div style="margin-bottom:8px;cursor:pointer" data-nov-set-gestion="${b.label}" title="Clic para filtrar por ${b.label}">
+              <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+                <span style="font-size:11px;color:var(--text-1);font-weight:${novDashFilters.gestion===b.label?'800':'400'}">${escapeHTML(b.label)}</span>
+                <strong style="font-size:11px;color:${b.color}">${b.value}</strong>
+              </div>
+              <div style="height:8px;border-radius:999px;background:var(--border);overflow:hidden">
+                <div style="height:100%;border-radius:999px;background:${b.color};width:${Math.round((b.value/(gestBars[0]?.value||1))*100)}%;transition:width .4s"></div>
+              </div>
+            </div>`).join('') : '<span class="fp-sub">Sin datos</span>'}</div>
+        </div>
+        <div class="chart-card">
+          <h4>Top mensajeros con novedades</h4><div class="chart-sub">Los 6 con más registros</div>
+          <div style="margin-top:10px">${quiBars.length ? svgBars(quiBars,220,18) : '<span class="fp-sub">Sin datos</span>'}</div>
+        </div>
+        <div class="chart-card">
+          <h4>Tendencia diaria</h4><div class="chart-sub">Últimas 14 fechas con registros</div>
+          <div style="margin-top:10px">${dateBarItems.length ? svgBars(dateBarItems,220,16,'rgba(245,197,24,.7)') : '<span class="fp-sub">Sin datos</span>'}</div>
+        </div>
+      </div>`;
+
+      openModal(`Dashboard · Novedades`, 'Análisis interactivo — clic en gráficas para filtrar.',
+        `${filtersHTML}${kpis}${chartsHTML}
+        <div class="modal-foot" style="margin-top:16px"><button class="dev-btn" type="button" id="cancel-form">Cerrar</button></div>`,
+        null, true);
+      return;
+    }
+
     const rows = moduleRowsForDashboard(moduleId);
     const pending = rows.filter(isPendingNovelty).length;
     const closed = rows.filter(r => /cerrad|finaliz|aprob/i.test(r.status || r.gestionStatus || '')).length;
@@ -2986,10 +3145,10 @@ function toggleMode() {
       });
       const rows = filtered.map(n => row([
         novPill(n.type || ''), pill(n.gestionStatus || 'Pendiente'), escapeHTML(n.subtype || ''), escapeHTML(n.date || ''), escapeHTML(n.quicker || ''), escapeHTML(n.cedula || ''), escapeHTML(n.oasisId || ''),
-        `<div class="row-actions">${iconAction('Ver y gestionar', 'viewNoveltyCase', n.id, 'ti-eye')}${iconAction('Ticket', 'ticketFromNovelty', n.id, 'ti-ticket')}</div>`
+        `<div class="row-actions">${iconAction('Ver y gestionar', 'viewNoveltyCase', n.id, 'ti-eye')}</div>`
       ]));
       const emptyMsg = filtered.length === 0 ? `<div class="dropzone" style="margin:10px 0"><strong>Sin novedades</strong><span class="fp-sub">No hay registros para los filtros seleccionados.</span></div>` : '';
-      body = novDashboardCharts(allGeneral) + emptyMsg + table(['Tipo', 'Estado gestión', 'Subtipo', 'Fecha', 'Nombre', 'Cédula', 'ID OASIS', 'Acciones'], rows);
+      body = emptyMsg + table(['Tipo', 'Estado gestión', 'Subtipo', 'Fecha', 'Nombre', 'Cédula', 'ID OASIS', 'Acciones'], rows);
     }
     panel('novedades', 'Novedades', '',
       '',
@@ -3119,7 +3278,7 @@ function toggleMode() {
     const profile = user.profile || state.session?.profile || '';
     const isAdmin = profile === 'Administrador' || !profile;
     const isCoordinator = profile === 'Coordinador';
-    const allowedTabs = ['miUsuario', ...(isAdmin ? ['clientes', 'usuarios', 'quickers', 'modulos'] : []), ...(isCoordinator ? ['quickers'] : [])];
+    const allowedTabs = ['miUsuario', ...(isAdmin ? ['clientes', 'usuarios', 'quickers', 'modulos'] : []), ...(isCoordinator ? ['quickers'] : []), 'apariencia'];
     const tab = allowedTabs.includes(state.prefs.configTab) ? state.prefs.configTab : 'miUsuario';
     const navBtn = (id, icon, label) => `<button class="settings-tab ${tab === id ? 'on' : ''}" data-config-tab="${id}"><i class="ti ${icon}"></i><span>${label}</span></button>`;
     const userPhoto = user.avatarUrl ? `<img src="${user.avatarUrl}" alt="${escapeHTML(user.name)}">` : initials(user.name);
@@ -3163,8 +3322,28 @@ function toggleMode() {
       <span>${field.optional ? 'Opcional' : 'Obligatorio'}</span>
       <div class="row-actions">${iconAction('Editar pregunta', 'editFormQuestion', `${formType}::${index}`, 'ti-pencil')}${iconAction('Eliminar pregunta', 'deleteFormQuestion', `${formType}::${index}`, 'ti-trash')}</div>
     </div>`).join('');
+    const isDarkNow = !document.body.classList.contains('light-mode');
+    const aparienciaSection = `<section class="settings-block">
+      <div class="settings-block-title">Apariencia</div>
+      <div class="settings-block-desc" style="margin-bottom:18px;color:var(--text-2)">Elige cómo se ve la plataforma. Esta preferencia se guarda en tu dispositivo y se aplica cada vez que abras la app.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:480px">
+        <button class="theme-option-card ${isDarkNow ? 'active' : ''}" onclick="toggleMode(true)" style="border:2px solid ${isDarkNow ? 'var(--q)' : 'var(--border)'};border-radius:16px;padding:20px 16px;background:${isDarkNow ? 'rgba(245,197,24,.1)' : 'var(--card-bg)'};cursor:pointer;text-align:center">
+          <i class="ti ti-moon" style="font-size:28px;color:${isDarkNow ? 'var(--q)' : 'var(--text-2)'}"></i>
+          <div style="font-weight:800;margin-top:10px;color:${isDarkNow ? 'var(--q)' : 'var(--text-1)'}">Modo oscuro</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:4px">Recomendado para uso prolongado</div>
+          ${isDarkNow ? '<div style="margin-top:10px;font-size:11px;color:var(--q);font-weight:700">✓ Activo</div>' : ''}
+        </button>
+        <button class="theme-option-card ${!isDarkNow ? 'active' : ''}" onclick="toggleMode(false)" style="border:2px solid ${!isDarkNow ? 'var(--q)' : 'var(--border)'};border-radius:16px;padding:20px 16px;background:${!isDarkNow ? 'rgba(245,197,24,.1)' : 'var(--card-bg)'};cursor:pointer;text-align:center">
+          <i class="ti ti-sun" style="font-size:28px;color:${!isDarkNow ? 'var(--q)' : 'var(--text-2)'}"></i>
+          <div style="font-weight:800;margin-top:10px;color:${!isDarkNow ? 'var(--q)' : 'var(--text-1)'}">Modo claro</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:4px">Mayor contraste en ambientes iluminados</div>
+          ${!isDarkNow ? '<div style="margin-top:10px;font-size:11px;color:var(--q);font-weight:700">✓ Activo</div>' : ''}
+        </button>
+      </div>
+    </section>`;
     const sections = {
       miUsuario: accountSection,
+      apariencia: aparienciaSection,
       clientes: `<section class="settings-block"><div class="settings-actions"><button class="dev-btn primary" data-open="cliente"><i class="ti ti-building-plus"></i> Nuevo cliente</button><select data-points-client>${clientOptions}</select><label class="dev-btn"><i class="ti ti-upload"></i> Importar puntos<input type="file" accept=".xlsx,.xls,.csv" data-import-points style="display:none"></label><button class="dev-btn" data-export-points><i class="ti ti-download"></i> Exportar puntos</button></div><div class="record-grid">${clientCards || '<div class="fp-sub">No hay clientes creados.</div>'}</div></section>`,
       usuarios: `<section class="settings-block"><div class="settings-actions"><button class="dev-btn primary" data-open="usuario"><i class="ti ti-user-plus"></i> Nuevo usuario</button><select data-edit-user-select><option value="">Editar usuario existente...</option>${existing}</select><button class="dev-btn" data-edit-selected-user>Editar seleccionado</button></div><div class="record-grid">${userCards || '<div class="fp-sub">No hay usuarios creados.</div>'}</div></section>`,
       quickers: `<section class="settings-block"><div class="settings-actions"><button class="dev-btn primary" data-open="messengerUser"><i class="ti ti-user-bolt"></i> Crear mensajero</button></div><div class="record-grid">${quickers || '<div class="fp-sub">No hay mensajeros creados.</div>'}</div></section>`,
@@ -3187,6 +3366,8 @@ function toggleMode() {
           ${isAdmin ? navBtn('clientes', 'ti-building-store', 'Clientes') + navBtn('usuarios', 'ti-users', 'Usuarios') : ''}
           ${(isAdmin || isCoordinator) ? navBtn('quickers', 'ti-motorbike', 'Quickers') : ''}
           ${isAdmin ? '<div class="settings-section-label">Módulos</div>' + navBtn('modulos', 'ti-layout-grid-add', 'Módulos') : ''}
+          <div class="settings-section-label">Apariencia</div>
+          ${navBtn('apariencia', 'ti-palette', 'Apariencia')}
         </aside>
         <main class="settings-main">
           <div class="settings-title">${tab === 'miUsuario' ? 'Mi usuario' : tab === 'clientes' ? 'Clientes' : tab === 'usuarios' ? 'Usuarios' : tab === 'quickers' ? 'Quickers' : 'Módulos'}</div>
@@ -5254,6 +5435,24 @@ function toggleMode() {
   });
 
   document.addEventListener('change', event => {
+    if (event.target.matches('[data-nov-dash-tipo]')) {
+      novDashFilters.tipo = event.target.value;
+      openModuleDashboard('novedades');
+    }
+    if (event.target.matches('[data-nov-dash-gestion]')) {
+      novDashFilters.gestion = event.target.value;
+      openModuleDashboard('novedades');
+    }
+    if (event.target.matches('[data-nov-dash-fecha]')) {
+      novDashFilters.fecha = event.target.value;
+      openModuleDashboard('novedades');
+    }
+    const novSetTipo = event.target.closest('[data-nov-set-tipo]');
+    if (novSetTipo) { const val = novSetTipo.dataset.novSetTipo; novDashFilters.tipo = novDashFilters.tipo === val ? 'todos' : val; openModuleDashboard('novedades'); }
+    const novSetGestion = event.target.closest('[data-nov-set-gestion]');
+    if (novSetGestion) { const val = novSetGestion.dataset.novSetGestion; novDashFilters.gestion = novDashFilters.gestion === val ? 'todos' : val; openModuleDashboard('novedades'); }
+    const novClear = event.target.closest('[data-nov-clear-filters]');
+    if (novClear) { novDashFilters.tipo = 'todos'; novDashFilters.gestion = 'todos'; novDashFilters.fecha = ''; openModuleDashboard('novedades'); }
     if (event.target.matches('[data-ingress-grace]')) {
       state.prefs.ingressGraceMinutes = Number(event.target.value || 30);
       saveState('Tolerancia actualizada');
@@ -5540,3 +5739,7 @@ function toggleMode() {
 </script>
 </body>
 </html>
+
+
+
+
