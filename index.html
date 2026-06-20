@@ -45,18 +45,18 @@
     --mode: dark;
   }
   .light-mode {
-    --bg-grad: linear-gradient(135deg,#f0ede8 0%,#e8e0d8 40%,#ece8f0 100%);
-    --sidebar-bg: rgba(255,255,255,.92);
-    --topbar-bg: rgba(255,255,255,.85);
-    --card-bg: rgba(255,255,255,.75);
-    --card-bg-hover: rgba(255,255,255,.95);
-    --card-border: rgba(0,0,0,.09);
-    --card-glass: rgba(255,255,255,.6);
-    --text-1: #0D0B1A;
-    --text-2: rgba(0,0,0,.55);
-    --text-3: rgba(0,0,0,.35);
-    --border: rgba(0,0,0,.09);
-    --accent-glow: 0 4px 20px rgba(245,197,24,.35);
+    --bg-grad: linear-gradient(160deg,#f1f5f9 0%,#e8edf5 100%);
+    --sidebar-bg: #ffffff;
+    --topbar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --card-bg-hover: #f8fafc;
+    --card-border: rgba(0,0,0,.13);
+    --card-glass: #ffffff;
+    --text-1: #0a0a0a;
+    --text-2: #1f2937;
+    --text-3: #374151;
+    --border: rgba(0,0,0,.13);
+    --accent-glow: 0 4px 20px rgba(245,197,24,.4);
   }
 
   html, body { height: 100%; font-family: 'Inter', sans-serif; font-size: 13px; overflow: hidden; }
@@ -727,6 +727,10 @@
   }
 
   /* ───── LIGHT MODE READABILITY + ADMIN UX ───── */
+  /* Fondo base sin glows oscuros */
+  .light-mode body::before { opacity: 0 !important; }
+
+  /* Contenedores principales */
   .light-mode .functional-panel,
   .light-mode .fp-card,
   .light-mode .data-table-wrap,
@@ -734,78 +738,180 @@
   .light-mode .kpi-card,
   .light-mode .settings-card,
   .light-mode .modal-card {
-    background: rgba(255,255,255,.96);
-    color: #111827;
-    border-color: rgba(0,0,0,.12);
-    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    background: #ffffff;
+    color: #0a0a0a;
+    border-color: rgba(0,0,0,.13);
+    box-shadow: 0 2px 12px rgba(0,0,0,.07);
   }
-  .light-mode { color: #111827; }
-  .light-mode .dev-btn { color: #1a1200; background: #fefce8; border-color: rgba(161,120,0,.3); }
-  .light-mode .dev-btn.primary { background: linear-gradient(135deg,#F5C518,#C9A200); color: #000; border-color: transparent; }
-  .light-mode .data-table { color: #111827; }
-  .light-mode .data-table th { color: #374151; background: #f9f5e7; border-color: rgba(0,0,0,.1); }
-  .light-mode .data-table td { color: #111827; border-color: rgba(0,0,0,.07); }
-  .light-mode .data-table tbody tr:hover { background: rgba(245,197,24,.08); }
+
+  /* Texto base */
+  .light-mode { color: #0a0a0a; }
+  .light-mode * { color: inherit; }
+
+  /* ── Botones ── */
+  .light-mode .dev-btn { color: #1a0f00; background: #fffbeb; border-color: rgba(180,130,0,.35); font-weight: 700; }
+  .light-mode .dev-btn.primary { background: linear-gradient(135deg,#F5C518,#C9A200); color: #000; border-color: transparent; box-shadow: 0 2px 10px rgba(245,197,24,.4); }
+  .light-mode .dev-btn:hover { background: #fef3c7; }
+
+  /* ── Tablas ── */
+  select option { color: #111; background: #fff; }
+  .light-mode .data-table { color: #0a0a0a; border-collapse: separate; }
+  .light-mode .data-table th { color: #0a0a0a; font-weight: 800; background: #fef9e7; border-color: rgba(245,197,24,.35); border-bottom: 2px solid rgba(245,197,24,.5); }
+  .light-mode .data-table td { color: #0a0a0a; border-color: rgba(0,0,0,.07); background: #fff; }
+  .light-mode .data-table tbody tr:nth-child(even) td { background: #fafafa; }
+  .light-mode .data-table tbody tr:hover td { background: #fef9e7 !important; }
+  .light-mode .tbl { color: #0a0a0a; }
+  .light-mode .tbl td { border-color: rgba(0,0,0,.07); color: #0a0a0a; }
+
+  /* ── Inputs y selects ── */
   .light-mode .data-table td,
   .light-mode .form-field input,
   .light-mode .form-field select,
   .light-mode .form-field textarea,
   .light-mode .tb-search input,
   .light-mode .nov-filterbar select,
-  .light-mode .nov-filterbar input { color: #111827; }
+  .light-mode .nov-filterbar input,
+  .light-mode .toolbar-line select,
+  .light-mode .toolbar-line input { color: #0a0a0a; }
   .light-mode .form-field input,
   .light-mode .form-field select,
   .light-mode .form-field textarea,
   .light-mode .nov-filterbar select,
-  .light-mode .nov-filterbar input { background: #fff; border-color: #d1d5db; }
-  select option { color: #111; background: #fff; }
-  .light-mode .kpi-card { color: #fff; }
-  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) { background: #fff; color: #111827; border: 1px solid rgba(0,0,0,.1); }
-  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) .kpi-label { color: #6b7280; }
-  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) .kpi-value { color: #111827; }
-  .light-mode .tbl { color: #111827; }
-  .light-mode .settings-card { color: #111827; }
-  .light-mode .kpi-label { color: rgba(255,255,255,.85); }
-  .light-mode .card-sub,
-  .light-mode .fp-sub,
-  .light-mode .fp-card-note { color: #6b7280; }
-  .light-mode .fp-title,
-  .light-mode .card-title,
-  .light-mode .fp-card-value { color: #111827; }
-  .light-mode .fp-card { background: #f9fafb; border-color: rgba(0,0,0,.1); color: #111827; }
-  .light-mode .fp-card-label { color: #374151; }
-  .light-mode .sidebar { background: rgba(255,255,255,.96); border-color: rgba(0,0,0,.1); }
-  .light-mode .nav-item { color: #374151; }
-  .light-mode .nav-item:hover, .light-mode .nav-item.active { background: rgba(245,197,24,.12); color: #92400e; }
-  .light-mode .topbar { background: rgba(255,255,255,.95); border-color: rgba(0,0,0,.1); }
-  .light-mode .tb-search input { background: #f3f4f6; border-color: #d1d5db; color: #111827; }
-  .light-mode .module-tab { color: #374151; border-color: rgba(0,0,0,.12); background: #f9fafb; }
-  .light-mode .module-tab.on { background: var(--q); color: #000; border-color: var(--q); }
-  .light-mode .status-pill { border-color: rgba(0,0,0,.15); }
-  .light-mode .st-ok { background: rgba(34,197,94,.15); color: #15803d; }
-  .light-mode .st-warn { background: rgba(234,179,8,.15); color: #854d0e; }
-  .light-mode .st-bad { background: rgba(239,68,68,.15); color: #b91c1c; }
-  .light-mode .st-info { background: rgba(59,130,246,.15); color: #1d4ed8; }
-  .light-mode .chart-card { background: #f9fafb; border-color: rgba(0,0,0,.1); color: #111827; }
-  .light-mode .chart-card h4 { color: #111827; }
-  .light-mode .chart-sub { color: #6b7280; }
-  .light-mode .chart-bar-label { color: #374151; }
-  .light-mode .chart-bar-track { background: rgba(0,0,0,.08); }
-  .light-mode .modal-card { background: #fff; color: #111827; }
-  .light-mode .modal-title { color: #111827; }
-  .light-mode .form-label { color: #374151; }
-  .light-mode .dropzone { background: #f9fafb; border-color: #d1d5db; color: #374151; }
-  .light-mode .malla-record-days { background: #f3f4f6; }
-  .light-mode .malla-day-btn { background: #fff; color: #111827; border-color: #d1d5db; }
-  .light-mode .record-card { background: #fff; color: #111827; border-color: #e5e7eb; }
-  .light-mode .settings-block-title { color: #111827; }
-  .light-mode .settings-nav { border-color: rgba(0,0,0,.1); }
-  .light-mode .settings-tab { color: #374151; }
-  .light-mode .settings-tab.on { background: rgba(245,197,24,.15); color: #92400e; border-color: rgba(245,197,24,.4); }
-  .light-mode .dash-kpi-card:not([class*="grad-"]):not(.q-accent) { background: #f9fafb; color: #111827; border: 1px solid #e5e7eb; }
-  .light-mode .dash-top-row { background: #f3f4f6; border-color: #e5e7eb; }
-  .light-mode .dash-top-name { color: #111827; }
-  .light-mode .nov-filterbar .dev-btn { color: #1a1200; }
+  .light-mode .nov-filterbar input,
+  .light-mode .toolbar-line select,
+  .light-mode .toolbar-line input { background: #fff; border-color: #d1d5db; }
+  .light-mode .tb-search input { background: #f3f4f6; border-color: #d1d5db; color: #0a0a0a; }
+  .light-mode .form-label { color: #1f2937; font-weight: 600; }
+  .light-mode .form-config-select { background: #fff; color: #0a0a0a; border-color: #d1d5db; }
+
+  /* ── KPI Cards ── */
+  .light-mode .kpi-card { color: #0a0a0a; }
+  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) {
+    background: #fff; color: #0a0a0a;
+    border: 1px solid rgba(0,0,0,.13);
+    border-left: 4px solid #F5C518;
+  }
+  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) .kpi-label { color: #374151; font-weight: 600; }
+  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) .kpi-value { color: #0a0a0a; font-weight: 900; }
+  .light-mode .kpi-card:not([class*="grad-"]):not(.q-accent) .kpi-delta { color: #374151; }
+  .light-mode .kpi-label { color: #374151; }
+
+  /* ── FP Cards ── */
+  .light-mode .fp-card { background: #fff; border: 1px solid rgba(0,0,0,.13); border-left: 4px solid #F5C518; color: #0a0a0a; }
+  .light-mode .fp-card-label { color: #374151; font-weight: 600; }
+  .light-mode .fp-card-value { color: #0a0a0a; font-weight: 900; }
+  .light-mode .fp-card-note { color: #374151; }
+  .light-mode .fp-title { color: #0a0a0a; font-weight: 900; }
+  .light-mode .fp-sub { color: #374151; }
+  .light-mode .card-title { color: #0a0a0a; font-weight: 900; }
+  .light-mode .card-sub { color: #374151; }
+
+  /* ── Sidebar ── */
+  .light-mode .sidebar { background: #ffffff; border-color: rgba(0,0,0,.13); box-shadow: 2px 0 12px rgba(0,0,0,.06); }
+  .light-mode .nav-item { color: #1f2937; font-weight: 600; }
+  .light-mode .nav-item:hover { background: #fef9e7; color: #92400e; }
+  .light-mode .nav-item.active { background: #fef08a; color: #78350f; border-left: 3px solid #F5C518; font-weight: 800; }
+  .light-mode .logo-text,.light-mode .logo-sub { color: #0a0a0a; }
+  .light-mode .badge { background: #dc2626; color: #fff; }
+
+  /* ── Topbar ── */
+  .light-mode .topbar { background: #ffffff; border-color: rgba(0,0,0,.13); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .light-mode .page-title,.light-mode .page-sub { color: #0a0a0a; }
+  .light-mode .tb-badge { background: #16a34a; color: #fff; }
+
+  /* ── Tabs de módulo ── */
+  .light-mode .module-tab { color: #1f2937; border-color: rgba(0,0,0,.15); background: #f8fafc; font-weight: 700; }
+  .light-mode .module-tab:hover { background: #fef9e7; color: #92400e; }
+  .light-mode .module-tab.on { background: #F5C518; color: #000; border-color: #C9A200; font-weight: 800; }
+
+  /* ── Status Pills — SÓLIDOS y vivos ── */
+  .light-mode .status-pill { border: 1.5px solid transparent; font-weight: 700; }
+  .light-mode .st-ok  { background: #16a34a; color: #fff; border-color: #15803d; }
+  .light-mode .st-warn { background: #d97706; color: #fff; border-color: #b45309; }
+  .light-mode .st-bad  { background: #dc2626; color: #fff; border-color: #b91c1c; }
+  .light-mode .st-info { background: #2563eb; color: #fff; border-color: #1d4ed8; }
+
+  /* ── Badges de tipo (b-*) — vivos ── */
+  .light-mode .b-green  { background: #16a34a; color: #fff; border-color: #15803d; }
+  .light-mode .b-yellow { background: #d97706; color: #fff; border-color: #b45309; }
+  .light-mode .b-red    { background: #dc2626; color: #fff; border-color: #b91c1c; }
+  .light-mode .b-blue   { background: #2563eb; color: #fff; border-color: #1d4ed8; }
+  .light-mode .b-purple { background: #7c3aed; color: #fff; border-color: #6d28d9; }
+
+  /* ── Charts ── */
+  .light-mode .chart-card { background: #fff; border: 1px solid rgba(0,0,0,.13); color: #0a0a0a; }
+  .light-mode .chart-card h4 { color: #0a0a0a; font-weight: 800; }
+  .light-mode .chart-sub { color: #374151; }
+  .light-mode .chart-bar-label { color: #1f2937; font-weight: 600; }
+  .light-mode .chart-bar-track { background: #e5e7eb; }
+  .light-mode .gestion-upload-card,.light-mode .chart-config-row { background: #fff; border-color: rgba(0,0,0,.13); }
+
+  /* ── Modal ── */
+  .light-mode .modal-card { background: #fff; color: #0a0a0a; border-color: rgba(0,0,0,.15); }
+  .light-mode .modal-title { color: #0a0a0a; font-weight: 900; }
+  .light-mode .modal-sub { color: #374151; }
+  .light-mode .detail-row { background: #fff; border-color: rgba(0,0,0,.12); color: #0a0a0a; }
+  .light-mode .detail-row label { color: #374151; font-weight: 600; }
+  .light-mode .detail-row span,.light-mode .detail-row strong { color: #0a0a0a; }
+
+  /* ── Nov filters ── */
+  .light-mode .nov-filterbar .dev-btn { color: #1a0f00; }
+  .light-mode .nov-kpi { background: #fff; border-color: rgba(0,0,0,.13); color: #0a0a0a; }
+
+  /* ── Dropzone ── */
+  .light-mode .dropzone { background: #fef9e7; border-color: rgba(245,197,24,.5); color: #1f2937; }
+
+  /* ── Malla ── */
+  .light-mode .malla-record-days { background: #f1f5f9; border-color: rgba(0,0,0,.13); }
+  .light-mode .malla-day-btn { background: #fff; color: #0a0a0a; border-color: #d1d5db; font-weight: 600; }
+  .light-mode .malla-day-btn:hover,.light-mode .malla-day-btn.on { background: #fef08a; color: #78350f; border-color: #F5C518; }
+  .light-mode .malla-record-sheet { background: #fff; border-color: rgba(0,0,0,.13); }
+  .light-mode .malla-record-title { color: #0a0a0a; font-weight: 800; }
+  .light-mode .malla-record-toolbar { border-color: rgba(0,0,0,.1); background: #f8fafc; }
+
+  /* ── Settings ── */
+  .light-mode .record-card { background: #fff; color: #0a0a0a; border-color: rgba(0,0,0,.13); }
+  .light-mode .record-card:hover { border-color: #F5C518; background: #fef9e7; }
+  .light-mode .record-title { color: #0a0a0a; font-weight: 800; }
+  .light-mode .record-meta { color: #374151; }
+  .light-mode .settings-block-title { color: #0a0a0a; font-weight: 800; }
+  .light-mode .settings-shell { background: #f8fafc; border-color: rgba(0,0,0,.13); }
+  .light-mode .settings-nav { background: #fff; border-color: rgba(0,0,0,.13); }
+  .light-mode .settings-tab { color: #1f2937; font-weight: 600; }
+  .light-mode .settings-tab:hover { background: #fef9e7; color: #92400e; }
+  .light-mode .settings-tab.on { background: #fef08a; color: #78350f; border-color: #F5C518; font-weight: 800; }
+  .light-mode .settings-tab .ti { color: #C9A200; }
+  .light-mode .settings-title { color: #0a0a0a; }
+  .light-mode .settings-desc { color: #374151; }
+  .light-mode .settings-section-label { color: #374151; }
+  .light-mode .settings-card { color: #0a0a0a; background: #fff; border-color: rgba(0,0,0,.13); }
+  .light-mode .action-group { background: #fff; border-color: rgba(0,0,0,.13); }
+  .light-mode .module-pill { background: #fff; border-color: rgba(0,0,0,.13); color: #0a0a0a; }
+  .light-mode .permission-tile { background: #fff; border-color: rgba(0,0,0,.13); color: #0a0a0a; }
+  .light-mode .point-row input { background: #fff; color: #0a0a0a; border-color: #d1d5db; }
+  .light-mode .point-chip { background: #fef9e7; border-color: rgba(245,197,24,.5); color: #78350f; }
+  .light-mode .subtab { background: #f8fafc; border-color: rgba(0,0,0,.13); color: #1f2937; }
+  .light-mode .subtab.on { background: linear-gradient(135deg,#F5C518,#C9A200); color: #000; border-color: transparent; }
+
+  /* ── Dashboard analítico ── */
+  .light-mode .dash-kpi-card:not([class*="grad-"]):not(.q-accent) {
+    background: #fff; color: #0a0a0a;
+    border: 1px solid rgba(0,0,0,.13);
+    border-left: 4px solid #F5C518;
+  }
+  .light-mode .dash-top-row { background: #f1f5f9; border-color: rgba(0,0,0,.12); }
+  .light-mode .dash-top-name { color: #0a0a0a; font-weight: 700; }
+
+  /* ── Bar track ── */
+  .light-mode .bar-track { background: #e5e7eb; }
+
+  /* ── Mapa ── */
+  .light-mode .map-ph { background: linear-gradient(135deg,#e0e8f4,#d8d0e8); }
+  .light-mode .sat-road { background: rgba(40,40,40,.32); }
+  .light-mode .map-side { background: #fff; border-color: rgba(0,0,0,.13); }
+  .light-mode .map-caption { background: rgba(0,0,0,.72); }
+  .light-mode .leaflet-map { border-color: rgba(0,0,0,.2); }
+  .light-mode .map-person { background: #fff; border-color: rgba(0,0,0,.12); }
   .toolbar-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
   .toolbar-line select,
   .toolbar-line input {
