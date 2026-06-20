@@ -4240,18 +4240,18 @@ function toggleMode(forceDark) {
     ticket: {
       title: 'Nuevo Ticket',
       subtitle: 'Crea un ticket para reportar un problema, solicitud o requerimiento.',
-      fields: [
+      fields: () => [
         ['title', 'Título', 'text'],
         ['type', 'Tipo', 'select', ['Problema', 'Solicitud', 'Requerimiento', 'Mejora']],
         ['description', 'Descripción', 'textarea'],
         ['priority', 'Prioridad', 'select', ['Baja', 'Media', 'Alta', 'Crítica']],
-        ['assignedTo', 'Asignar a', 'select', state.users.map(u => u.id + '|' + u.name)],
+        ['assignedTo', 'Asignar a', 'select', (state.users || []).map(u => (u.id || '') + '|' + (u.name || ''))],
         ['dueDate', 'Fecha de vencimiento', 'date'],
-        ['client', 'Cliente relacionado', 'select', ['Ninguno', ...state.clients.map(c => c.name)]],
+        ['client', 'Cliente relacionado', 'select', ['Ninguno', ...(state.clients || []).map(c => c.name)]],
         ['tags', 'Etiquetas (coma separadas)', 'text']
       ],
       submit: data => {
-        const assignedUser = state.users.find(u => u.id === data.assignedTo);
+        const assignedUser = (state.users || []).find(u => u.id === data.assignedTo);
         data.assignedTo = assignedUser?.id || data.assignedTo;
         const ticket = {
           id: uid('TIC'),
