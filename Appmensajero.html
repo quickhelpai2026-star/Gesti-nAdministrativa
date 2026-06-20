@@ -21,17 +21,18 @@
     .password-wrap{position:relative}.password-wrap input{padding-right:50px}.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;border-radius:12px;background:rgba(255,255,255,.08);color:#fff}
     .hidden{display:none}.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(245,197,24,.12);color:var(--q);font-size:12px;font-weight:850}.pill.ok{background:rgba(34,197,94,.15);color:var(--ok)}.pill.bad{background:rgba(239,68,68,.15);color:#ff9b9b}
     .muted{color:var(--muted);font-size:13px;line-height:1.4}.turn h2{margin:12px 0 4px;font-size:24px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.meta div{border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:16px;padding:12px}.meta small{display:block;color:var(--muted);font-size:11px}.meta strong{font-size:16px}
-    .camera{border:1px dashed rgba(245,197,24,.45);border-radius:18px;padding:12px;margin-top:10px;background:rgba(245,197,24,.06)} video,.snapshot{width:100%;border-radius:14px;background:#050505;min-height:190px;object-fit:cover;border:1px solid var(--line)}.snapshot{display:none}.cam-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .camera{border:1px dashed rgba(245,197,24,.45);border-radius:18px;padding:12px;margin-top:10px;background:rgba(245,197,24,.06)} video,.snapshot{width:100%;border-radius:14px;background:#050505;min-height:190px;object-fit:cover;border:1px solid var(--line)}.snapshot{display:none}.cam-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.camera .close-camera{margin-top:8px}
     .map{height:340px;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:#111}.map-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
     .row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:10px 0}.row:last-child{border-bottom:0}.toast{position:fixed;left:14px;right:14px;bottom:86px;background:#111;border:1px solid rgba(245,197,24,.3);padding:13px;border-radius:16px;opacity:0;transform:translateY(10px);transition:.2s;z-index:20;text-align:center}.toast.on{opacity:1;transform:none}
     .doc-grid{display:grid;gap:10px}.doc-item{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.045)}.doc-item h4{margin:0 0 4px;display:flex;align-items:center;gap:6px}
     .status-line{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.status-line div{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(245,197,24,.06)}
-    .tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(9,8,6,.96);border-top:1px solid var(--line);backdrop-filter:blur(16px);display:grid;grid-template-columns:repeat(6,1fr);z-index:10}.tab{height:64px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;gap:2px;font-size:9.5px;font-weight:800;padding:0}.tab .ti{font-size:19px}.tab.on{color:var(--q)}.screen{display:none}.screen.on{display:block}
+    .tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(9,8,6,.96);border-top:1px solid var(--line);backdrop-filter:blur(16px);display:grid;grid-template-columns:repeat(6,1fr);z-index:10}.tabs.hidden{display:none}.tab{height:64px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;gap:2px;font-size:9.5px;font-weight:800;padding:0}.tab .ti{font-size:19px}.tab.on{color:var(--q)}.screen{display:none}.screen.on{display:block}
     .lunch-head{display:flex;align-items:center;gap:10px;margin:14px 0 4px}.lunch-head .ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(245,197,24,.15);color:var(--q);font-size:20px}
     .alert{border-radius:14px;padding:11px 13px;margin-bottom:10px;font-size:13px;display:flex;gap:8px;align-items:flex-start}.alert.warn{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#fcd34d}.alert.bad{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5}.alert.ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac}
     .tk{border:1px solid var(--line);border-radius:14px;padding:11px;margin-bottom:9px;background:rgba(255,255,255,.04)}.tk b{font-size:14px}.tk .meta-row{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:var(--muted)}
     .stamp-note{font-size:11px;color:var(--muted);margin-top:6px}
     .filebox{border:1px dashed var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.04);font-size:12px;color:var(--muted)}
+    .my-carnet{margin:12px auto 16px;max-width:330px;border:1px solid rgba(245,197,24,.4);border-radius:22px;overflow:hidden;background:linear-gradient(160deg,#17130b,#090909);box-shadow:0 20px 45px rgba(0,0,0,.35)}.my-carnet-head{height:76px;padding:16px;background:linear-gradient(120deg,#f5c518,#b58d00);color:#080808;display:flex;align-items:center;gap:10px}.my-carnet-head strong{font-size:22px}.my-carnet-photo{width:108px;height:108px;margin:-34px auto 12px;border-radius:22px;border:4px solid #15130f;background:#2b271d;overflow:hidden;display:grid;place-items:center;font-size:32px;font-weight:900;color:var(--q)}.my-carnet-photo img{width:100%;height:100%;object-fit:cover}.my-carnet-body{padding:0 18px 18px;text-align:center}.my-carnet-body h3{margin:0 0 4px}.my-carnet-data{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;text-align:left}.my-carnet-data div{padding:9px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04)}.my-carnet-data small{display:block;color:var(--muted)}
   </style>
 </head>
 <body>
@@ -42,7 +43,7 @@
         <label>Usuario</label><input id="user" value="carlos.qk" required>
         <label>Contraseña</label><div class="password-wrap"><input id="pass" type="password" required><button class="eye" id="eye" type="button"><i class="ti ti-eye"></i></button></div>
         <button class="btn">Ingresar</button>
-        <p class="muted" style="margin-bottom:0">El usuario y la contraseña los crea el administrador. Prueba: <strong>carlos.qk</strong> / <strong>Mensajero2026!</strong>.</p>
+        <p class="muted" style="margin-bottom:0">El usuario y la contraseña los crea el administrador de la plataforma.</p>
       </form>
     </section>
 
@@ -61,17 +62,19 @@
           <div class="status-line"><div><small>Tiempo turno</small><strong id="turnElapsed">00:00</strong></div><div><small>Tiempo almuerzo</small><strong id="lunchElapsed">00:00</strong></div></div>
           <p class="muted" id="gpsText">GPS pendiente. La ubicación se toma automáticamente.</p>
 
-          <div class="camera">
-            <label>Cámara — la foto incluirá dirección, fecha y hora</label>
+          <div class="camera hidden" id="cameraPanel">
+            <label id="cameraTitle">Captura de evidencia</label>
             <video id="camera" autoplay playsinline muted></video>
             <img id="snapshot" class="snapshot" alt="Foto capturada">
-            <div class="cam-actions"><button class="btn ghost small" id="startCamera" type="button">Abrir cámara</button><button class="btn ghost small" id="capturePhoto" type="button">Probar foto</button></div>
-            <p class="stamp-note">Al iniciar o finalizar turno se toma la foto automáticamente y se sella con la ubicación. Esa foto se refleja en la malla.</p>
+            <div class="cam-actions"><button class="btn ghost small" id="flipCamera" type="button"><i class="ti ti-switch-horizontal"></i> Girar cámara</button><button class="btn small" id="capturePhoto" type="button"><i class="ti ti-camera"></i> Tomar foto</button></div>
+            <button class="btn ghost small close-camera" id="cancelCamera" type="button">Cancelar</button>
+            <p class="stamp-note">La foto se sella con la ubicación, fecha y hora. La cámara se cierra al terminar.</p>
           </div>
           <input type="file" id="turnFileInput" accept="image/*" capture="environment" class="hidden">
 
           <button class="btn" data-turn-action="inicio"><i class="ti ti-player-play"></i> Iniciar turno</button>
           <button class="btn bad" data-turn-action="cierre"><i class="ti ti-player-stop"></i> Finalizar turno</button>
+          <button class="btn ghost" id="extraPhotoBtn" type="button"><i class="ti ti-camera-plus"></i> Tomar foto adicional</button>
 
           <div id="lunchBlock">
             <div class="lunch-head"><div class="ico"><i class="ti ti-tools-kitchen-2"></i></div><div><strong>Almuerzo</strong><div class="muted" id="lunchInfo">Marca ingreso y salida</div></div></div>
@@ -111,7 +114,6 @@
           <h3 style="margin:0 0 8px">Solicitud / PQR</h3>
           <p class="muted">Permisos, quejas, PQR o novedades. Llega a tu coordinador.</p>
           <label>Tipo</label><select id="tkType"><option>Permiso</option><option>Queja</option><option>PQR</option><option>Solicitud</option><option>Novedad</option><option>Incapacidad</option></select>
-          <label>Prioridad</label><select id="tkPriority"><option>Baja</option><option selected>Media</option><option>Alta</option><option>Crítica</option></select>
           <label>Título</label><input id="tkTitle" placeholder="Resumen breve">
           <label>Descripción</label><textarea id="tkDesc" placeholder="Cuéntanos el detalle"></textarea>
           <label>Adjunto (opcional)</label><input type="file" id="tkFile" accept="image/*,.pdf">
@@ -131,6 +133,8 @@
         <div class="card">
           <h3 style="margin:0 0 4px">Mi perfil y documentos</h3>
           <p class="muted">Sube tu foto y los documentos de la moto con su vencimiento. Te avisamos (y a tu coordinador) antes de que venzan.</p>
+          <button class="btn ghost" id="showCarnet" type="button"><i class="ti ti-id-badge-2"></i> Ver mi carnet</button>
+          <div class="hidden" id="myCarnet"></div>
           <div id="docAlerts"></div>
           <div class="doc-grid" id="docGrid"></div>
           <button class="btn" id="saveDocs" type="button"><i class="ti ti-device-floppy"></i> Guardar documentos</button>
@@ -152,7 +156,7 @@
   <script>
     const KEY='quick_lastmile_mvp_state_v1';
     const fallback={users:[{name:'Carlos Mejía',username:'carlos.qk',password:'Mensajero2026!',profile:'Quicker',scope:'Carlos Mejía'}],clients:[{name:'Farmacias Andina',lunch:'Si',lat:4.6872,lng:-74.0488,points:[{name:'Santa Bárbara',address:'Cra 7 #120-20, Bogotá',lat:4.6872,lng:-74.0488}]}],quickers:[{name:'Carlos Mejía',cedula:'1018456789',phone:'3001234567',client:'Farmacias Andina',point:'Santa Bárbara',lat:4.6872,lng:-74.0488,paymentEnabled:'No',paymentTypes:['Parqueaderos']}],availabilities:[{id:'DIS-001',date:'2026-06-17',client:'Farmacias Andina',point:'Santa Bárbara',quicker:'Carlos Mejía',plannedStart:'08:00',plannedEnd:'18:00',realStart:'',realEnd:'',status:'Creado',evidencePhoto:'',custom:{}}],evidences:[],novelties:[],parkingReports:[],locationPings:[],tickets:[],notifications:[],prefs:{}};
-    let state=load(), session=null, current=null, lastGps=null, capturedPhoto='', stream=null, map=null, cloudRef=null, storage=null, watchId=null, lastPingSave=0;
+    let state=load(), session=null, current=null, lastGps=null, capturedPhoto='', stream=null, cameraFacing='environment', pendingCameraAction='', map=null, cloudRef=null, storage=null, watchId=null, lastPingSave=0;
     function load(){try{return {...fallback,...(JSON.parse(localStorage.getItem(KEY))||{})}}catch{return fallback}}
     function save(msg){localStorage.setItem(KEY,JSON.stringify(state));if(cloudRef)cloudRef.set({state:publicState(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedBy:session?.username||'mensajero'},{merge:true}).catch(()=>{});if(msg)toast(msg)}
     // Quita base64 (dataUrl/photoData) antes de subir a Firestore; conserva las URL de Storage
@@ -162,7 +166,7 @@
       if(Array.isArray(s.tickets))s.tickets=s.tickets.map(t=>({...t,evidence:(t.evidence||[]).map(e=>({...e,dataUrl:null}))}));
       if(Array.isArray(s.quickers))s.quickers=s.quickers.map(q=>({...q,documents:Object.fromEntries(Object.entries(q.documents||{}).map(([k,v])=>[k,{...v,dataUrl:null}]))}));
       return s;}
-    function initCloud(){try{const cfg=window.QUICK_FIREBASE_CONFIG;if(!cfg?.enabled||!window.firebase)return;if(!firebase.apps.length)firebase.initializeApp(cfg.firebaseConfig);try{if(firebase.storage)storage=firebase.storage()}catch{}cloudRef=firebase.firestore().collection(cfg.collection||'quick_lastmile').doc(cfg.documentId||'platform_state');cloudRef.onSnapshot(s=>{const remote=s.data()?.state;if(!remote)return;const keep=session;state={...fallback,...remote};localStorage.setItem(KEY,JSON.stringify(state));session=keep;if(session)renderHome(false)})}catch{}}
+    function initCloud(){try{const cfg=window.QUICK_FIREBASE_CONFIG;if(!cfg?.enabled||!window.firebase)return;if(!firebase.apps.length)firebase.initializeApp(cfg.firebaseConfig);try{if(firebase.storage)storage=firebase.storage()}catch{}cloudRef=firebase.firestore().collection(cfg.collection||'quick_lastmile').doc(cfg.documentId||'platform_state');cloudRef.onSnapshot(s=>{const remote=s.data()?.state;if(!remote)return;const keep=session;state={...fallback,...remote};localStorage.setItem(KEY,JSON.stringify(state));session=keep;if(session)renderHome()})}catch{}}
     function uid(p){return `${p}-${Date.now().toString(36).toUpperCase()}${Math.floor(Math.random()*90+10)}`}
     function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1900)}
     function today(){return new Date().toISOString().slice(0,10)}
@@ -184,12 +188,15 @@
     function daysTo(date){if(!date)return null;const d=Math.ceil((new Date(date)-new Date())/86400000);return d}
     function renderDocs(q){q.documents=q.documents||{};document.getElementById('docGrid').innerHTML=DOC_DEFS.map(def=>{const d=q.documents[def.k]||{};const cur=d.url||d.dataUrl;return `<div class="doc-item"><h4><i class="ti ti-file-certificate"></i> ${def.k}</h4>${cur&&/^http|^data:image/.test(cur)?`<img src="${cur}" style="width:100%;max-height:120px;object-fit:cover;border-radius:10px;margin-bottom:6px">`:''}<label>Archivo</label><input type="file" data-doc-file="${def.k}" accept="image/*,.pdf">${def.exp?`<label>Vencimiento</label><input type="date" data-doc-expiry="${def.k}" value="${d.expiry||''}">`:''}<p class="muted">${d.fileName?`Actual: ${d.fileName}`:'Sin archivo'}</p></div>`}).join('');renderDocAlerts(q)}
     function renderDocAlerts(q){const box=document.getElementById('docAlerts');const al=[];DOC_DEFS.filter(d=>d.exp).forEach(def=>{const d=q.documents?.[def.k];if(d?.expiry){const dd=daysTo(d.expiry);if(dd<0)al.push(`<div class="alert bad"><i class="ti ti-alert-triangle"></i> ${def.k} VENCIDO (${d.expiry})</div>`);else if(dd<=30)al.push(`<div class="alert warn"><i class="ti ti-clock"></i> ${def.k} vence en ${dd} día(s) (${d.expiry})</div>`)}});box.innerHTML=al.join('')||'<div class="alert ok"><i class="ti ti-circle-check"></i> Documentos al día</div>'}
+    function resolveMedia(ref,cb){const direct=ref?.url||ref?.dataUrl;if(direct){cb(direct);return}if(ref?.mediaId&&window.firebase){firebase.firestore().collection('quick_media').doc(ref.mediaId).get().then(s=>cb(s.data()?.data||'')).catch(()=>cb(''));return}cb('')}
+    function renderMyCarnet(q){const box=document.getElementById('myCarnet');const photo=q.documents?.['Foto perfil']||(q.avatarUrl?{url:q.avatarUrl}:null);box.innerHTML=`<div class="my-carnet"><div class="my-carnet-head"><div class="logo">Q</div><div><strong>QUICK</strong><div>Last Mile</div></div></div><div class="my-carnet-photo" id="myCarnetPhoto">${initials(q.name)}</div><div class="my-carnet-body"><h3>${q.name||session.name}</h3><div class="muted">${q.client||'Operación sin asignar'}${q.point?' · '+q.point:''}</div><div class="my-carnet-data"><div><small>Cédula</small><strong>${q.cedula||'—'}</strong></div><div><small>Estado</small><strong>${q.status||'Activo'}</strong></div><div><small>Teléfono</small><strong>${q.phone||'—'}</strong></div><div><small>Punto</small><strong>${q.point||'—'}</strong></div></div></div></div>`;resolveMedia(photo,src=>{if(!src)return;const target=document.getElementById('myCarnetPhoto');if(target)target.innerHTML=`<img src="${src}" alt="Foto de ${q.name||session.name}">`})}
+    document.getElementById('showCarnet').onclick=()=>{const box=document.getElementById('myCarnet');const opening=box.classList.contains('hidden');box.classList.toggle('hidden');document.getElementById('showCarnet').innerHTML=opening?'<i class="ti ti-eye-off"></i> Ocultar mi carnet':'<i class="ti ti-id-badge-2"></i> Ver mi carnet';if(opening)renderMyCarnet(myQuicker())};
 
     function renderTimers(){if(!current)return;document.getElementById('turnElapsed').textContent=elapsed(current.realStart,current.realEnd);document.getElementById('lunchElapsed').textContent=elapsed(current.lunchStart,current.lunchEnd)}
     function renderTickets(){const mine=(state.tickets||[]).filter(t=>t.createdByName===session.name);document.getElementById('tkList').innerHTML=mine.length?mine.slice(0,20).map(t=>`<div class="tk"><b>${t.title||''}</b><div class="meta-row"><span>${t.type||''}</span><span class="pill ${/finaliz/i.test(overall(t))?'ok':''}">${overall(t)}</span></div></div>`).join(''):'<p class="muted">Sin solicitudes aún.</p>'}
     function overall(t){const ns=(t.assignees||[]);if(!ns.length)return 'Pendiente';const f=ns.filter(n=>(t.gestion?.[n]?.status)==='Finalizado').length;return f===ns.length?'Finalizado':f>0?'En proceso':'Pendiente'}
 
-    function renderHome(camera=true){document.getElementById('login').classList.add('hidden');document.getElementById('home').classList.remove('hidden');document.getElementById('tabs').classList.remove('hidden');document.getElementById('hello').textContent=`Hola, ${session.name.split(' ')[0]}`;document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
+    function renderHome(){document.getElementById('login').classList.add('hidden');document.getElementById('home').classList.remove('hidden');document.getElementById('tabs').classList.remove('hidden');document.getElementById('hello').textContent=`Hola, ${session.name.split(' ')[0]}`;document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
       const list=(state.availabilities||[]).filter(d=>d.quicker===session.name).sort((a,b)=>a.date.localeCompare(b.date));current=list.find(d=>d.date===today())||list[list.length-1];
       const q=myQuicker();const client=(state.clients||[]).find(c=>c.name===(current?.client||q.client))||{};
       if(current){document.getElementById('client').textContent=current.client;document.getElementById('point').textContent=current.point||'Sin punto asignado';document.getElementById('operation').textContent=current.client||q.client||'—';document.getElementById('schedule').textContent=`${current.plannedStart||''} - ${current.plannedEnd||''}`;document.getElementById('turnStatus').textContent=current.status||'Creado'}
@@ -197,29 +204,28 @@
       const payments=q.paymentEnabled==='Si';document.querySelector('[data-tab="gastos"]').style.display=payments?'grid':'none';document.getElementById('paymentType').innerHTML=(q.paymentTypes||['Parqueaderos']).map(t=>`<option>${t}</option>`).join('');
       const lunchOn=client.lunch==='Si';document.getElementById('lunchBlock').style.display=lunchOn?'block':'none';document.getElementById('lunchInfo').textContent=lunchOn?'Marca ingreso y salida de almuerzo':'No aplica';
       document.getElementById('scheduleList').innerHTML=list.length?list.map(d=>`<div class="row"><span>${d.date}<br><small class="muted">${d.client} · ${d.point||''}</small></span><strong>${d.status||'Creado'}</strong></div>`).join(''):'<p class="muted">Sin turnos asignados.</p>';
-      renderTimers();renderDocs(q);renderTickets();setTimeout(initMap,0);if(camera)startCamera()}
+      renderTimers();renderDocs(q);renderTickets();setTimeout(initMap,0)}
 
-    async function startCamera(){try{if(stream)return;stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});document.getElementById('camera').srcObject=stream}catch{document.getElementById('camera').style.display='none'}}
-    document.getElementById('startCamera').onclick=startCamera;
+    function stopCamera(){if(stream){stream.getTracks().forEach(track=>track.stop());stream=null}const video=document.getElementById('camera');video.srcObject=null}
+    async function startCamera(){stopCamera();const video=document.getElementById('camera');video.style.display='block';try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:cameraFacing}},audio:false});video.srcObject=stream;await video.play().catch(()=>{});return true}catch{video.style.display='none';toast('Usa la cámara del dispositivo para continuar');return false}}
+    function actionLabel(action){return {inicio:'Inicio de turno',cierre:'Fin de turno',almuerzo_inicio:'Inicio de almuerzo',almuerzo_fin:'Fin de almuerzo',adicional:'Foto adicional'}[action]||'Evidencia'}
+    async function openCameraForAction(action){if(!current){toast('No tienes turno asignado hoy');return}pendingCameraAction=action;document.getElementById('cameraTitle').textContent=`${actionLabel(action)} · toma la evidencia`;document.getElementById('snapshot').style.display='none';document.getElementById('cameraPanel').classList.remove('hidden');const opened=await startCamera();if(!opened){const input=document.getElementById('turnFileInput');input.value='';input.click()}}
+    function closeCameraPanel(){stopCamera();pendingCameraAction='';document.getElementById('cameraPanel').classList.add('hidden')}
+    function finishCameraPhoto(raw){const action=pendingCameraAction;if(!action||!raw){toast('Necesitas tomar la foto');return}stopCamera();document.getElementById('cameraPanel').classList.add('hidden');pendingCameraAction='';processTurnPhoto(action,raw)}
     function captureFrame(){const v=document.getElementById('camera');if(v&&v.videoWidth){const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);return c.toDataURL('image/jpeg',.82)}return ''}
-    document.getElementById('capturePhoto').onclick=()=>{const raw=captureFrame();if(!raw){toast('Abre la cámara primero');return}document.getElementById('snapshot').src=raw;document.getElementById('snapshot').style.display='block';toast('Vista previa lista')};
-    // Toma foto (cámara en vivo o input nativo como respaldo) y la entrega
-    function takePhotoThen(cb){const raw=captureFrame();if(raw){cb(raw);return}const inp=document.getElementById('turnFileInput');inp.value='';inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f){cb('');return}const r=new FileReader();r.onload=()=>cb(String(r.result||''));r.readAsDataURL(f)};inp.click()}
-
-    document.querySelectorAll('[data-turn-action]').forEach(btn=>btn.onclick=()=>registerTurn(btn.dataset.turnAction));
-    function registerTurn(action){if(!current){toast('No tienes turno asignado hoy');return}
-      takePhotoThen(raw=>{if(!raw){toast('Necesitas tomar la foto');return}
-        toast('Tomando ubicación...');
-        locate(gps=>{const stamp=new Date().toLocaleString('es-CO');
-          const proceed=address=>stampPhoto(raw,address,stamp,stamped=>{capturedPhoto=stamped;const img=document.getElementById('snapshot');img.src=stamped;img.style.display='block';applyTurn(action,gps,address,stamp,stamped)});
-          if(gps)reverseGeocode(gps.lat,gps.lng,addr=>proceed(addr||`${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)}`));
-          else proceed('Ubicación no disponible')})})}
+    document.getElementById('capturePhoto').onclick=()=>{const raw=captureFrame();if(raw){finishCameraPhoto(raw);return}const input=document.getElementById('turnFileInput');input.value='';input.click()};
+    document.getElementById('flipCamera').onclick=async()=>{cameraFacing=cameraFacing==='environment'?'user':'environment';await startCamera();toast(cameraFacing==='environment'?'Cámara trasera':'Cámara frontal')};
+    document.getElementById('cancelCamera').onclick=closeCameraPanel;
+    document.getElementById('turnFileInput').onchange=event=>{const file=event.target.files&&event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>finishCameraPhoto(String(reader.result||''));reader.readAsDataURL(file)};
+    document.querySelectorAll('[data-turn-action]').forEach(btn=>btn.onclick=()=>openCameraForAction(btn.dataset.turnAction));
+    document.getElementById('extraPhotoBtn').onclick=()=>openCameraForAction('adicional');
+    function processTurnPhoto(action,raw){toast('Tomando ubicación...');locate(gps=>{const stamp=new Date().toLocaleString('es-CO');const proceed=address=>stampPhoto(raw,address,stamp,stamped=>{capturedPhoto=stamped;applyTurn(action,gps,address,stamp,stamped)});if(gps)reverseGeocode(gps.lat,gps.lng,addr=>proceed(addr||`${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)}`));else proceed('Ubicación no disponible')})}
     function applyTurn(action,gps,address,stamp,stamped){
       if(action==='inicio'){current.realStart=new Date().toTimeString().slice(0,5);current.status='En turno'}
       if(action==='cierre'){current.realEnd=new Date().toTimeString().slice(0,5);current.status='Finalizado'}
       if(action==='almuerzo_inicio')current.lunchStart=new Date().toTimeString().slice(0,5);
       if(action==='almuerzo_fin')current.lunchEnd=new Date().toTimeString().slice(0,5);
-      const stageLabel={inicio:'Inicio de turno',cierre:'Fin de turno',almuerzo_inicio:'Inicio almuerzo',almuerzo_fin:'Fin almuerzo'}[action]||action;
+      const stageLabel=actionLabel(action);
       current.evidencePhoto=stamped;
       const eid=uid('EVI');
       state.evidences=state.evidences||[];
@@ -227,7 +233,7 @@
       state.evidences.unshift(ev);
       state.locationPings=state.locationPings||[];if(gps)state.locationPings.unshift({quicker:session.name,availability:current.id,client:current.client,point:current.point,address,...gps});
       document.getElementById('gpsText').textContent=gps?`${stageLabel} · ${address} · ${stamp}`:'No fue posible tomar GPS';
-      save(`${stageLabel} registrado`);renderHome(false);
+      save(`${stageLabel} registrado`);renderHome();
       uploadMedia(eid,stamped,mid=>{if(mid){const e=(state.evidences||[]).find(x=>x.id===eid);if(e){e.mediaId=mid;save()}}});
     }
 
@@ -245,7 +251,7 @@
 
     // SOLICITUDES / PQR → tickets
     document.getElementById('tkBtn').onclick=()=>{const title=document.getElementById('tkTitle').value.trim();if(!title){toast('Escribe un título');return}const q=myQuicker();const assignees=myCoordinators();const gestion={};assignees.forEach(n=>gestion[n]={status:'Pendiente',done:{},at:''});const tid=uid('TIC');const tkFile=document.getElementById('tkFile');const file=tkFile.files&&tkFile.files[0];
-      const finish=(evidence)=>{const t={id:tid,title,type:document.getElementById('tkType').value,description:document.getElementById('tkDesc').value,priority:document.getElementById('tkPriority').value,assignees,gestion,requirements:[],audience:'coordinador',client:q.client||'',clientScope:q.client||'Todos los clientes',custom:{},dueDate:'',createdAt:new Date().toISOString(),createdBy:session.username||'',createdByName:session.name,closedAt:null,comments:[],evidence:evidence||[],history:[{id:uid('TH'),action:'Ticket creado',user:session.name,at:new Date().toLocaleString('es-CO')}]};
+      const finish=(evidence)=>{const t={id:tid,title,type:document.getElementById('tkType').value,description:document.getElementById('tkDesc').value,priority:'Media',assignees,gestion,requirements:[],audience:'coordinador',client:q.client||'',clientScope:q.client||'Todos los clientes',custom:{},dueDate:'',createdAt:new Date().toISOString(),createdBy:session.username||'',createdByName:session.name,closedAt:null,comments:[],evidence:evidence||[],history:[{id:uid('TH'),action:'Ticket creado',user:session.name,at:new Date().toLocaleString('es-CO')}]};
         state.tickets=state.tickets||[];state.tickets.unshift(t);state.notifications=state.notifications||[];assignees.forEach(n=>state.notifications.unshift({id:uid('NT'),to:n,ticketId:tid,read:false,at:new Date().toLocaleString('es-CO'),text:`${session.name} creó ${t.type} ${tid}: ${title}`}));
         save('Solicitud enviada');document.getElementById('tkTitle').value='';document.getElementById('tkDesc').value='';tkFile.value='';renderTickets()};
       if(file){const r=new FileReader();r.onload=()=>{const data=String(r.result||'');const eid=uid('TE');finish([{id:eid,name:file.name,fileType:file.type,dataUrl:data,user:session.name,at:new Date().toLocaleString('es-CO')}]);uploadMedia(eid,data,mid=>{if(mid){const t=(state.tickets||[]).find(x=>x.id===tid);const e=t&&(t.evidence||[]).find(x=>x.id===eid);if(e){e.mediaId=mid;save()}}})};r.readAsDataURL(file)}else finish([])}
@@ -259,7 +265,7 @@
     function checkDocAlerts(q){const coords=myCoordinators();state.notifications=state.notifications||[];DOC_DEFS.filter(d=>d.exp).forEach(def=>{const d=q.documents?.[def.k];if(!d?.expiry)return;const dd=daysTo(d.expiry);if(dd!==null&&dd<=30){coords.forEach(n=>state.notifications.unshift({id:uid('NT'),to:n,ticketId:null,read:false,at:new Date().toLocaleString('es-CO'),text:`Documento ${def.k} de ${session.name} ${dd<0?'VENCIDO':'vence en '+dd+' día(s)'} (${d.expiry})`}));}})}
 
     // TABS
-    document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b===btn));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(`screen-${btn.dataset.tab}`).classList.add('on');if(btn.dataset.tab==='mapa')setTimeout(initMap,0)});
+    document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{if(btn.dataset.tab!=='turno')closeCameraPanel();document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b===btn));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(`screen-${btn.dataset.tab}`).classList.add('on');if(btn.dataset.tab==='mapa')setTimeout(initMap,0)});
     document.getElementById('refreshGps').onclick=()=>locate(gps=>{toast(gps?'GPS actualizado':'GPS no disponible');initMap()});
     document.getElementById('mapStyle').onchange=initMap;
     function kmlLatLngs(){const text=state.prefs?.kmlText||'';const m=text.match(/<coordinates[^>]*>([\s\S]*?)<\/coordinates>/i);if(!m)return[];return m[1].trim().split(/\s+/).map(pair=>{const [lng,lat]=pair.split(',').map(Number);return Number.isFinite(lat)&&Number.isFinite(lng)?[lat,lng]:null}).filter(Boolean).slice(0,400)}
@@ -268,7 +274,7 @@
       L.marker([ptLat,ptLng]).addTo(map).bindPopup(`<strong>${pt.name||current?.point||'Punto'}</strong><br>${pt.address||client.name||''}`);
       if(lastGps)L.circleMarker(here,{radius:9,color:'#22C55E',fillColor:'#22C55E',fillOpacity:.9}).addTo(map).bindPopup(`<strong>Tú</strong><br>${session.name}`);
       const zone=kmlLatLngs();if(zone.length>2){L.polygon(zone,{color:'#F5C518',weight:2,dashArray:'7 5',fillColor:'#F5C518',fillOpacity:.18}).addTo(map);map.fitBounds([[ptLat,ptLng],...zone,...(lastGps?[here]:[])],{padding:[24,24],maxZoom:15});document.getElementById('zoneText').textContent=`Zona: ${state.prefs.kmlName||'cargada'} · Punto: ${pt.name||current?.point||''}`}else{document.getElementById('zoneText').textContent=`Punto: ${pt.name||current?.point||''} · ${pt.address||''}`}}
-    document.getElementById('logout').onclick=()=>{if(watchId)navigator.geolocation.clearWatch(watchId);location.reload()};
+    document.getElementById('logout').onclick=()=>{stopCamera();if(watchId)navigator.geolocation.clearWatch(watchId);location.reload()};
     setInterval(renderTimers,30000);
     initCloud();
   </script>

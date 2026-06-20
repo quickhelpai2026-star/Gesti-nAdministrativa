@@ -1326,6 +1326,10 @@
   .carnet-moto span { display:block; font-size:11px; color:rgba(255,255,255,.55); margin-bottom:6px; }
   .carnet-moto img { width:100%; max-height:120px; object-fit:cover; border-radius:12px; }
   .carnet-foot { text-align:center; font-size:10px; color:rgba(255,255,255,.45); padding:12px; border-top:1px solid rgba(255,255,255,.08); margin-top:6px; }
+  .messenger-qr-wrap { display:grid; place-items:center; gap:14px; padding:12px 0; }
+  .messenger-qr-box { width:244px; min-height:244px; display:grid; place-items:center; padding:12px; border-radius:18px; background:#fff; border:1px solid rgba(245,197,24,.45); }
+  .messenger-qr-box img,.messenger-qr-box canvas { max-width:220px; width:100%; height:auto; }
+  .messenger-link-box { width:100%; border:1px solid var(--border); border-radius:12px; padding:10px 12px; background:var(--card-bg); color:var(--text-1); overflow-wrap:anywhere; text-align:center; }
 </style>
 </head>
 <body>
@@ -2779,6 +2783,61 @@ function toggleMode(forceDark) {
     loadMediaImages();
   }
 
+  function messengerAppUrl() {
+    return new URL('Appmensajero.html', window.location.href).href.split('#')[0];
+  }
+
+  function copyText(value) {
+    if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(value);
+    const input = document.createElement('textarea');
+    input.value = value;
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    input.remove();
+    return Promise.resolve();
+  }
+
+  function openMessengerQr(id) {
+    const q = state.quickers.find(x => x.id === id);
+    if (!q) return;
+    const url = messengerAppUrl();
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = `App mensajero · ${q.name}`;
+    document.getElementById('modal-subtitle').textContent = 'Escanea, descarga o comparte el acceso.';
+    form.innerHTML = `<div class="messenger-qr-wrap">
+      <div class="messenger-qr-box" id="messenger-qr" aria-label="Código QR de la App mensajero"></div>
+      <div class="messenger-link-box" id="messenger-link">${escapeHTML(url)}</div>
+    </div>
+    <div class="modal-foot">
+      <button class="dev-btn" type="button" id="cancel-form">Cerrar</button>
+      <button class="dev-btn" type="button" id="copy-messenger-link"><i class="ti ti-copy"></i> Copiar enlace</button>
+      <button class="dev-btn primary" type="button" id="download-messenger-qr"><i class="ti ti-download"></i> Descargar QR</button>
+    </div>`;
+    document.getElementById('cancel-form').onclick = closeModal;
+    document.getElementById('copy-messenger-link').onclick = () => copyText(url).then(() => toast('Enlace copiado'));
+    const qrBox = document.getElementById('messenger-qr');
+    const qrUrl = `https://quickchart.io/qr?size=220&margin=2&ecLevel=H&text=${encodeURIComponent(url)}`;
+    qrBox.innerHTML = `<img src="${qrUrl}" width="220" height="220" alt="QR para abrir la App mensajero">`;
+    document.getElementById('download-messenger-qr').onclick = () => {
+      const fileName = `quick-app-mensajero-${String(q.cedula || q.name || 'acceso').replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.png`;
+      fetch(qrUrl).then(response => response.blob()).then(blob => {
+        const link = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        link.href = objectUrl;
+        link.download = fileName;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      }).catch(() => window.open(qrUrl, '_blank', 'noopener'));
+    };
+    const modal = document.getElementById('app-modal');
+    modal.classList.remove('wide');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
   function customCell(d, col) {
     const value = d.custom?.[col.key] || '';
     return value ? escapeHTML(value) : '<span class="fp-sub">Sin dato</span>';
@@ -3615,7 +3674,7 @@ function toggleMode(forceDark) {
         escapeHTML(q.id), escapeHTML(q.name), escapeHTML(q.phone), escapeHTML(q.email), escapeHTML(q.client), escapeHTML(q.point), escapeHTML(q.zone),
         `${escapeHTML(q.docName)} · ${escapeHTML(q.docExpires)}`,
         pill(expired ? 'Documento vencido' : q.status),
-        `<div class="row-actions">${iconAction('Carnet', 'quickerCarnet', q.id, 'ti-id-badge-2')}${action('Seguimiento', 'followQuicker', q.id)}${action('Bloquear', 'blockQuicker', q.id)}</div>`
+        `<div class="row-actions">${iconAction('Carnet', 'quickerCarnet', q.id, 'ti-id-badge-2')}${iconAction('QR App mensajero', 'messengerQr', q.id, 'ti-qrcode')}${action('Seguimiento', 'followQuicker', q.id)}${action('Bloquear', 'blockQuicker', q.id)}</div>`
       ]);
     });
     panel('quickers', 'Maestra funcional de Quickers', 'Usuarios, contacto, cliente/punto, zona KML y alertas de documentos.',
@@ -4107,7 +4166,6 @@ function toggleMode(forceDark) {
     document.getElementById('modal-subtitle').textContent = 'Permisos, quejas o solicitudes. Llega a tu coordinador.';
     form.innerHTML = `<div class="form-grid">
       <div class="form-field"><label>Tipo</label><select name="type" style="${inS}">${['Permiso', 'Queja', 'Solicitud', 'PQR', 'Incapacidad', 'Otro'].map(o => `<option>${o}</option>`).join('')}</select></div>
-      <div class="form-field"><label>Prioridad</label><select name="priority" style="${inS}">${TICKET_PRIORITIES.map(p => `<option ${p === 'Media' ? 'selected' : ''}>${p}</option>`).join('')}</select></div>
       <div class="form-field full"><label>Título <span style="color:#ef4444">*</span></label><input name="title" required style="${inS}" placeholder="Resumen de tu solicitud"></div>
       <div class="form-field full"><label>Descripción</label><textarea name="description" style="${taS}" placeholder="Cuéntanos el detalle"></textarea></div>
       <div class="form-field full"><div class="fp-sub">Se asignará a: ${coords.length ? escapeHTML(coords.map(c => c.name).join(', ')) : 'tu coordinador asignado'}${clientName ? ` · ${escapeHTML(clientName)}` : ''}</div></div>
@@ -4118,7 +4176,7 @@ function toggleMode(forceDark) {
       const data = Object.fromEntries(new FormData(form).entries());
       const assignees = coords.map(c => c.name);
       const ticket = makeTicket({
-        title: data.title, type: data.type, description: data.description, priority: data.priority,
+        title: data.title, type: data.type, description: data.description, priority: 'Media',
         assignees, client: clientName, clientScope: clientName || 'Todos los clientes',
         audience: 'coordinador'
       });
@@ -5283,6 +5341,7 @@ function toggleMode(forceDark) {
     if (actionName === 'editMessenger') { openMessengerUserForm(id); return; }
     if (actionName === 'viewEvidence') { openEvidenceModal(id); return; }
     if (actionName === 'quickerCarnet') { openQuickerCarnet(id); return; }
+    if (actionName === 'messengerQr') { openMessengerQr(id); return; }
     if (actionName === 'viewNoveltyCase') { openNoveltyCaseDetail(id); return; }
     if (actionName === 'viewDelay') { openDelayDetail(id); return; }
     if (actionName === 'viewGestionRow') { openGestionRowDetail(id); return; }
