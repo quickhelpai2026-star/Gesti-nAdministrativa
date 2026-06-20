@@ -1182,6 +1182,9 @@
   .cal-note-form { border:1px solid var(--border); border-radius:10px; padding:12px; background:var(--card-bg); display:flex; flex-direction:column; gap:8px; }
   .light-mode .cal-panel { background:#f3f4f6; border-radius:12px; padding:12px; border:1px solid #d1d5db; }
   .light-mode .cal-note-form { background:#fff; border:1px solid #d1d5db; }
+  /* Modo oscuro - panel visible */
+  :not(.light-mode) .cal-panel-header { color: #f3f4f6; font-weight: 800; }
+  :not(.light-mode) .cal-panel-sub { color: #d1d5db; }
   .cal-note-form select, .cal-note-form input, .cal-note-form textarea {
     border:1px solid var(--border); border-radius:8px; background:var(--card-bg); color:var(--text-1);
     padding:8px 10px; font-size:12px; outline:0; width:100%; box-sizing:border-box;
@@ -2058,6 +2061,8 @@ function toggleMode(forceDark) {
     next.locationPings = value?.locationPings || [];
     next.calendarEvents = value?.calendarEvents || [];
     next.workNotes = value?.workNotes || [];
+    next.tickets = value?.tickets || [];
+    next.ticketComments = value?.ticketComments || [];
     next.files = value?.files || [];
     next.assetMatrix = value?.assetMatrix || [];
     next.hsqReports = value?.hsqReports || seed.hsqReports || [];
@@ -3472,6 +3477,40 @@ function toggleMode(forceDark) {
     );
   }
 
+  function renderTickets() {
+    const stats = {
+      total: (state.tickets || []).length,
+      abiertos: (state.tickets || []).filter(t => t.status === 'Abierto').length,
+      enProceso: (state.tickets || []).filter(t => t.status === 'En proceso').length,
+      resueltos: (state.tickets || []).filter(t => t.status === 'Resuelto').length,
+      criticos: (state.tickets || []).filter(t => t.priority === 'Crítica').length
+    };
+    const priorityClass = { 'Baja': 'b-blue', 'Media': 'b-yellow', 'Alta': 'b-yellow', 'Crítica': 'b-red' };
+    const statusClass = { 'Abierto': 'st-info', 'En proceso': 'st-warn', 'Pendiente': 'st-warn', 'Resuelto': 'st-ok', 'Cerrado': 'st-bad' };
+    const rows = (state.tickets || []).slice(0, 100).map(t => {
+      const creator = state.users?.find(u => u.id === t.createdBy)?.name || t.createdBy || '';
+      const assigned = state.users?.find(u => u.id === t.assignedTo)?.name || t.assignedTo || '';
+      return row([
+        escapeHTML(t.id), escapeHTML(t.title), escapeHTML(t.type || 'Requerimiento'),
+        `<span class="b ${priorityClass[t.priority] || 'b-blue'}">${escapeHTML(t.priority || 'Media')}</span>`,
+        `<span class="b ${statusClass[t.status] || 'st-info'}">${escapeHTML(t.status || 'Abierto')}</span>`,
+        escapeHTML(assigned), escapeHTML(creator), escapeHTML(t.createdAt?.slice(0, 10) || ''),
+        escapeHTML(t.dueDate?.slice(0, 10) || '')
+      ]);
+    });
+    panel('tickets', 'Gestión de Tickets', 'Sistema integral de reportes, solicitudes y tareas con seguimiento en tiempo real.',
+      `<button class="dev-btn primary" data-open="ticket"><i class="ti ti-ticket-plus"></i> Nuevo ticket</button><button class="dev-btn" data-export="tickets">Exportar CSV</button>`,
+      `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px">
+        <div class="kpi-card"><div class="kpi-label">Total</div><div class="kpi-value">${stats.total}</div></div>
+        <div class="kpi-card" style="border-left-color:#3b82f6"><div class="kpi-label">Abiertos</div><div class="kpi-value">${stats.abiertos}</div></div>
+        <div class="kpi-card" style="border-left-color:#f59e0b"><div class="kpi-label">En proceso</div><div class="kpi-value">${stats.enProceso}</div></div>
+        <div class="kpi-card" style="border-left-color:#10b981"><div class="kpi-label">Resueltos</div><div class="kpi-value">${stats.resueltos}</div></div>
+        <div class="kpi-card" style="border-left-color:#ef4444"><div class="kpi-label">Críticos</div><div class="kpi-value">${stats.criticos}</div></div>
+      </div>
+      ${table(['ID', 'Título', 'Tipo', 'Prioridad', 'Estado', 'Asignado a', 'Creado por', 'Creado', 'Vencimiento'], rows)}`
+    );
+  }
+
   function renderHSQ() {
     const rows = scopedItems(state.hsqReports || [], h => ({ client: h.client, point: h.point, quicker: h.quicker })).map(h => row([
       escapeHTML(h.id), escapeHTML(h.type), escapeHTML(h.client), escapeHTML(h.point || 'Todos'), escapeHTML(h.cedula || ''), escapeHTML(h.quicker || ''), pill(h.status), escapeHTML(h.note || '')
@@ -3719,16 +3758,18 @@ function toggleMode(forceDark) {
     const userOptions = (state.users || []).map(u => `<option value="${escapeHTML(u.name)}">${escapeHTML(u.name)}</option>`).join('');
 
     const html = `
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding:0">
       <div>
-        <div style="font-size:20px;font-weight:900;color:var(--text-1)"><i class="ti ti-calendar-month" style="color:#374151"></i> Calendario operativo</div>
-        <div class="fp-sub">Agenda, seguimientos y notas de equipo</div>
+        <div style="font-size:22px;font-weight:900;color:var(--text-1);display:flex;align-items:center;gap:8px">
+          <i class="ti ti-calendar-month" style="color:#3b82f6;font-size:26px"></i> Calendario operativo
+        </div>
+        <div style="font-size:12px;color:var(--text-2);margin-top:4px">Agenda, seguimientos y notas de equipo</div>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="dev-btn primary" data-calendar-new><i class="ti ti-calendar-plus"></i> Evento</button>
-        <button class="dev-btn primary" id="cal-show-notes-form" style="background:#10b981"><i class="ti ti-notes"></i> Notas</button>
+        <button class="dev-btn primary" data-calendar-new style="background:#3b82f6;border:0"><i class="ti ti-calendar-plus"></i> Evento</button>
+        <button class="dev-btn primary" id="cal-show-notes-form" style="background:#10b981;border:0"><i class="ti ti-notes"></i> Notas</button>
       </div>
-    </div>
+    </div>`
     <div class="cal-layout">
       <div class="cal-main">
         <div class="cal-header">
@@ -4196,6 +4237,37 @@ function toggleMode(forceDark) {
   }
 
   const schemas = {
+    ticket: {
+      title: 'Nuevo Ticket',
+      subtitle: 'Crea un ticket para reportar un problema, solicitud o requerimiento.',
+      fields: [
+        ['title', 'Título', 'text'],
+        ['type', 'Tipo', 'select', ['Problema', 'Solicitud', 'Requerimiento', 'Mejora']],
+        ['description', 'Descripción', 'textarea'],
+        ['priority', 'Prioridad', 'select', ['Baja', 'Media', 'Alta', 'Crítica']],
+        ['assignedTo', 'Asignar a', 'select', state.users.map(u => u.id + '|' + u.name)],
+        ['dueDate', 'Fecha de vencimiento', 'date'],
+        ['client', 'Cliente relacionado', 'select', ['Ninguno', ...state.clients.map(c => c.name)]],
+        ['tags', 'Etiquetas (coma separadas)', 'text']
+      ],
+      submit: data => {
+        const assignedUser = state.users.find(u => u.id === data.assignedTo);
+        data.assignedTo = assignedUser?.id || data.assignedTo;
+        const ticket = {
+          id: uid('TIC'),
+          ...data,
+          status: 'Abierto',
+          createdAt: new Date().toISOString(),
+          createdBy: state.session?.id || state.session?.username,
+          closedAt: null,
+          comments: []
+        };
+        state.tickets = state.tickets || [];
+        state.tickets.unshift(ticket);
+        log('Tickets', 'Creó ticket', ticket.id);
+        saveState('Ticket creado');
+      }
+    },
     malla: {
       title: 'Nueva malla / disponibilidad',
       subtitle: 'Crea un turno planeado y lo deja listo para ejecución.',
