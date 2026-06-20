@@ -45,7 +45,7 @@
     --mode: dark;
   }
   .light-mode {
-    --bg-grad: linear-gradient(160deg,#f1f5f9 0%,#e8edf5 100%);
+    --bg-grad: linear-gradient(145deg,#dbeafe 0%,#c7d2fe 35%,#e0f2fe 70%,#d1fae5 100%);
     --sidebar-bg: #ffffff;
     --topbar-bg: #ffffff;
     --card-bg: #ffffff;
@@ -155,6 +155,34 @@
   .nav-item.active .nbadge { background: rgba(0,0,0,.4); color: var(--q); }
 
   .sb-bottom { margin-top: auto; border-top: 1px solid var(--border); padding: 6px 8px; flex-shrink: 0; }
+
+  /* ── Sidebar colapsable ── */
+  #sidebar { transition: width .28s cubic-bezier(.4,0,.2,1); overflow: hidden; }
+  #sidebar.collapsed { width: 58px; }
+  #sidebar.collapsed .sb-logo-text,
+  #sidebar.collapsed .sb-section,
+  #sidebar.collapsed .nav-label,
+  #sidebar.collapsed .nbadge,
+  #sidebar.collapsed .sb-user-info { display: none !important; }
+  #sidebar.collapsed .sb-logo { justify-content: center; padding: 18px 0; }
+  #sidebar.collapsed .nav-item { justify-content: center; padding: 10px 0; margin: 1px 5px; }
+  #sidebar.collapsed .nav-item .ti { font-size: 20px; }
+  #sidebar.collapsed .sb-user { justify-content: center; padding: 8px 0; }
+  #sidebar.collapsed .sb-bottom { padding: 6px 4px; }
+  #sidebar.collapsed .sb-collapse-btn { justify-content: center; }
+  #sidebar.collapsed .sb-collapse-btn .nav-label { display: none !important; }
+  .sb-collapse-btn {
+    display: flex; align-items: center; gap: 9px;
+    padding: 8px 12px; margin: 2px 8px; border-radius: 10px;
+    cursor: pointer; color: var(--text-2); background: transparent;
+    border: 0; width: calc(100% - 16px); font-size: 12px; font-weight: 700;
+    transition: background .2s, color .2s;
+  }
+  .sb-collapse-btn:hover { background: var(--card-bg); color: var(--text-1); }
+  .sb-collapse-btn .ti { font-size: 17px; flex-shrink: 0; }
+  .light-mode .sb-collapse-btn { color: #374151; }
+  .light-mode .sb-collapse-btn:hover { background: #fef9e7; color: #92400e; }
+
   .sb-user {
     display: flex; align-items: center; gap: 10px;
     padding: 8px 10px; border-radius: 10px;
@@ -755,11 +783,17 @@
 
   /* ── Tablas ── */
   select option { color: #111; background: #fff; }
-  .light-mode .data-table { color: #0a0a0a; border-collapse: separate; }
-  .light-mode .data-table th { color: #0a0a0a; font-weight: 800; background: #fef9e7; border-color: rgba(245,197,24,.35); border-bottom: 2px solid rgba(245,197,24,.5); }
+  .light-mode .data-table { color: #0a0a0a; border-collapse: separate; border-spacing: 0; }
+  .light-mode .data-table th {
+    color: #fff; font-weight: 800;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
+    border-color: #1d4ed8;
+    border-bottom: 2px solid #1e3a8a;
+    text-shadow: 0 1px 2px rgba(0,0,0,.3);
+  }
   .light-mode .data-table td { color: #0a0a0a; border-color: rgba(0,0,0,.07); background: #fff; }
-  .light-mode .data-table tbody tr:nth-child(even) td { background: #fafafa; }
-  .light-mode .data-table tbody tr:hover td { background: #fef9e7 !important; }
+  .light-mode .data-table tbody tr:nth-child(even) td { background: #f0f7ff; }
+  .light-mode .data-table tbody tr:hover td { background: #dbeafe !important; }
   .light-mode .tbl { color: #0a0a0a; }
   .light-mode .tbl td { border-color: rgba(0,0,0,.07); color: #0a0a0a; }
 
@@ -824,19 +858,19 @@
   .light-mode .module-tab:hover { background: #fef9e7; color: #92400e; }
   .light-mode .module-tab.on { background: #F5C518; color: #000; border-color: #C9A200; font-weight: 800; }
 
-  /* ── Status Pills — SÓLIDOS y vivos ── */
-  .light-mode .status-pill { border: 1.5px solid transparent; font-weight: 700; }
-  .light-mode .st-ok  { background: #16a34a; color: #fff; border-color: #15803d; }
-  .light-mode .st-warn { background: #d97706; color: #fff; border-color: #b45309; }
-  .light-mode .st-bad  { background: #dc2626; color: #fff; border-color: #b91c1c; }
-  .light-mode .st-info { background: #2563eb; color: #fff; border-color: #1d4ed8; }
+  /* ── Status Pills — DEGRADADOS vivos ── */
+  .light-mode .status-pill { border: 1.5px solid transparent; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,.2); }
+  .light-mode .st-ok   { background: linear-gradient(135deg,#15803d,#22c55e); color: #fff; border-color: #15803d; }
+  .light-mode .st-warn { background: linear-gradient(135deg,#b45309,#f59e0b); color: #fff; border-color: #b45309; }
+  .light-mode .st-bad  { background: linear-gradient(135deg,#b91c1c,#ef4444); color: #fff; border-color: #b91c1c; }
+  .light-mode .st-info { background: linear-gradient(135deg,#1d4ed8,#60a5fa); color: #fff; border-color: #1d4ed8; }
 
-  /* ── Badges de tipo (b-*) — vivos ── */
-  .light-mode .b-green  { background: #16a34a; color: #fff; border-color: #15803d; }
-  .light-mode .b-yellow { background: #d97706; color: #fff; border-color: #b45309; }
-  .light-mode .b-red    { background: #dc2626; color: #fff; border-color: #b91c1c; }
-  .light-mode .b-blue   { background: #2563eb; color: #fff; border-color: #1d4ed8; }
-  .light-mode .b-purple { background: #7c3aed; color: #fff; border-color: #6d28d9; }
+  /* ── Badges de tipo (b-*) — DEGRADADOS vivos ── */
+  .light-mode .b-green  { background: linear-gradient(135deg,#15803d,#22c55e); color: #fff; border-color: #15803d; text-shadow: 0 1px 2px rgba(0,0,0,.2); }
+  .light-mode .b-yellow { background: linear-gradient(135deg,#b45309,#f59e0b); color: #fff; border-color: #b45309; text-shadow: 0 1px 2px rgba(0,0,0,.2); }
+  .light-mode .b-red    { background: linear-gradient(135deg,#b91c1c,#ef4444); color: #fff; border-color: #b91c1c; text-shadow: 0 1px 2px rgba(0,0,0,.2); }
+  .light-mode .b-blue   { background: linear-gradient(135deg,#1d4ed8,#60a5fa); color: #fff; border-color: #1d4ed8; text-shadow: 0 1px 2px rgba(0,0,0,.2); }
+  .light-mode .b-purple { background: linear-gradient(135deg,#6d28d9,#a78bfa); color: #fff; border-color: #6d28d9; text-shadow: 0 1px 2px rgba(0,0,0,.2); }
 
   /* ── Charts ── */
   .light-mode .chart-card { background: #fff; border: 1px solid rgba(0,0,0,.13); color: #0a0a0a; }
@@ -1077,6 +1111,84 @@
   .calendar-grid { display:grid; grid-template-columns: repeat(7, minmax(120px,1fr)); gap:8px; overflow:auto; }
   .calendar-day { min-height: 132px; border:1px solid var(--border); border-radius:16px; padding:10px; background:rgba(255,255,255,.04); }
   .calendar-day strong { display:block; margin-bottom:8px; color:var(--text-1); }
+
+  /* ── Calendario mensual rediseñado ── */
+  .cal-layout { display:grid; grid-template-columns: minmax(0,1fr) 310px; gap:14px; height: calc(100vh - 140px); }
+  .cal-main { display:flex; flex-direction:column; gap:10px; min-height:0; }
+  .cal-header { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .cal-nav { display:flex; align-items:center; gap:8px; }
+  .cal-nav-btn {
+    width:34px; height:34px; border-radius:10px; border:1px solid var(--border);
+    background:var(--card-bg); color:var(--text-1); font-size:16px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .cal-nav-btn:hover { background:rgba(245,197,24,.18); border-color:rgba(245,197,24,.5); }
+  .cal-month-label { font-size:18px; font-weight:900; color:var(--text-1); min-width:180px; text-align:center; }
+  .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-wd { text-align:center; font-size:10px; font-weight:800; padding:6px 2px;
+    color:var(--text-3); text-transform:uppercase; letter-spacing:.8px; }
+  .cal-wd:first-child { color:#ef4444; }
+  .cal-wd:last-child { color:#ef4444; }
+  .cal-body { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; flex:1; min-height:0; overflow-y:auto; }
+  .cal-cell {
+    min-height:90px; border:1px solid var(--border); border-radius:12px; padding:7px;
+    background:var(--card-bg); cursor:pointer; transition:all .18s; display:flex; flex-direction:column;
+  }
+  .cal-cell:hover { border-color:rgba(245,197,24,.6); background:rgba(245,197,24,.07); transform:translateY(-1px); }
+  .cal-cell.today { border-color:#F5C518; border-width:2px; background:rgba(245,197,24,.1); }
+  .cal-cell.other-month { opacity:.45; }
+  .cal-cell.has-events { box-shadow:0 2px 8px rgba(37,99,235,.18); }
+  .cal-cell-num { font-size:13px; font-weight:800; color:var(--text-1); margin-bottom:4px; line-height:1; }
+  .cal-cell.today .cal-cell-num { background:linear-gradient(135deg,#F5C518,#C9A200); color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; }
+  .cal-chip { font-size:10px; font-weight:700; border-radius:6px; padding:2px 5px; margin-bottom:2px; line-height:1.3;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
+  .cal-chip.ev-evento   { background:linear-gradient(135deg,#1d4ed8,#60a5fa); color:#fff; }
+  .cal-chip.ev-tarea    { background:linear-gradient(135deg,#15803d,#22c55e); color:#fff; }
+  .cal-chip.ev-seguimiento { background:linear-gradient(135deg,#b45309,#f59e0b); color:#fff; }
+  .cal-chip.ev-novedad  { background:linear-gradient(135deg,#b91c1c,#ef4444); color:#fff; }
+  .cal-chip.ev-capacitacion { background:linear-gradient(135deg,#6d28d9,#a78bfa); color:#fff; }
+  .cal-more { font-size:10px; color:var(--text-3); font-weight:700; margin-top:auto; }
+
+  /* Panel lateral de trabajo */
+  .cal-panel { display:flex; flex-direction:column; gap:10px; overflow:hidden; }
+  .cal-panel-header { font-size:14px; font-weight:900; color:var(--text-1); }
+  .cal-panel-sub { font-size:11px; color:var(--text-3); margin-top:1px; }
+  .cal-note-form {
+    border:1px solid var(--border); border-radius:14px; padding:12px;
+    background:var(--card-bg); display:flex; flex-direction:column; gap:8px;
+  }
+  .cal-note-form select, .cal-note-form input, .cal-note-form textarea {
+    border:1px solid var(--border); border-radius:9px; background:var(--card-bg);
+    color:var(--text-1); padding:7px 10px; font-size:12px; outline:0; width:100%; box-sizing:border-box;
+  }
+  .cal-note-form textarea { resize:none; min-height:60px; }
+  .cal-notes-list { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:7px; }
+  .cal-note-card {
+    border:1px solid var(--border); border-radius:12px; padding:10px;
+    background:var(--card-bg); display:flex; flex-direction:column; gap:4px;
+  }
+  .cal-note-card.nt-nota        { border-left:3px solid #3b82f6; }
+  .cal-note-card.nt-tarea       { border-left:3px solid #22c55e; }
+  .cal-note-card.nt-seguimiento { border-left:3px solid #f59e0b; }
+  .cal-note-card.nt-alerta      { border-left:3px solid #ef4444; }
+  .cal-note-type { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; }
+  .cal-note-type.nt-nota        { color:#2563eb; }
+  .cal-note-type.nt-tarea       { color:#16a34a; }
+  .cal-note-type.nt-seguimiento { color:#d97706; }
+  .cal-note-type.nt-alerta      { color:#dc2626; }
+  .cal-note-text { font-size:12px; color:var(--text-1); font-weight:600; line-height:1.4; }
+  .cal-note-meta { font-size:10px; color:var(--text-3); display:flex; gap:8px; align-items:center; }
+  .cal-note-del { margin-left:auto; background:transparent; border:0; color:var(--text-3); cursor:pointer; font-size:13px; padding:0; }
+  .cal-note-del:hover { color:#ef4444; }
+  .cal-done-toggle { width:14px; height:14px; border-radius:4px; border:1.5px solid var(--border); cursor:pointer; flex-shrink:0; appearance:none; }
+  .cal-done-toggle:checked { background:#22c55e; border-color:#22c55e; }
+  .light-mode .cal-nav-btn { background:#fff; border-color:#d1d5db; }
+  .light-mode .cal-cell { background:#fff; border-color:#e2e8f0; }
+  .light-mode .cal-cell:hover { background:#eff6ff; border-color:#93c5fd; }
+  .light-mode .cal-cell.today { background:#fef9e7; border-color:#F5C518; }
+  .light-mode .cal-note-form select,.light-mode .cal-note-form input,.light-mode .cal-note-form textarea { background:#fff; border-color:#d1d5db; color:#0a0a0a; }
+  .light-mode .cal-note-card { background:#fff; border-color:#e2e8f0; }
+  .light-mode .cal-panel-header { color:#0a0a0a; }
   .event-chip { display:block; border:1px solid rgba(245,197,24,.28); background:rgba(245,197,24,.1); border-radius:10px; padding:7px; margin-top:6px; font-size:11px; color:var(--text-1); }
   .drive-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap:12px; }
   .drive-card { border:1px solid var(--border); border-radius:16px; padding:14px; background:rgba(255,255,255,.045); display:flex; gap:12px; align-items:flex-start; }
@@ -1091,7 +1203,7 @@
   <nav id="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-icon"><img src="https://i.ibb.co/KjmjjvNZ/Captura-de-pantalla-2025-09-15-161315.jpg" alt="Quick"></div>
-      <div>
+      <div class="sb-logo-text">
         <div class="sb-logo-name">Quick</div>
         <div class="sb-logo-tag">Last Mile Platform</div>
       </div>
@@ -1100,59 +1212,63 @@
     <div class="sb-scroll">
     <div class="sb-section">Principal</div>
     <div class="nav-item" onclick="nav('dashboard',this)">
-      <i class="ti ti-layout-dashboard"></i> Dashboard
+      <i class="ti ti-layout-dashboard"></i><span class="nav-label"> Dashboard</span>
     </div>
     <div class="nav-item active" onclick="nav('mallas',this)">
-      <i class="ti ti-calendar-event"></i> Mallas
+      <i class="ti ti-calendar-event"></i><span class="nav-label"> Mallas</span>
     </div>
     <div class="nav-item" onclick="nav('mapa',this)">
-      <i class="ti ti-map-pin"></i> Mapa en Vivo
+      <i class="ti ti-map-pin"></i><span class="nav-label"> Mapa en Vivo</span>
     </div>
 
     <div class="sb-section">Operaciones</div>
     <div class="nav-item" onclick="nav('novedades',this)">
-      <i class="ti ti-alert-triangle"></i> Novedades
+      <i class="ti ti-alert-triangle"></i><span class="nav-label"> Novedades</span>
       <span class="nbadge">7</span>
     </div>
     <div class="nav-item" onclick="nav('tickets',this)">
-      <i class="ti ti-ticket"></i> Tickets
+      <i class="ti ti-ticket"></i><span class="nav-label"> Tickets</span>
       <span class="nbadge">4</span>
     </div>
     <div class="nav-item" onclick="nav('quickers',this)">
-      <i class="ti ti-users"></i> Quickers
+      <i class="ti ti-users"></i><span class="nav-label"> Quickers</span>
     </div>
     <div class="nav-item" onclick="nav('matriz',this)">
-      <i class="ti ti-table-import"></i> Matriz Activos
+      <i class="ti ti-table-import"></i><span class="nav-label"> Matriz Activos</span>
     </div>
     <div class="nav-item" onclick="nav('hsq',this)">
-      <i class="ti ti-shield-check"></i> HSQ / Alertas
+      <i class="ti ti-shield-check"></i><span class="nav-label"> HSQ / Alertas</span>
     </div>
     <div class="nav-item" onclick="nav('gestion',this)">
-      <i class="ti ti-chart-dots"></i> Gestión
+      <i class="ti ti-chart-dots"></i><span class="nav-label"> Gestión</span>
     </div>
 
     <div class="sb-section">Administración</div>
     <div class="nav-item" onclick="nav('casos',this)">
-      <i class="ti ti-briefcase"></i> Casos Admin
+      <i class="ti ti-briefcase"></i><span class="nav-label"> Casos Admin</span>
     </div>
     <div class="nav-item" onclick="nav('reportes',this)">
-      <i class="ti ti-chart-bar"></i> Reportes
+      <i class="ti ti-chart-bar"></i><span class="nav-label"> Reportes</span>
     </div>
     <div class="nav-item" onclick="nav('calendario',this)">
-      <i class="ti ti-calendar-month"></i> Calendario
+      <i class="ti ti-calendar-month"></i><span class="nav-label"> Calendario</span>
     </div>
     <div class="nav-item" onclick="nav('archivos',this)">
-      <i class="ti ti-folder"></i> Archivos
+      <i class="ti ti-folder"></i><span class="nav-label"> Archivos</span>
     </div>
     </div>
 
     <div class="sb-bottom">
+      <button class="sb-collapse-btn" id="sb-toggle" title="Colapsar menú">
+        <i class="ti ti-layout-sidebar-left-collapse" id="sb-toggle-icon"></i>
+        <span class="nav-label">Colapsar menú</span>
+      </button>
       <div class="nav-item" onclick="nav('config',this)">
-        <i class="ti ti-settings"></i> Configuración
+        <i class="ti ti-settings"></i><span class="nav-label"> Configuración</span>
       </div>
       <div class="sb-user" style="margin-top:6px">
         <div class="sb-avatar">AD</div>
-        <div>
+        <div class="sb-user-info">
           <div class="sb-user-name">Admin Quick</div>
           <div class="sb-user-role">Administrador</div>
         </div>
@@ -1906,6 +2022,7 @@ function toggleMode(forceDark) {
     next.overtimeReports = value?.overtimeReports || [];
     next.locationPings = value?.locationPings || [];
     next.calendarEvents = value?.calendarEvents || [];
+    next.workNotes = value?.workNotes || [];
     next.files = value?.files || [];
     next.assetMatrix = value?.assetMatrix || [];
     next.hsqReports = value?.hsqReports || seed.hsqReports || [];
@@ -3486,23 +3603,117 @@ function toggleMode(forceDark) {
 
   function renderCalendario() {
     const today = new Date();
-    const start = new Date(today);
-    start.setDate(today.getDate() - today.getDay() + 1);
-    const days = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(start);
-      d.setDate(start.getDate() + i);
-      return d;
-    });
+    const todayISO = today.toISOString().slice(0, 10);
+    const viewYear  = state.prefs.calViewYear  || today.getFullYear();
+    const viewMonth = state.prefs.calViewMonth !== undefined ? state.prefs.calViewMonth : today.getMonth();
+    const monthLabel = new Date(viewYear, viewMonth, 1).toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+
     const events = scopedItems(state.calendarEvents || [], e => ({ client: e.client || 'Global', point: e.point || '' }));
-    const dayHTML = days.map(day => {
-      const iso = day.toISOString().slice(0, 10);
-      const chips = events.filter(e => e.date === iso).map(e => `<button class="event-chip" data-action="editCalendarEvent" data-id="${e.id}"><strong>${escapeHTML(e.time || '')}</strong> ${escapeHTML(e.title)}<br><span class="fp-sub">${escapeHTML(e.client || 'Global')}</span></button>`).join('');
-      return `<div class="calendar-day"><strong>${day.toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' })}</strong>${chips || '<span class="fp-sub">Sin eventos</span>'}</div>`;
+    const notes  = (state.workNotes || []).slice().sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+    // Build calendar cells
+    const firstDay = new Date(viewYear, viewMonth, 1);
+    const lastDay  = new Date(viewYear, viewMonth + 1, 0);
+    // Start from Monday
+    let startDow = firstDay.getDay(); // 0=Sun
+    startDow = startDow === 0 ? 6 : startDow - 1; // Mon=0
+    const cells = [];
+    for (let i = 0; i < startDow; i++) {
+      const d = new Date(firstDay); d.setDate(d.getDate() - (startDow - i));
+      cells.push({ date: d, other: true });
+    }
+    for (let d = 1; d <= lastDay.getDate(); d++) cells.push({ date: new Date(viewYear, viewMonth, d), other: false });
+    const trail = 7 - (cells.length % 7);
+    if (trail < 7) for (let i = 1; i <= trail; i++) {
+      const d = new Date(lastDay); d.setDate(d.getDate() + i);
+      cells.push({ date: d, other: true });
+    }
+
+    const evTypeClass = { 'Evento': 'ev-evento', 'Tarea': 'ev-tarea', 'Seguimiento': 'ev-seguimiento', 'Novedad': 'ev-novedad', 'Capacitación': 'ev-capacitacion' };
+
+    const cellsHTML = cells.map(({ date, other }) => {
+      const iso = date.toISOString().slice(0, 10);
+      const dayEvents = events.filter(e => e.date === iso);
+      const isToday = iso === todayISO;
+      const chips = dayEvents.slice(0, 3).map(e => {
+        const cls = evTypeClass[e.eventType] || 'ev-evento';
+        return `<div class="cal-chip ${cls}" data-action="editCalendarEvent" data-id="${e.id}" title="${escapeHTML(e.title)}">${e.time ? e.time + ' ' : ''}${escapeHTML(e.title)}</div>`;
+      }).join('');
+      const more = dayEvents.length > 3 ? `<div class="cal-more">+${dayEvents.length - 3} más</div>` : '';
+      return `<div class="cal-cell${other ? ' other-month' : ''}${isToday ? ' today' : ''}${dayEvents.length ? ' has-events' : ''}" data-cal-day="${iso}">
+        <div class="cal-cell-num">${date.getDate()}</div>
+        ${chips}${more}
+      </div>`;
     }).join('');
-    panel('calendario', 'Calendario operativo', '',
-      `<button class="dev-btn primary" data-calendar-new><i class="ti ti-calendar-plus"></i> Nuevo evento</button>`,
-      `<div class="calendar-head"><span class="fp-sub">Agenda seguimientos, capacitaciones, vencimientos y tareas operativas.</span><button class="dev-btn" data-export="calendarEvents"><i class="ti ti-download"></i> Exportar agenda</button></div><div class="calendar-grid">${dayHTML}</div>`
-    );
+
+    const noteTypeColors = { nota: 'nt-nota', tarea: 'nt-tarea', seguimiento: 'nt-seguimiento', alerta: 'nt-alerta' };
+    const notesHTML = notes.length ? notes.map(n => `
+      <div class="cal-note-card nt-${n.noteType || 'nota'}">
+        <div style="display:flex;align-items:center;gap:6px">
+          <input type="checkbox" class="cal-done-toggle" ${n.done ? 'checked' : ''} data-note-done="${n.id}">
+          <span class="cal-note-type nt-${n.noteType || 'nota'}">${n.noteType || 'Nota'}</span>
+          <button class="cal-note-del" data-note-del="${n.id}" title="Eliminar">✕</button>
+        </div>
+        <div class="cal-note-text" style="${n.done ? 'text-decoration:line-through;opacity:.5' : ''}">${escapeHTML(n.text)}</div>
+        <div class="cal-note-meta">
+          ${n.assignee ? `<span><i class="ti ti-user"></i> ${escapeHTML(n.assignee)}</span>` : ''}
+          ${n.date ? `<span><i class="ti ti-calendar"></i> ${n.date}</span>` : ''}
+        </div>
+      </div>`).join('') : `<div class="fp-sub" style="text-align:center;padding:20px 0">Sin notas aún</div>`;
+
+    const quickerOptions = (state.quickers || []).map(q => `<option value="${escapeHTML(q.name)}">${escapeHTML(q.name)}</option>`).join('');
+
+    const html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div>
+        <div style="font-size:20px;font-weight:900;color:var(--text-1)"><i class="ti ti-calendar-month" style="color:#F5C518"></i> Calendario operativo</div>
+        <div class="fp-sub">Agenda, seguimientos y notas de equipo</div>
+      </div>
+      <button class="dev-btn primary" data-calendar-new><i class="ti ti-calendar-plus"></i> Nuevo evento</button>
+    </div>
+    <div class="cal-layout">
+      <div class="cal-main">
+        <div class="cal-header">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" data-cal-prev title="Mes anterior"><i class="ti ti-chevron-left"></i></button>
+            <div class="cal-month-label">${monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1)}</div>
+            <button class="cal-nav-btn" data-cal-next title="Mes siguiente"><i class="ti ti-chevron-right"></i></button>
+          </div>
+          <button class="dev-btn" data-cal-today><i class="ti ti-focus-2"></i> Hoy</button>
+        </div>
+        <div class="cal-weekdays">
+          ${['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map((d,i) => `<div class="cal-wd" style="${i>=5?'color:#ef4444':''}">${d}</div>`).join('')}
+        </div>
+        <div class="cal-body">${cellsHTML}</div>
+      </div>
+
+      <div class="cal-panel">
+        <div>
+          <div class="cal-panel-header"><i class="ti ti-clipboard-list" style="color:#F5C518"></i> Panel de trabajo</div>
+          <div class="cal-panel-sub">Notas, tareas y seguimientos del equipo</div>
+        </div>
+        <div class="cal-note-form">
+          <select id="cal-note-type">
+            <option value="nota">📝 Nota</option>
+            <option value="tarea">✅ Tarea</option>
+            <option value="seguimiento">🔍 Seguimiento OASIS</option>
+            <option value="alerta">🚨 Alerta</option>
+          </select>
+          <textarea id="cal-note-text" placeholder="Escribe aquí tu nota, tarea o seguimiento..." rows="3"></textarea>
+          <div style="display:flex;gap:6px">
+            <select id="cal-note-assignee" style="flex:1">
+              <option value="">Sin asignar</option>
+              ${quickerOptions}
+            </select>
+            <input type="date" id="cal-note-date" value="${todayISO}" style="flex:1">
+          </div>
+          <button class="dev-btn primary" id="cal-note-save" style="width:100%"><i class="ti ti-plus"></i> Agregar</button>
+        </div>
+        <div class="cal-notes-list">${notesHTML}</div>
+      </div>
+    </div>`;
+
+    document.getElementById('page-calendario').innerHTML = html;
   }
 
   function renderArchivos() {
@@ -4465,15 +4676,19 @@ function toggleMode(forceDark) {
     reader.readAsArrayBuffer(file);
   }
 
-  function openCalendarEventForm(id = '') {
-    const item = state.calendarEvents.find(e => e.id === id) || { title: '', date: new Date().toISOString().slice(0, 10), time: '', client: state.clients[0]?.name || '', point: '', notes: '' };
+  function openCalendarEventForm(id = '', defaultDate = '') {
+    const item = state.calendarEvents.find(e => e.id === id) || { title: '', date: defaultDate || new Date().toISOString().slice(0, 10), time: '', client: state.clients[0]?.name || '', point: '', notes: '', eventType: 'Evento' };
     const form = document.getElementById('modal-form');
     document.getElementById('modal-title').textContent = id ? 'Editar evento' : 'Nuevo evento de calendario';
     document.getElementById('modal-subtitle').textContent = 'Agenda seguimientos, capacitaciones, novedades o reuniones operativas.';
+    const evTypes = ['Evento','Tarea','Seguimiento','Novedad','Capacitación'];
+    const quickerOpts = (state.quickers || []).map(q => `<option value="${escapeHTML(q.name)}" ${q.name === (item.assignee||'') ? 'selected':''}>${escapeHTML(q.name)}</option>`).join('');
     form.innerHTML = `<div class="form-grid">
       <div class="form-field full"><label>Título</label><input name="title" value="${escapeHTML(item.title)}" required></div>
+      <div class="form-field"><label>Tipo</label><select name="eventType">${evTypes.map(t=>`<option value="${t}" ${t===item.eventType?'selected':''}>${t}</option>`).join('')}</select></div>
       <div class="form-field"><label>Fecha</label><input name="date" type="date" value="${escapeHTML(item.date)}" required></div>
       <div class="form-field"><label>Hora</label><input name="time" type="time" value="${escapeHTML(item.time || '')}"></div>
+      <div class="form-field"><label>Asignar a</label><select name="assignee"><option value="">Sin asignar</option>${quickerOpts}</select></div>
       <div class="form-field"><label>Cliente</label><select name="client" id="calendar-client">${state.clients.map(c => `<option value="${escapeHTML(c.name)}" ${c.name === item.client ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select></div>
       <div class="form-field"><label>Punto</label><select name="point" id="calendar-point">${pointOptionsFor(item.client, item.point)}</select></div>
       <div class="form-field full"><label>Notas</label><textarea name="notes">${escapeHTML(item.notes || '')}</textarea></div>
@@ -5514,6 +5729,69 @@ function toggleMode(forceDark) {
     if (exportPoints) exportClientPoints();
     const newCalendar = event.target.closest('[data-calendar-new]');
     if (newCalendar) openCalendarEventForm();
+
+    // Sidebar toggle
+    const sbToggle = event.target.closest('#sb-toggle');
+    if (sbToggle) {
+      const sb = document.getElementById('sidebar');
+      const collapsed = sb.classList.toggle('collapsed');
+      const icon = document.getElementById('sb-toggle-icon');
+      if (icon) { icon.className = collapsed ? 'ti ti-layout-sidebar-left-expand' : 'ti ti-layout-sidebar-left-collapse'; }
+      localStorage.setItem('quick_sidebar_collapsed', collapsed ? '1' : '0');
+    }
+
+    // Calendario: navegación mes
+    const calPrev = event.target.closest('[data-cal-prev]');
+    if (calPrev) {
+      const y = state.prefs.calViewYear || new Date().getFullYear();
+      const m = state.prefs.calViewMonth !== undefined ? state.prefs.calViewMonth : new Date().getMonth();
+      const prev = new Date(y, m - 1, 1);
+      state.prefs.calViewYear = prev.getFullYear();
+      state.prefs.calViewMonth = prev.getMonth();
+      renderCalendario();
+    }
+    const calNext = event.target.closest('[data-cal-next]');
+    if (calNext) {
+      const y = state.prefs.calViewYear || new Date().getFullYear();
+      const m = state.prefs.calViewMonth !== undefined ? state.prefs.calViewMonth : new Date().getMonth();
+      const next = new Date(y, m + 1, 1);
+      state.prefs.calViewYear = next.getFullYear();
+      state.prefs.calViewMonth = next.getMonth();
+      renderCalendario();
+    }
+    const calToday = event.target.closest('[data-cal-today]');
+    if (calToday) {
+      state.prefs.calViewYear = new Date().getFullYear();
+      state.prefs.calViewMonth = new Date().getMonth();
+      renderCalendario();
+    }
+
+    // Calendario: click en día para crear evento
+    const calDay = event.target.closest('[data-cal-day]');
+    if (calDay && !event.target.closest('[data-action]')) {
+      openCalendarEventForm('', calDay.dataset.calDay);
+    }
+
+    // Panel de notas: guardar
+    const calNoteSave = event.target.closest('#cal-note-save');
+    if (calNoteSave) {
+      const text = document.getElementById('cal-note-text')?.value?.trim();
+      if (!text) { toast('Escribe una nota antes de guardar'); return; }
+      const noteType = document.getElementById('cal-note-type')?.value || 'nota';
+      const assignee = document.getElementById('cal-note-assignee')?.value || '';
+      const date = document.getElementById('cal-note-date')?.value || '';
+      state.workNotes = state.workNotes || [];
+      state.workNotes.unshift({ id: uid('NTE'), noteType, text, assignee, date, done: false, createdAt: new Date().toISOString() });
+      log('Calendario', 'Agregó nota', noteType);
+      saveState('Nota guardada');
+    }
+
+    // Panel de notas: eliminar
+    const noteDel = event.target.closest('[data-note-del]');
+    if (noteDel) {
+      state.workNotes = (state.workNotes || []).filter(n => n.id !== noteDel.dataset.noteDel);
+      saveState('Nota eliminada');
+    }
     const newFolder = event.target.closest('[data-new-folder]');
     if (newFolder) openFolderForm();
     const replicateMass = event.target.closest('[data-replicate-mass]');
@@ -5541,6 +5819,12 @@ function toggleMode(forceDark) {
   });
 
   document.addEventListener('change', event => {
+    // Nota: marcar/desmarcar completada
+    if (event.target.matches('[data-note-done]')) {
+      const id = event.target.dataset.noteDone;
+      const note = (state.workNotes || []).find(n => n.id === id);
+      if (note) { note.done = event.target.checked; saveState('Nota actualizada'); }
+    }
     if (event.target.matches('[data-nov-dash-tipo]')) {
       novDashFilters.tipo = event.target.value;
       openModuleDashboard('novedades');
@@ -5838,6 +6122,13 @@ function toggleMode(forceDark) {
   });
 
   applySession();
+  // Restaurar sidebar colapsado
+  if (localStorage.getItem('quick_sidebar_collapsed') === '1') {
+    const sb = document.getElementById('sidebar');
+    if (sb) sb.classList.add('collapsed');
+    const icon = document.getElementById('sb-toggle-icon');
+    if (icon) icon.className = 'ti ti-layout-sidebar-left-expand';
+  }
   renderAll();
   renderCloudStatus();
   initCloudSync();
