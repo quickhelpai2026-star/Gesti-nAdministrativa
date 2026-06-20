@@ -380,6 +380,8 @@
   .b-red    { background: rgba(239,68,68,.15);  color: #F87171; border: 1px solid rgba(239,68,68,.25); }
   .b-blue   { background: rgba(96,165,250,.15); color: #93C5FD; border: 1px solid rgba(96,165,250,.25); }
   .b-purple { background: rgba(167,139,250,.15);color: #C4B5FD; border: 1px solid rgba(167,139,250,.25); }
+  .b-orange { background: rgba(249,115,22,.15); color: #FB923C; border: 1px solid rgba(249,115,22,.25); }
+  .light-mode .b-orange { background: #FFEDD5; color: #9A3412; border-color: #FDBA74; }
   .light-mode .b-green  { background: #DCFCE7; color: #166534; border-color: #86EFAC; }
   .light-mode .b-yellow { background: #FEF3C7; color: #92400E; border-color: #FCD34D; }
   .light-mode .b-red    { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; }
@@ -1243,6 +1245,53 @@
   .drive-card { border:1px solid var(--border); border-radius:16px; padding:14px; background:rgba(255,255,255,.045); display:flex; gap:12px; align-items:flex-start; }
   .drive-card i { color:var(--q-yellow); font-size:24px; }
   @media (max-width: 980px) { .messenger-shell { grid-template-columns: 1fr; } }
+
+  /* ════════ Tickets ════════ */
+  .ticket-row:hover { background: rgba(245,197,24,.06); }
+  .light-mode .ticket-row:hover { background: #FEF9E7; }
+  .ticket-detail { display:grid; grid-template-columns: 1fr 300px; gap:18px; }
+  @media (max-width: 860px) { .ticket-detail { grid-template-columns: 1fr; } }
+  .ticket-detail-head h3 { font-size:18px; color:var(--text-1); }
+  .ticket-detail-desc { margin:14px 0; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:rgba(255,255,255,.03); color:var(--text-1); line-height:1.5; white-space:pre-wrap; }
+  .light-mode .ticket-detail-desc { background:#F9FAFB; }
+  .ticket-section { margin-top:18px; }
+  .ticket-section h4 { display:flex; align-items:center; gap:7px; font-size:13px; color:var(--text-1); margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+  .ticket-section h4 i { color:var(--q); }
+  .ticket-comment { padding:10px 12px; border-radius:10px; background:rgba(255,255,255,.04); border:1px solid var(--border); margin-bottom:8px; color:var(--text-1); }
+  .light-mode .ticket-comment { background:#F9FAFB; }
+  .ticket-comment-head { display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px; }
+  .ticket-add-row { display:flex; gap:8px; margin-top:10px; align-items:flex-start; }
+  .ticket-add-row textarea { flex:1; min-height:60px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); color:var(--text-1); padding:8px 10px; font:inherit; resize:vertical; }
+  .ticket-evidence-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .ticket-evidence-item { border:1px solid var(--border); border-radius:10px; overflow:hidden; background:rgba(255,255,255,.03); }
+  .ticket-evidence-item img { width:100%; height:90px; object-fit:cover; display:block; }
+  .ticket-evidence-item > i { display:flex; align-items:center; justify-content:center; height:90px; font-size:34px; color:var(--q); background:rgba(245,197,24,.08); }
+  .ticket-evidence-meta { padding:8px; font-size:11px; display:flex; flex-direction:column; gap:2px; }
+  .ticket-evidence-meta a { color:var(--text-1); text-decoration:none; font-weight:600; word-break:break-word; }
+  .ticket-evidence-meta a:hover { color:var(--q); text-decoration:underline; }
+  .ticket-hist { display:flex; flex-direction:column; gap:6px; }
+  .ticket-hist-item { display:flex; gap:8px; align-items:flex-start; font-size:12px; color:var(--text-1); }
+  .ticket-hist-item i { color:var(--q); font-size:10px; margin-top:4px; }
+  .ticket-hist-item > div { display:flex; flex-direction:column; }
+  .ticket-side-card { border:1px solid var(--border); border-radius:14px; padding:14px; background:rgba(255,255,255,.03); margin-bottom:12px; }
+  .light-mode .ticket-side-card { background:#F9FAFB; }
+  .ticket-side-card label { display:block; font-weight:600; }
+  .ticket-completeness { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+  .ticket-comp-ring { width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:conic-gradient(var(--col) calc(var(--pct)*1%), var(--border) 0); flex:none; }
+  .ticket-comp-ring span { width:44px; height:44px; border-radius:50%; background:var(--card-bg); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:var(--text-1); }
+  .ticket-checklist { display:flex; flex-direction:column; gap:7px; }
+  .ticket-check { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-2); }
+  .ticket-check.done { color:var(--text-1); }
+  .ticket-check i { font-size:16px; color:var(--border); }
+  .ticket-check.done i { color:#10b981; }
+  .ticket-pending { margin-top:12px; padding:8px 10px; border-radius:8px; background:rgba(239,68,68,.1); color:#F87171; font-size:12px; border:1px solid rgba(239,68,68,.2); }
+  .light-mode .ticket-pending { background:#FEE2E2; color:#991B1B; border-color:#FCA5A5; }
+  .ticket-pending.done { background:rgba(16,185,129,.1); color:#34D399; border-color:rgba(16,185,129,.25); display:flex; align-items:center; gap:6px; }
+  .light-mode .ticket-pending.done { background:#DCFCE7; color:#166534; border-color:#86EFAC; }
+  .ticket-assignees { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .ticket-chip { display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:20px; background:rgba(245,197,24,.15); color:var(--text-1); font-size:11px; border:1px solid rgba(245,197,24,.3); }
+  .ticket-chip button { background:none; border:none; color:inherit; cursor:pointer; font-size:14px; line-height:1; padding:0; opacity:.7; }
+  .ticket-chip button:hover { opacity:1; color:#F87171; }
 </style>
 </head>
 <body>
@@ -1596,29 +1645,7 @@
       </div>
 
       <!-- ════════════════════ TICKETS ════════════════════ -->
-      <div class="page" id="page-tickets">
-        <div class="kpi-row">
-          <div class="kpi-card q-accent"><div class="kpi-label">Tickets abiertos</div><div class="kpi-value yellow">4</div><div class="kpi-delta"><i class="ti ti-ticket"></i> 2 coordinadores</div></div>
-          <div class="kpi-card grad-orange"><div class="kpi-label">Vencen hoy</div><div class="kpi-value">1</div><div class="kpi-delta down"><i class="ti ti-alert-triangle"></i> Requiere acción</div></div>
-          <div class="kpi-card grad-purple"><div class="kpi-label">Carga laboral prom.</div><div class="kpi-value">38 pts</div><div class="kpi-delta"><i class="ti ti-chart-bar"></i> Por coordinador</div></div>
-          <div class="kpi-card grad-teal"><div class="kpi-label">Cerrados esta semana</div><div class="kpi-value">17</div><div class="kpi-delta up"><i class="ti ti-trending-up"></i> +3 vs semana anterior</div></div>
-        </div>
-        <div class="card">
-          <div class="card-head">
-            <div><div class="card-title">Tickets de coordinador</div><div class="card-sub">Comparendos, documentos, llamadas, validaciones</div></div>
-            <button class="btn-q"><i class="ti ti-plus"></i> Crear ticket</button>
-          </div>
-          <table class="tbl">
-            <thead><tr><th>Tipo</th><th>Quicker</th><th>Coordinador</th><th>SLA</th><th>Complejidad</th><th>Puntos</th><th>Estado</th></tr></thead>
-            <tbody>
-              <tr><td>Comparendo</td><td>JL2049</td><td>Laura Ríos</td><td style="color:#F87171">Vence hoy</td><td><span class="b b-red">Alta</span></td><td>15</td><td><span class="b b-yellow">En proceso</span></td></tr>
-              <tr><td>Doc pendiente</td><td>CO8821</td><td>Miguel Torres</td><td>2 días</td><td><span class="b b-yellow">Media</span></td><td>8</td><td><span class="b b-yellow">Abierto</span></td></tr>
-              <tr><td>Llamada valid.</td><td>AR3312</td><td>Paola Castro</td><td>3 días</td><td><span class="b b-blue">Baja</span></td><td>3</td><td><span class="b b-blue">Programado</span></td></tr>
-              <tr><td>Ajuste malla</td><td>MR7743</td><td>Laura Ríos</td><td>1 día</td><td><span class="b b-yellow">Media</span></td><td>6</td><td><span class="b b-yellow">Abierto</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div class="page" id="page-tickets"></div>
 
       <!-- ════════════════════ EVIDENCIAS ════════════════════ -->
       <div class="page" id="page-evidencias">
@@ -1972,10 +1999,7 @@ function toggleMode(forceDark) {
     ],
     availabilities: [],
     novelties: [],
-    tickets: [
-      { id: 'TCK-001', coordinator: 'Diana Gómez', activity: 'Validar comparendos de Carlos Mejía', type: 'Seguimiento Quicker', complexity: 'Media', sla: 'Hoy 15:00', status: 'Abierto' },
-      { id: 'TCK-002', coordinator: 'Diana Gómez', activity: 'Aprobar novedad DIS-002', type: 'Novedad operativa', complexity: 'Alta', sla: 'Hoy 11:30', status: 'En proceso' }
-    ],
+    tickets: [],
     cases: [
       { id: 'CAS-001', type: 'Incapacidad', quicker: 'Lina Torres', period: '2026-06-16 a 2026-06-18', status: 'Docs pendientes', owner: 'Miguel Torres' },
       { id: 'CAS-002', type: 'Descuento', quicker: 'Carlos Mejía', period: 'Junio 2026', status: 'Pend. aprobación', owner: 'Laura Ríos' }
@@ -2072,7 +2096,35 @@ function toggleMode(forceDark) {
     next.locationPings = value?.locationPings || [];
     next.calendarEvents = value?.calendarEvents || [];
     next.workNotes = value?.workNotes || [];
-    next.tickets = value?.tickets || [];
+    next.tickets = (value?.tickets || []).map(t => {
+      // Migrar tickets legacy (coordinator/activity/complexity) al modelo nuevo
+      const isLegacy = (t.coordinator || t.activity || t.complexity) && !t.title;
+      if (isLegacy) {
+        return {
+          id: t.id || `TIC-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+          title: t.activity || 'Ticket migrado',
+          type: t.type || 'Tarea',
+          description: '',
+          priority: t.complexity || 'Media',
+          status: t.status === 'Cerrado' ? 'Cerrado' : (t.status || 'Abierto'),
+          assignees: t.coordinator ? [t.coordinator] : [],
+          client: '', tags: [], dueDate: '',
+          createdAt: t.createdAt || new Date().toISOString(),
+          createdBy: '', createdByName: t.coordinator || 'Sistema',
+          closedAt: t.status === 'Cerrado' ? new Date().toISOString() : null,
+          comments: [], evidence: [],
+          history: [{ id: `TH-${Math.random().toString(36).slice(2, 8)}`, action: 'Ticket migrado', user: 'Sistema', at: t.createdAt || '' }]
+        };
+      }
+      return {
+        ...t,
+        assignees: Array.isArray(t.assignees) ? t.assignees : (t.assignedTo ? [t.assignedTo] : []),
+        tags: Array.isArray(t.tags) ? t.tags : (typeof t.tags === 'string' && t.tags ? t.tags.split(',').map(s => s.trim()).filter(Boolean) : []),
+        comments: Array.isArray(t.comments) ? t.comments : [],
+        evidence: Array.isArray(t.evidence) ? t.evidence : [],
+        history: Array.isArray(t.history) ? t.history : []
+      };
+    });
     next.ticketComments = value?.ticketComments || [];
     next.files = value?.files || [];
     next.assetMatrix = value?.assetMatrix || [];
@@ -2174,6 +2226,12 @@ function toggleMode(forceDark) {
     }
     if (Array.isArray(stripped.parkingReports)) {
       stripped.parkingReports = stripped.parkingReports.map(p => ({ ...p, photoData: null, dataUrl: null }));
+    }
+    if (Array.isArray(stripped.tickets)) {
+      stripped.tickets = stripped.tickets.map(t => ({
+        ...t,
+        evidence: (t.evidence || []).map(e => ({ ...e, dataUrl: e.dataUrl ? '[archivo_local]' : null }))
+      }));
     }
     if (Array.isArray(stripped.availabilities)) {
       stripped.availabilities = stripped.availabilities.map(a => ({ ...a, evidencePhoto: a.evidencePhoto ? '[foto_local]' : '' }));
@@ -3446,20 +3504,6 @@ function toggleMode(forceDark) {
     );
   }
 
-  function renderTickets() {
-    const rows = state.tickets.filter(t => {
-      const user = currentUser();
-      return user.profile !== 'Coordinador' || !user.name || t.coordinator === user.name || t.coordinator === 'Admin Quick';
-    }).map(t => row([
-      escapeHTML(t.id), escapeHTML(t.coordinator), escapeHTML(t.type), escapeHTML(t.activity), pill(t.complexity), escapeHTML(t.sla), pill(t.status),
-      `<div class="row-actions">${action('Tomar', 'takeTicket', t.id)}${action('Cerrar', 'closeTicket', t.id)}</div>`
-    ]));
-    panel('tickets', 'Gestión de productividad por tickets', 'Base para medir carga, complejidad, SLA y nivelación futura con IA.',
-      `<button class="dev-btn primary" data-open="ticket"><i class="ti ti-plus"></i> Nuevo ticket</button><button class="dev-btn" data-export="tickets">Exportar CSV</button>`,
-      table(['ID', 'Coordinador', 'Tipo', 'Actividad', 'Complejidad', 'SLA', 'Estado', 'Acciones'], rows)
-    );
-  }
-
   function renderQuickers() {
     const rows = scopedItems(state.quickers, q => q).map(q => {
       const expired = q.docExpires && new Date(q.docExpires) < new Date('2026-06-17T00:00:00');
@@ -3488,38 +3532,238 @@ function toggleMode(forceDark) {
     );
   }
 
+  // ════════════════════ SISTEMA DE TICKETS ════════════════════
+  const TICKET_PRIORITIES = ['Baja', 'Media', 'Alta', 'Crítica'];
+  const TICKET_STATUSES = ['Abierto', 'En proceso', 'Pendiente', 'Resuelto', 'Cerrado'];
+  const TICKET_TYPES = ['Problema', 'Solicitud', 'Requerimiento', 'Tarea', 'Mejora'];
+  const ticketFilters = { estado: 'todos', prioridad: 'todos', responsable: 'todos', cliente: 'todos', q: '' };
+
+  function ticketPriorityBadge(p) {
+    const cls = { 'Baja': 'b-blue', 'Media': 'b-yellow', 'Alta': 'b-orange', 'Crítica': 'b-red' }[p] || 'b-blue';
+    return `<span class="b ${cls}">${escapeHTML(p || 'Media')}</span>`;
+  }
+  function ticketStatusBadge(s) {
+    const cls = { 'Abierto': 'st-info', 'En proceso': 'st-warn', 'Pendiente': 'st-warn', 'Resuelto': 'st-ok', 'Cerrado': 'st-ok' }[s] || 'st-info';
+    return `<span class="status-pill ${cls}">${escapeHTML(s || 'Abierto')}</span>`;
+  }
+  function userName(idOrName) {
+    if (!idOrName) return '';
+    const u = state.users?.find(u => u.id === idOrName || u.username === idOrName || u.name === idOrName);
+    return u?.name || idOrName;
+  }
+  function ticketAssigneeNames(t) {
+    const list = t.assignees && t.assignees.length ? t.assignees : (t.assignedTo ? [t.assignedTo] : []);
+    return list.map(userName).filter(Boolean);
+  }
+  function isTicketOpen(t) { return !/resuelto|cerrado/i.test(t.status || ''); }
+  function ticketDueState(t) {
+    if (!t.dueDate || !isTicketOpen(t)) return { label: t.dueDate ? t.dueDate.slice(0, 10) : '—', cls: '' };
+    const today = new Date().toISOString().slice(0, 10);
+    const due = t.dueDate.slice(0, 10);
+    if (due < today) return { label: 'Vencido', cls: 'st-bad' };
+    if (due === today) return { label: 'Vence hoy', cls: 'st-warn' };
+    return { label: due, cls: '' };
+  }
+  // Completitud: avance según asignación, respuesta, evidencia y resolución
+  function ticketCompleteness(t) {
+    const checks = [
+      { key: 'asignado', label: 'Responsable asignado', done: ticketAssigneeNames(t).length > 0 },
+      { key: 'respuesta', label: 'Respuesta / comentario', done: (t.comments || []).length > 0 },
+      { key: 'evidencia', label: 'Evidencia adjunta', done: (t.evidence || []).length > 0 },
+      { key: 'resuelto', label: 'Resuelto o cerrado', done: !isTicketOpen(t) }
+    ];
+    const done = checks.filter(c => c.done).length;
+    return { checks, pct: Math.round((done / checks.length) * 100), done, total: checks.length };
+  }
+
   function renderTickets() {
-    const stats = {
-      total: (state.tickets || []).length,
-      abiertos: (state.tickets || []).filter(t => t.status === 'Abierto').length,
-      enProceso: (state.tickets || []).filter(t => t.status === 'En proceso').length,
-      resueltos: (state.tickets || []).filter(t => t.status === 'Resuelto').length,
-      criticos: (state.tickets || []).filter(t => t.priority === 'Crítica').length
-    };
-    const priorityClass = { 'Baja': 'b-blue', 'Media': 'b-yellow', 'Alta': 'b-yellow', 'Crítica': 'b-red' };
-    const statusClass = { 'Abierto': 'st-info', 'En proceso': 'st-warn', 'Pendiente': 'st-warn', 'Resuelto': 'st-ok', 'Cerrado': 'st-bad' };
-    const rows = (state.tickets || []).slice(0, 100).map(t => {
-      const creator = state.users?.find(u => u.id === t.createdBy)?.name || t.createdBy || '';
-      const assigned = state.users?.find(u => u.id === t.assignedTo)?.name || t.assignedTo || '';
-      return row([
-        escapeHTML(t.id), escapeHTML(t.title), escapeHTML(t.type || 'Requerimiento'),
-        `<span class="b ${priorityClass[t.priority] || 'b-blue'}">${escapeHTML(t.priority || 'Media')}</span>`,
-        `<span class="b ${statusClass[t.status] || 'st-info'}">${escapeHTML(t.status || 'Abierto')}</span>`,
-        escapeHTML(assigned), escapeHTML(creator), escapeHTML(t.createdAt?.slice(0, 10) || ''),
-        escapeHTML(t.dueDate?.slice(0, 10) || '')
-      ]);
+    const today = new Date().toISOString().slice(0, 10);
+    const all = state.tickets || [];
+    const user = currentUser();
+    // Coordinador solo ve los que creó o le asignaron
+    const visible = all.filter(t => {
+      if (!user.profile || ['Administrador', 'Gerencia'].includes(user.profile)) return true;
+      const mine = t.createdBy === user.id || t.createdBy === user.username || t.createdByName === user.name;
+      const assigned = ticketAssigneeNames(t).includes(user.name);
+      return mine || assigned;
     });
-    panel('tickets', 'Gestión de Tickets', 'Sistema integral de reportes, solicitudes y tareas con seguimiento en tiempo real.',
-      `<button class="dev-btn primary" data-open="ticket"><i class="ti ti-ticket-plus"></i> Nuevo ticket</button><button class="dev-btn" data-export="tickets">Exportar CSV</button>`,
-      `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px">
-        <div class="kpi-card"><div class="kpi-label">Total</div><div class="kpi-value">${stats.total}</div></div>
-        <div class="kpi-card" style="border-left-color:#3b82f6"><div class="kpi-label">Abiertos</div><div class="kpi-value">${stats.abiertos}</div></div>
-        <div class="kpi-card" style="border-left-color:#f59e0b"><div class="kpi-label">En proceso</div><div class="kpi-value">${stats.enProceso}</div></div>
-        <div class="kpi-card" style="border-left-color:#10b981"><div class="kpi-label">Resueltos</div><div class="kpi-value">${stats.resueltos}</div></div>
-        <div class="kpi-card" style="border-left-color:#ef4444"><div class="kpi-label">Críticos</div><div class="kpi-value">${stats.criticos}</div></div>
-      </div>
-      ${table(['ID', 'Título', 'Tipo', 'Prioridad', 'Estado', 'Asignado a', 'Creado por', 'Creado', 'Vencimiento'], rows)}`
+
+    const stats = {
+      abiertos: visible.filter(isTicketOpen).length,
+      enProceso: visible.filter(t => /proceso/i.test(t.status || '')).length,
+      venceHoy: visible.filter(t => isTicketOpen(t) && t.dueDate && t.dueDate.slice(0, 10) === today).length,
+      vencidos: visible.filter(t => isTicketOpen(t) && t.dueDate && t.dueDate.slice(0, 10) < today).length,
+      cerrados: visible.filter(t => !isTicketOpen(t)).length
+    };
+
+    const rows = visible.filter(t => {
+      const estadoOk = ticketFilters.estado === 'todos' || t.status === ticketFilters.estado;
+      const prioOk = ticketFilters.prioridad === 'todos' || t.priority === ticketFilters.prioridad;
+      const respOk = ticketFilters.responsable === 'todos' || ticketAssigneeNames(t).includes(ticketFilters.responsable);
+      const cliOk = ticketFilters.cliente === 'todos' || t.client === ticketFilters.cliente;
+      const q = ticketFilters.q.trim().toLowerCase();
+      const qOk = !q || [t.id, t.title, t.description, t.type, ...(ticketAssigneeNames(t))].join(' ').toLowerCase().includes(q);
+      return estadoOk && prioOk && respOk && cliOk && qOk;
+    }).map(t => {
+      const comp = ticketCompleteness(t);
+      const due = ticketDueState(t);
+      const compColor = comp.pct === 100 ? '#10b981' : comp.pct >= 50 ? '#f59e0b' : '#ef4444';
+      return `<tr class="ticket-row" data-ticket-open="${t.id}" style="cursor:pointer">
+        <td><strong>${escapeHTML(t.id)}</strong></td>
+        <td>${escapeHTML(t.title || '')}<div class="fp-sub" style="margin-top:2px">${escapeHTML(t.type || '')}</div></td>
+        <td>${ticketPriorityBadge(t.priority)}</td>
+        <td>${ticketStatusBadge(t.status)}</td>
+        <td>${escapeHTML(ticketAssigneeNames(t).join(', ') || 'Sin asignar')}</td>
+        <td><span class="status-pill ${due.cls}">${escapeHTML(due.label)}</span></td>
+        <td><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:7px;border-radius:999px;background:var(--border);overflow:hidden;min-width:48px"><div style="height:100%;width:${comp.pct}%;background:${compColor}"></div></div><span style="font-size:11px;font-weight:700;color:${compColor}">${comp.pct}%</span></div></td>
+      </tr>`;
+    });
+
+    const respOptions = [...new Set(visible.flatMap(ticketAssigneeNames))].filter(Boolean);
+    const cliOptions = [...new Set(visible.map(t => t.client).filter(Boolean))];
+    const sel = (val, cur) => val === cur ? 'selected' : '';
+    const inputStyle = 'min-height:38px;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--text-1);padding:0 10px;font:inherit';
+    const filtersHTML = `<div class="ticket-filters" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px">
+      <input type="search" data-ticket-filter="q" value="${escapeHTML(ticketFilters.q)}" placeholder="Buscar por ID, título, responsable..." style="flex:1;min-width:200px;${inputStyle};padding:0 12px">
+      <select data-ticket-filter="estado" style="${inputStyle}"><option value="todos">Todo estado</option>${TICKET_STATUSES.map(s => `<option ${sel(s, ticketFilters.estado)}>${s}</option>`).join('')}</select>
+      <select data-ticket-filter="prioridad" style="${inputStyle}"><option value="todos">Toda prioridad</option>${TICKET_PRIORITIES.map(p => `<option ${sel(p, ticketFilters.prioridad)}>${p}</option>`).join('')}</select>
+      <select data-ticket-filter="responsable" style="${inputStyle}"><option value="todos">Todo responsable</option>${respOptions.map(r => `<option ${sel(r, ticketFilters.responsable)}>${escapeHTML(r)}</option>`).join('')}</select>
+      ${cliOptions.length ? `<select data-ticket-filter="cliente" style="${inputStyle}"><option value="todos">Todo cliente</option>${cliOptions.map(c => `<option ${sel(c, ticketFilters.cliente)}>${escapeHTML(c)}</option>`).join('')}</select>` : ''}
+      ${(ticketFilters.estado !== 'todos' || ticketFilters.prioridad !== 'todos' || ticketFilters.responsable !== 'todos' || ticketFilters.cliente !== 'todos' || ticketFilters.q) ? `<button class="dev-btn" data-ticket-clear style="padding:6px 12px;font-size:12px"><i class="ti ti-x"></i> Limpiar</button>` : ''}
+    </div>`;
+
+    const kpisHTML = `<div class="kpi-row module-kpi-row" style="margin-bottom:16px">
+      <div class="kpi-card q-accent"><i class="ti ti-ticket kpi-icon"></i><div class="kpi-label">Tickets abiertos</div><div class="kpi-value yellow">${stats.abiertos}</div><div class="kpi-delta"><i class="ti ti-progress"></i> ${stats.enProceso} en proceso</div></div>
+      <div class="kpi-card grad-orange"><i class="ti ti-alarm kpi-icon"></i><div class="kpi-label">Vencen hoy</div><div class="kpi-value">${stats.venceHoy}</div><div class="kpi-delta ${stats.venceHoy ? 'down' : ''}"><i class="ti ti-alert-triangle"></i> Requiere acción</div></div>
+      <div class="kpi-card grad-purple"><i class="ti ti-clock-exclamation kpi-icon"></i><div class="kpi-label">SLA vencido</div><div class="kpi-value">${stats.vencidos}</div><div class="kpi-delta"><i class="ti ti-calendar-x"></i> Fuera de plazo</div></div>
+      <div class="kpi-card grad-teal"><i class="ti ti-circle-check kpi-icon"></i><div class="kpi-label">Resueltos / cerrados</div><div class="kpi-value">${stats.cerrados}</div><div class="kpi-delta up"><i class="ti ti-checks"></i> Completados</div></div>
+    </div>`;
+
+    const tableHTML = rows.length
+      ? `<div class="data-table-wrap"><table class="data-table"><thead><tr><th>ID</th><th>Título / Tipo</th><th>Prioridad</th><th>Estado</th><th>Responsable(s)</th><th>Vencimiento</th><th>Completitud</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`
+      : `<div class="dropzone" style="text-align:center"><strong>No hay tickets que coincidan</strong><span class="fp-sub">Crea un ticket o ajusta los filtros para ver resultados.</span></div>`;
+
+    panel('tickets', 'Gestión de Tickets', 'Reporta, asigna, prioriza y haz seguimiento a problemas, solicitudes y tareas con SLA en tiempo real.',
+      `<button class="dev-btn primary" data-open="ticket"><i class="ti ti-ticket-plus"></i> Crear ticket</button><button class="dev-btn" data-export="tickets"><i class="ti ti-download"></i> Exportar CSV</button>`,
+      `${kpisHTML}${filtersHTML}${tableHTML}`
     );
+  }
+
+  // Detalle de ticket: comentarios, evidencias, historial, completitud, gestión de estado/responsables
+  function openTicketDetail(id) {
+    const t = (state.tickets || []).find(x => x.id === id);
+    if (!t) return;
+    const comp = ticketCompleteness(t);
+    const due = ticketDueState(t);
+    const assignees = ticketAssigneeNames(t);
+    const allUsers = (state.users || []).filter(u => u.name);
+    const addOptions = allUsers.filter(u => !assignees.includes(u.name)).map(u => `<option value="${escapeHTML(u.id || u.name)}">${escapeHTML(u.name)} · ${escapeHTML(u.profile || '')}</option>`).join('');
+
+    const commentsHTML = (t.comments || []).length
+      ? t.comments.map(c => `<div class="ticket-comment"><div class="ticket-comment-head"><strong>${escapeHTML(c.user)}</strong><span class="fp-sub">${escapeHTML(c.at)}</span></div><div>${escapeHTML(c.text)}</div></div>`).join('')
+      : '<div class="fp-sub">Aún no hay comentarios.</div>';
+
+    const evidenceHTML = (t.evidence || []).length
+      ? `<div class="ticket-evidence-grid">${t.evidence.map(e => {
+          const isImg = (e.fileType || '').startsWith('image/') && e.dataUrl;
+          const thumb = isImg ? `<img src="${e.dataUrl}" alt="${escapeHTML(e.name)}">` : `<i class="ti ti-file-text"></i>`;
+          const link = e.dataUrl ? `<a href="${e.dataUrl}" download="${escapeHTML(e.name)}" target="_blank">${escapeHTML(e.name)}</a>` : escapeHTML(e.name);
+          return `<div class="ticket-evidence-item">${thumb}<div class="ticket-evidence-meta">${link}<span class="fp-sub">${escapeHTML(e.user)} · ${escapeHTML(e.at)}</span></div></div>`;
+        }).join('')}</div>`
+      : '<div class="fp-sub">Sin evidencias adjuntas.</div>';
+
+    const historyHTML = (t.history || []).length
+      ? t.history.slice().reverse().map(h => `<div class="ticket-hist-item"><i class="ti ti-point"></i><div><span>${escapeHTML(h.action)}</span><span class="fp-sub">${escapeHTML(h.user)} · ${escapeHTML(h.at)}</span></div></div>`).join('')
+      : '<div class="fp-sub">Sin cambios registrados.</div>';
+
+    const checklistHTML = comp.checks.map(c => `<div class="ticket-check ${c.done ? 'done' : ''}"><i class="ti ${c.done ? 'ti-circle-check' : 'ti-circle'}"></i> ${escapeHTML(c.label)}</div>`).join('');
+    const pendientes = comp.checks.filter(c => !c.done).map(c => c.label);
+    const compColor = comp.pct === 100 ? '#10b981' : comp.pct >= 50 ? '#f59e0b' : '#ef4444';
+
+    const html = `
+      <div class="ticket-detail">
+        <div class="ticket-detail-main">
+          <div class="ticket-detail-head">
+            <div>${ticketPriorityBadge(t.priority)} ${ticketStatusBadge(t.status)} <span class="fp-sub">${escapeHTML(t.type || '')}</span></div>
+            <h3 style="margin:8px 0 4px">${escapeHTML(t.title || '')}</h3>
+            <div class="fp-sub">${escapeHTML(t.id)} · Creado por ${escapeHTML(t.createdByName || userName(t.createdBy) || '—')} · ${escapeHTML((t.createdAt || '').slice(0, 16).replace('T', ' '))}</div>
+          </div>
+          <div class="ticket-detail-desc">${t.description ? escapeHTML(t.description) : '<span class="fp-sub">Sin descripción.</span>'}</div>
+
+          <div class="ticket-section"><h4><i class="ti ti-messages"></i> Comentarios y respuestas</h4>${commentsHTML}
+            <div class="ticket-add-row"><textarea id="ticket-comment-input" placeholder="Escribe una respuesta o nota de seguimiento..."></textarea><button class="dev-btn primary" data-ticket-comment="${t.id}"><i class="ti ti-send"></i> Enviar</button></div>
+          </div>
+
+          <div class="ticket-section"><h4><i class="ti ti-paperclip"></i> Evidencias y archivos</h4>${evidenceHTML}
+            <label class="dev-btn" style="margin-top:10px"><i class="ti ti-upload"></i> Subir archivo / foto<input type="file" data-ticket-evidence="${t.id}" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.txt" style="display:none"></label>
+          </div>
+
+          <div class="ticket-section"><h4><i class="ti ti-history"></i> Historial de cambios</h4><div class="ticket-hist">${historyHTML}</div></div>
+        </div>
+
+        <div class="ticket-detail-side">
+          <div class="ticket-side-card">
+            <div class="ticket-completeness"><div class="ticket-comp-ring" style="--pct:${comp.pct};--col:${compColor}"><span>${comp.pct}%</span></div><div><strong>Completitud</strong><div class="fp-sub">${comp.done} de ${comp.total} pasos</div></div></div>
+            <div class="ticket-checklist">${checklistHTML}</div>
+            ${pendientes.length ? `<div class="ticket-pending"><strong>Falta:</strong> ${pendientes.map(escapeHTML).join(', ')}</div>` : '<div class="ticket-pending done"><i class="ti ti-circle-check"></i> Ticket completo</div>'}
+          </div>
+
+          <div class="ticket-side-card">
+            <label class="fp-sub">Estado</label>
+            <select data-ticket-status="${t.id}" style="${inputStyleGlobal()}">${TICKET_STATUSES.map(s => `<option ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}</select>
+            <label class="fp-sub" style="margin-top:10px">Prioridad</label>
+            <select data-ticket-priority="${t.id}" style="${inputStyleGlobal()}">${TICKET_PRIORITIES.map(p => `<option ${p === t.priority ? 'selected' : ''}>${p}</option>`).join('')}</select>
+            <label class="fp-sub" style="margin-top:10px">Vencimiento</label>
+            <input type="date" data-ticket-due="${t.id}" value="${escapeHTML((t.dueDate || '').slice(0, 10))}" style="${inputStyleGlobal()}">
+          </div>
+
+          <div class="ticket-side-card">
+            <label class="fp-sub">Responsables</label>
+            <div class="ticket-assignees">${assignees.length ? assignees.map(a => `<span class="ticket-chip">${escapeHTML(a)} <button data-ticket-unassign="${t.id}" data-name="${escapeHTML(a)}" title="Quitar">×</button></span>`).join('') : '<span class="fp-sub">Sin asignar</span>'}</div>
+            ${addOptions ? `<div class="ticket-add-row" style="margin-top:8px"><select data-ticket-assign-sel="${t.id}" style="${inputStyleGlobal()}"><option value="">Agregar responsable...</option>${addOptions}</select><button class="dev-btn" data-ticket-assign="${t.id}"><i class="ti ti-user-plus"></i></button></div>` : ''}
+          </div>
+
+          ${t.client ? `<div class="ticket-side-card"><label class="fp-sub">Cliente relacionado</label><div>${escapeHTML(t.client)}</div></div>` : ''}
+          ${(t.tags && t.tags.length) ? `<div class="ticket-side-card"><label class="fp-sub">Etiquetas</label><div>${t.tags.map(tag => `<span class="ticket-chip">${escapeHTML(tag)}</span>`).join('')}</div></div>` : ''}
+        </div>
+      </div>
+      <div class="modal-foot" style="margin-top:16px">
+        ${isTicketOpen(t) ? `<button class="dev-btn" data-ticket-resolve="${t.id}"><i class="ti ti-circle-check"></i> Marcar resuelto</button>` : ''}
+        <button class="dev-btn" type="button" id="cancel-form">Cerrar</button>
+      </div>`;
+
+    openModal(`Ticket ${t.id}`, t.title || '', html, null, true);
+  }
+
+  function inputStyleGlobal() {
+    return 'width:100%;min-height:38px;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--text-1);padding:0 10px;font:inherit;margin-top:4px';
+  }
+
+  function ticketHist(t, action) {
+    t.history = t.history || [];
+    t.history.push({ id: uid('TH'), action, user: state.session?.name || 'Usuario', at: todayTime() });
+  }
+
+  function makeTicket(data = {}) {
+    return {
+      id: uid('TIC'),
+      title: data.title || 'Sin título',
+      type: data.type || 'Requerimiento',
+      description: data.description || '',
+      priority: data.priority || 'Media',
+      status: 'Abierto',
+      assignees: data.assignees || [],
+      client: data.client || '',
+      tags: data.tags || [],
+      dueDate: data.dueDate || '',
+      createdAt: new Date().toISOString(),
+      createdBy: state.session?.id || state.session?.username || '',
+      createdByName: state.session?.name || 'Usuario',
+      closedAt: null,
+      comments: [],
+      evidence: [],
+      history: [{ id: uid('TH'), action: 'Ticket creado', user: state.session?.name || 'Usuario', at: todayTime() }]
+    };
   }
 
   function renderHSQ() {
@@ -4249,32 +4493,42 @@ function toggleMode(forceDark) {
 
   const schemas = {
     ticket: {
-      title: 'Nuevo Ticket',
-      subtitle: 'Crea un ticket para reportar un problema, solicitud o requerimiento.',
+      title: 'Crear ticket / tarea',
+      subtitle: 'Reporta un problema, solicitud o tarea, define urgencia y asigna responsables.',
       fields: [
         ['title', 'Título', 'text'],
-        ['type', 'Tipo', 'select', ['Problema', 'Solicitud', 'Requerimiento', 'Mejora']],
+        ['type', 'Tipo', 'select', ['Problema', 'Solicitud', 'Requerimiento', 'Tarea', 'Mejora']],
         ['description', 'Descripción', 'textarea'],
         ['priority', 'Prioridad', 'select', ['Baja', 'Media', 'Alta', 'Crítica']],
         ['assignedTo', 'Asignar a', 'select', []],
         ['dueDate', 'Fecha de vencimiento', 'date'],
         ['client', 'Cliente relacionado', 'select', []],
-        ['tags', 'Etiquetas (coma separadas)', 'text']
+        ['tags', 'Etiquetas (separadas por coma)', 'text']
       ],
       submit: data => {
+        const assignee = data.assignedTo && data.assignedTo !== 'Sin asignar' ? [data.assignedTo] : [];
         const ticket = {
           id: uid('TIC'),
-          ...data,
+          title: data.title || 'Sin título',
+          type: data.type || 'Requerimiento',
+          description: data.description || '',
+          priority: data.priority || 'Media',
           status: 'Abierto',
+          assignees: assignee,
+          client: data.client && data.client !== 'Sin cliente' ? data.client : '',
+          tags: (data.tags || '').split(',').map(s => s.trim()).filter(Boolean),
+          dueDate: data.dueDate || '',
           createdAt: new Date().toISOString(),
-          createdBy: state.session?.id || state.session?.username,
+          createdBy: state.session?.id || state.session?.username || '',
+          createdByName: state.session?.name || 'Usuario',
           closedAt: null,
-          comments: []
+          comments: [],
+          evidence: [],
+          history: [{ id: uid('TH'), action: 'Ticket creado', user: state.session?.name || 'Usuario', at: todayTime() }]
         };
         state.tickets = state.tickets || [];
         state.tickets.unshift(ticket);
         log('Tickets', 'Creó ticket', ticket.id);
-        saveState('Ticket creado');
       }
     },
     malla: {
@@ -4333,21 +4587,6 @@ function toggleMode(forceDark) {
         const item = { id: uid('NOV'), ...data, status: 'Reportada', gestionStatus: 'Pendiente', createdAt: new Date().toISOString() };
         state.novelties.unshift(item);
         log('Novedad', 'Creó novedad', item.id);
-      }
-    },
-    ticket: {
-      title: 'Nuevo ticket de coordinador',
-      subtitle: 'Base para productividad, carga laboral y futura asignación con IA.',
-      fields: [
-        ['coordinator', 'Coordinador', 'select', state.users.filter(u => u.profile === 'Coordinador').map(u => u.name)],
-        ['type', 'Tipo actividad', 'select', ['Seguimiento Quicker', 'Novedad operativa', 'Cliente', 'Nómina', 'Documentos', 'PQR']],
-        ['activity', 'Actividad', 'textarea'], ['complexity', 'Complejidad', 'select', ['Baja', 'Media', 'Alta', 'Crítica']],
-        ['sla', 'SLA', 'text']
-      ],
-      submit: data => {
-        const item = { id: uid('TCK'), ...data, status: 'Abierto' };
-        state.tickets.unshift(item);
-        log('TicketActividad', 'Creó ticket', item.id);
       }
     },
     caso: {
@@ -4450,8 +4689,13 @@ function toggleMode(forceDark) {
       current.fields = current.fields.map(field => field[0] === 'client' ? ['client', 'Cliente', 'select', state.clients.map(c => c.name)] : field);
     }
     if (type === 'ticket') {
-      const coordinators = state.users.filter(u => u.profile === 'Coordinador').map(u => u.name);
-      current.fields = current.fields.map(field => field[0] === 'coordinator' ? ['coordinator', 'Coordinador', 'select', coordinators.length ? coordinators : ['Admin Quick']] : field);
+      const usersList = (state.users || []).filter(u => u.name).map(u => u.name);
+      const clientList = (state.clients || []).map(c => c.name);
+      current.fields = current.fields.map(field => {
+        if (field[0] === 'assignedTo') return ['assignedTo', 'Asignar a', 'select', ['Sin asignar', ...usersList]];
+        if (field[0] === 'client') return ['client', 'Cliente relacionado', 'select', ['Sin cliente', ...clientList]];
+        return field;
+      });
     }
     if (type === 'caso') {
       current.fields = current.fields.map(field => field[0] === 'quicker' ? ['quicker', 'Quicker', 'select', state.quickers.map(q => q.name)] : field);
@@ -4544,7 +4788,7 @@ function toggleMode(forceDark) {
 
   function fieldHTML(name, label, type, options = []) {
     const full = type === 'textarea' ? ' full' : '';
-    const optional = ['quickGoId', 'quickGoStatus', 'observations', 'cedula', 'city', 'serviceType', 'point'].includes(name);
+    const optional = ['quickGoId', 'quickGoStatus', 'observations', 'cedula', 'city', 'serviceType', 'point', 'description', 'assignedTo', 'dueDate', 'client', 'tags'].includes(name);
     const req = optional ? '' : ' required';
     if (type === 'select') {
       return `<div class="form-field${full}"><label>${label}</label><select name="${name}"${req}>${options.map(o => `<option>${escapeHTML(o)}</option>`).join('')}</select></div>`;
@@ -4671,15 +4915,17 @@ function toggleMode(forceDark) {
     if (actionName === 'closeNovelty') { const item = find('novelties'); item.status = 'Cerrada'; log('Novedad', 'Cerró novedad', id); }
     if (actionName === 'ticketFromNovelty') {
       const n = find('novelties');
-      state.tickets.unshift({ id: uid('TCK'), coordinator: 'Diana Gómez', activity: `Gestionar ${n.type} ${n.ref}`, type: 'Novedad operativa', complexity: n.severity, sla: 'Hoy', status: 'Abierto' });
-      log('TicketActividad', 'Creó ticket desde novedad', id);
+      const tk = makeTicket({ title: `Gestionar ${n.type} ${n.ref || ''}`.trim(), type: 'Problema', priority: /alta|crítica/i.test(n.severity || '') ? 'Alta' : 'Media', description: n.note || '', client: n.client || '' });
+      state.tickets.unshift(tk);
+      log('Tickets', 'Creó ticket desde novedad', tk.id);
     }
-    if (actionName === 'takeTicket') { const item = find('tickets'); item.status = 'En proceso'; log('TicketActividad', 'Tomó ticket', id); }
-    if (actionName === 'closeTicket') { const item = find('tickets'); item.status = 'Cerrado'; log('TicketActividad', 'Cerró ticket', id); }
+    if (actionName === 'takeTicket') { const item = find('tickets'); if (item) { item.status = 'En proceso'; ticketHist(item, 'Tomó el ticket (en proceso)'); log('Tickets', 'Tomó ticket', id); } }
+    if (actionName === 'closeTicket') { const item = find('tickets'); if (item) { item.status = 'Cerrado'; item.closedAt = new Date().toISOString(); ticketHist(item, 'Cerró el ticket'); log('Tickets', 'Cerró ticket', id); } }
     if (actionName === 'followQuicker') {
       const q = find('quickers');
-      state.tickets.unshift({ id: uid('TCK'), coordinator: 'Diana Gómez', activity: `Seguimiento a ${q.name}: validar documentos/comparendos`, type: 'Seguimiento Quicker', complexity: 'Media', sla: 'Hoy', status: 'Abierto' });
-      log('TicketActividad', 'Creó seguimiento Quicker', q.id);
+      const tk = makeTicket({ title: `Seguimiento a ${q.name}: validar documentos/comparendos`, type: 'Tarea', priority: 'Media' });
+      state.tickets.unshift(tk);
+      log('Tickets', 'Creó seguimiento Quicker', q.id);
     }
     if (actionName === 'blockQuicker') { const item = find('quickers'); item.status = 'Bloqueado'; log('Quicker', 'Bloqueó Quicker', id); }
     if (actionName === 'approveEvidence') { const item = find('evidences'); item.status = 'Aprobada'; log('Evidencia', 'Aprobó evidencia', id); }
@@ -4727,6 +4973,27 @@ function toggleMode(forceDark) {
         estadoSolicitud: d.quickGoStatus || (d.quicker ? 'Asignado' : 'Pendiente de asignación')
       }));
       downloadCSV({ quickgo: rows }, 'quickgo');
+      return;
+    }
+    if (collection === 'tickets') {
+      const rows = (state.tickets || []).map(t => ({
+        id: t.id,
+        titulo: t.title,
+        tipo: t.type,
+        prioridad: t.priority,
+        estado: t.status,
+        responsables: ticketAssigneeNames(t).join('; '),
+        cliente: t.client || '',
+        etiquetas: (t.tags || []).join('; '),
+        creadoPor: t.createdByName || userName(t.createdBy) || '',
+        creado: (t.createdAt || '').slice(0, 16).replace('T', ' '),
+        vencimiento: (t.dueDate || '').slice(0, 10),
+        cierre: (t.closedAt || '').slice(0, 16).replace('T', ' '),
+        comentarios: (t.comments || []).length,
+        evidencias: (t.evidence || []).length,
+        completitud: ticketCompleteness(t).pct + '%'
+      }));
+      downloadCSV({ tickets: rows }, 'tickets');
       return;
     }
     const datasets = collection === 'all'
@@ -5853,6 +6120,69 @@ function toggleMode(forceDark) {
     if (exp) exportCSV(exp.dataset.export);
     const act = event.target.closest('[data-action]');
     if (act) handleAction(act.dataset.action, act.dataset.id);
+
+    // ── Tickets ──
+    const ticketOpen = event.target.closest('[data-ticket-open]');
+    if (ticketOpen) { openTicketDetail(ticketOpen.dataset.ticketOpen); return; }
+    const ticketClear = event.target.closest('[data-ticket-clear]');
+    if (ticketClear) { ticketFilters.estado = 'todos'; ticketFilters.prioridad = 'todos'; ticketFilters.responsable = 'todos'; ticketFilters.cliente = 'todos'; ticketFilters.q = ''; renderTickets(); return; }
+    const ticketComment = event.target.closest('[data-ticket-comment]');
+    if (ticketComment) {
+      const t = (state.tickets || []).find(x => x.id === ticketComment.dataset.ticketComment);
+      const input = document.getElementById('ticket-comment-input');
+      const text = (input?.value || '').trim();
+      if (t && text) {
+        t.comments = t.comments || [];
+        t.comments.push({ id: uid('TC'), user: state.session?.name || 'Usuario', text, at: todayTime() });
+        ticketHist(t, 'Agregó un comentario');
+        log('Tickets', 'Comentó ticket', t.id);
+        saveState('Comentario agregado');
+        openTicketDetail(t.id);
+      } else { toast('Escribe un comentario'); }
+      return;
+    }
+    const ticketAssign = event.target.closest('[data-ticket-assign]');
+    if (ticketAssign) {
+      const t = (state.tickets || []).find(x => x.id === ticketAssign.dataset.ticketAssign);
+      const selEl = document.querySelector(`[data-ticket-assign-sel="${ticketAssign.dataset.ticketAssign}"]`);
+      const name = selEl?.value;
+      if (t && name) {
+        t.assignees = t.assignees || [];
+        if (!t.assignees.includes(name)) {
+          t.assignees.push(name);
+          ticketHist(t, `Asignó a ${name}`);
+          log('Tickets', 'Asignó responsable', `${t.id} → ${name}`);
+          saveState('Responsable asignado');
+          openTicketDetail(t.id);
+        }
+      } else { toast('Selecciona una persona'); }
+      return;
+    }
+    const ticketUnassign = event.target.closest('[data-ticket-unassign]');
+    if (ticketUnassign) {
+      const t = (state.tickets || []).find(x => x.id === ticketUnassign.dataset.ticketUnassign);
+      const name = ticketUnassign.dataset.name;
+      if (t) {
+        t.assignees = (t.assignees || []).filter(a => userName(a) !== name && a !== name);
+        ticketHist(t, `Quitó a ${name}`);
+        saveState('Responsable removido');
+        openTicketDetail(t.id);
+      }
+      return;
+    }
+    const ticketResolve = event.target.closest('[data-ticket-resolve]');
+    if (ticketResolve) {
+      const t = (state.tickets || []).find(x => x.id === ticketResolve.dataset.ticketResolve);
+      if (t) {
+        t.status = 'Resuelto'; t.closedAt = new Date().toISOString();
+        ticketHist(t, 'Marcó como resuelto');
+        log('Tickets', 'Resolvió ticket', t.id);
+        saveState('Ticket resuelto');
+        openTicketDetail(t.id);
+      }
+      return;
+    }
+
     const move = event.target.closest('[data-move-col]');
     if (move) moveMallaColumn(move.dataset.moveCol, move.dataset.dir);
     const addCol = event.target.closest('[data-add-column="mallas"]');
@@ -5993,6 +6323,54 @@ function toggleMode(forceDark) {
   });
 
   document.addEventListener('change', event => {
+    // ── Tickets: filtros ──
+    const tFilter = event.target.closest('[data-ticket-filter]');
+    if (tFilter) { ticketFilters[tFilter.dataset.ticketFilter] = tFilter.value; renderTickets(); return; }
+    // ── Tickets: cambio de estado / prioridad / vencimiento ──
+    const tStatus = event.target.closest('[data-ticket-status]');
+    if (tStatus) {
+      const t = (state.tickets || []).find(x => x.id === tStatus.dataset.ticketStatus);
+      if (t && t.status !== tStatus.value) {
+        const before = t.status; t.status = tStatus.value;
+        if (!isTicketOpen(t)) t.closedAt = t.closedAt || new Date().toISOString();
+        ticketHist(t, `Estado: ${before} → ${t.status}`);
+        log('Tickets', 'Cambió estado', `${t.id}: ${t.status}`);
+        saveState('Estado actualizado'); openTicketDetail(t.id);
+      }
+      return;
+    }
+    const tPriority = event.target.closest('[data-ticket-priority]');
+    if (tPriority) {
+      const t = (state.tickets || []).find(x => x.id === tPriority.dataset.ticketPriority);
+      if (t && t.priority !== tPriority.value) {
+        const before = t.priority; t.priority = tPriority.value;
+        ticketHist(t, `Prioridad: ${before} → ${t.priority}`);
+        saveState('Prioridad actualizada'); openTicketDetail(t.id);
+      }
+      return;
+    }
+    const tDue = event.target.closest('[data-ticket-due]');
+    if (tDue) {
+      const t = (state.tickets || []).find(x => x.id === tDue.dataset.ticketDue);
+      if (t) { t.dueDate = tDue.value; ticketHist(t, `Vencimiento: ${tDue.value || 'sin fecha'}`); saveState('Vencimiento actualizado'); openTicketDetail(t.id); }
+      return;
+    }
+    // ── Tickets: subir evidencia / archivo ──
+    const tEvidence = event.target.closest('[data-ticket-evidence]');
+    if (tEvidence && tEvidence.files && tEvidence.files[0]) {
+      const t = (state.tickets || []).find(x => x.id === tEvidence.dataset.ticketEvidence);
+      const file = tEvidence.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        t.evidence = t.evidence || [];
+        t.evidence.push({ id: uid('TE'), name: file.name, fileType: file.type, dataUrl: reader.result, user: state.session?.name || 'Usuario', at: todayTime() });
+        ticketHist(t, `Adjuntó evidencia: ${file.name}`);
+        log('Tickets', 'Adjuntó evidencia', `${t.id}: ${file.name}`);
+        saveState('Evidencia adjuntada'); openTicketDetail(t.id);
+      };
+      reader.readAsDataURL(file);
+      return;
+    }
     // Nota: marcar/desmarcar completada
     if (event.target.matches('[data-note-done]')) {
       const id = event.target.dataset.noteDone;
