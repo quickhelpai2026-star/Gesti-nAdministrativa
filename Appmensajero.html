@@ -51,6 +51,7 @@
     .qc-qr-overlay{position:absolute;inset:0;background:rgba(17,17,17,.97);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}.qc-qr-overlay.show{display:flex}.qc-qr-overlay img{width:220px;height:220px;max-width:90%;object-fit:contain;background:#fff;border-radius:12px;padding:10px}.qc-qr-overlay span{color:#fff;font-size:12px;text-align:center}
     .lunch-toggle{display:flex;align-items:center;justify-content:space-between}
     .info-head{display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer}.info-cover{width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin:8px 0}.info-body .btn,.info-body textarea{margin-top:8px}
+    .bell-dot{position:absolute;top:6px;right:6px;width:11px;height:11px;border-radius:50%;background:var(--bad);border:2px solid var(--bg)}
   </style>
 </head>
 <body>
@@ -70,7 +71,9 @@
         <button class="hamb" id="hambBtn" type="button" aria-label="Menú"><i class="ti ti-menu-2"></i></button>
         <div class="logo"><img src="https://i.ibb.co/KjmjjvNZ/Captura-de-pantalla-2025-09-15-161315.jpg" alt="Quick"></div>
         <div><h1 id="hello">Hola</h1><span id="todayLabel"></span></div>
+        <button class="hamb" id="bellBtn" type="button" aria-label="Notificaciones" style="margin-left:auto;position:relative"><i class="ti ti-bell"></i><span id="bellDot" class="bell-dot" style="display:none"></span></button>
       </div>
+      <div class="card hidden" id="notifPanel"><h3 style="margin:0 0 8px"><i class="ti ti-bell"></i> Notificaciones</h3><div id="notifList"></div></div>
 
       <!-- TURNO -->
       <section class="screen on" id="screen-turno">
@@ -250,7 +253,9 @@
         ${al.comment?`<textarea data-info-comment-input="${p.id}" placeholder="Comentario / seguimiento">${a.comment||''}</textarea><button class="btn ghost small" data-info-comment="${p.id}">Guardar comentario</button>`:''}
         ${al.error?`<textarea data-info-error-input="${p.id}" placeholder="Reportar error">${a.error||''}</textarea><button class="btn ghost small" data-info-error="${p.id}">Reportar error</button>`:''}
       </div></div>`}).join(''):'<p class="muted">Sin publicaciones por ahora.</p>'}
-    function hsqAck(id){const p=(state.hsqPublications||[]).find(x=>x.id===id);if(!p)return;p.acks=p.acks||{};if(!p.acks[session.name]||!p.acks[session.name].openedAt){p.acks[session.name]={...(p.acks[session.name]||{}),openedAt:new Date().toLocaleString('es-CO')};const cl=myQuicker().client||'';const coords=(state.users||[]).filter(u=>u.profile==='Coordinador'&&(!u.client||u.client==='Global'||u.client===cl)).map(u=>u.name);state.notifications=state.notifications||[];[p.createdByName,...coords].filter(Boolean).forEach(n=>state.notifications.unshift({id:uid('NT'),to:n,ticketId:null,read:false,at:new Date().toLocaleString('es-CO'),text:`${session.name} abrió "${p.title||p.label}" (${new Date().toLocaleString('es-CO')})`}));save('Marcado como recibido')}renderInfo()}
+    function appAlerts(){const q=myQuicker();const out=[];DOC_DEFS.filter(d=>d.exp).forEach(def=>{const d=q.documents&&q.documents[def.k];if(d&&d.expiry){const dd=daysTo(d.expiry);if(dd<0)out.push({icon:'ti-alert-triangle',cls:'bad',text:`${def.k} VENCIDO (${d.expiry})`});else if(dd<=30)out.push({icon:'ti-clock',cls:'warn',text:`${def.k} vence en ${dd} día(s)`})}});infoForMe().forEach(p=>{const a=(p.acks&&p.acks[session.name])||{};if(!a.openedAt)out.push({icon:'ti-news',cls:'ok',text:`Nueva publicación: ${p.title||p.label}`})});return out}
+    function renderBell(){const a=appAlerts();const dot=document.getElementById('bellDot');if(dot)dot.style.display=a.length?'block':'none';const list=document.getElementById('notifList');if(list)list.innerHTML=a.length?a.map(x=>`<div class="alert ${x.cls}"><i class="ti ${x.icon}"></i> ${x.text}</div>`).join(''):'<p class="muted">Sin alertas.</p>'}
+    function hsqAck(id,silent){const p=(state.hsqPublications||[]).find(x=>x.id===id);if(!p)return false;p.acks=p.acks||{};if(!p.acks[session.name]||!p.acks[session.name].openedAt){p.acks[session.name]={...(p.acks[session.name]||{}),openedAt:new Date().toLocaleString('es-CO')};const cl=myQuicker().client||'';const coords=(state.users||[]).filter(u=>u.profile==='Coordinador'&&(!u.client||u.client==='Global'||u.client===cl)).map(u=>u.name);state.notifications=state.notifications||[];[p.createdByName,...coords].filter(Boolean).forEach(n=>state.notifications.unshift({id:uid('NT'),to:n,ticketId:null,read:false,at:new Date().toLocaleString('es-CO'),text:`${session.name} abrió "${p.title||p.label}" (${new Date().toLocaleString('es-CO')})`}));save(silent?'':'Marcado como recibido');return true}return false}
     function overall(t){const ns=(t.assignees||[]);if(!ns.length)return 'Pendiente';const f=ns.filter(n=>(t.gestion?.[n]?.status)==='Finalizado').length;return f===ns.length?'Finalizado':f>0?'En proceso':'Pendiente'}
 
     function renderHome(camera=true){document.getElementById('login').classList.add('hidden');document.getElementById('home').classList.remove('hidden');document.getElementById('drawer').classList.remove('hidden');document.getElementById('hello').textContent=`Hola, ${session.name.split(' ')[0]}`;document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
@@ -263,7 +268,7 @@
       const lunchOn=client.lunch==='Si';document.getElementById('lunchBlock').classList.toggle('hidden',!lunchOn);
       document.getElementById('scheduleList').innerHTML=list.length?list.map(d=>`<div class="row"><span>${d.date}<br><small class="muted">${d.client} · ${d.point||''}</small></span><strong>${d.status||'Creado'}</strong></div>`).join(''):'<p class="muted">Sin turnos asignados.</p>';
       const plateEl=document.getElementById('plateInput');if(plateEl)plateEl.value=q.plate||'';
-      renderTimers();renderMyState();renderTurnHistory();renderDocs(q);renderTickets();renderInfo();renderCarnet(q);setTimeout(initMap,0)}
+      renderTimers();renderMyState();renderTurnHistory();renderDocs(q);renderTickets();renderInfo();renderCarnet(q);renderBell();setTimeout(initMap,0)}
 
     function renderMyState(){const el=document.getElementById('myState');if(!el)return;let st='Fuera de turno';if(current){if(current.realStart&&!current.realEnd){st=current.lunchStart&&!current.lunchEnd?'En almuerzo':'En turno'}else if(current.realEnd){st='Turno finalizado'}else{const tol=Number(state.prefs?.ingressGraceMinutes||30);const ps=current.plannedStart;if(ps){const[h,m]=ps.split(':').map(Number);const now=new Date();const plan=new Date();plan.setHours(h,m+tol,0,0);if(now>plan)st='Retraso'}}}el.textContent=st}
     function renderTurnHistory(){const box=document.getElementById('turnHistory');if(!box)return;const evs=(state.evidences||[]).filter(e=>e.quicker===session.name).slice(0,15);box.innerHTML=evs.length?evs.map(e=>`<div class="row"><span>${e.stage||'Registro'}<br><small class="muted">${e.time||''}</small></span><strong style="font-size:11px;color:var(--muted);max-width:140px;text-align:right">${(e.address||'').slice(0,40)}</strong></div>`).join(''):'<p class="muted">Sin registros aún.</p>'}
@@ -353,6 +358,7 @@
     function setDrawer(open){document.getElementById('drawer').classList.toggle('open',open);document.getElementById('drawerBackdrop').classList.toggle('open',open)}
     document.getElementById('hambBtn').onclick=()=>setDrawer(true);
     document.getElementById('drawerBackdrop').onclick=()=>setDrawer(false);
+    document.getElementById('bellBtn').onclick=()=>{document.getElementById('notifPanel').classList.toggle('hidden');renderBell()};
     // TABS
     document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b===btn));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(`screen-${btn.dataset.tab}`).classList.add('on');setDrawer(false);if(btn.dataset.tab==='mapa')setTimeout(initMap,0);if(btn.dataset.tab==='docs')setTimeout(genQRImages,50);if(btn.dataset.tab==='info')renderInfo()});
     document.getElementById('refreshGps').onclick=()=>locate(gps=>{toast(gps?'GPS actualizado':'GPS no disponible');initMap()});
@@ -365,8 +371,8 @@
       const zone=kmlLatLngs();if(zone.length>2){L.polygon(zone,{color:'#F5C518',weight:2,dashArray:'7 5',fillColor:'#F5C518',fillOpacity:.18}).addTo(map);map.fitBounds([[ptLat,ptLng],...zone,...(lastGps?[here]:[])],{padding:[24,24],maxZoom:15});document.getElementById('zoneText').textContent=`Zona: ${state.prefs.kmlName||'cargada'} · Punto: ${pt.name||current?.point||''}`}else{document.getElementById('zoneText').textContent=`Punto: ${pt.name||current?.point||''} · ${pt.address||''}`}}
     document.getElementById('logout').onclick=()=>{if(watchId)navigator.geolocation.clearWatch(watchId);location.reload()};
     document.addEventListener('click',e=>{
-      const open=e.target.closest('[data-info-open]');if(open){const id=open.dataset.infoOpen;const b=document.getElementById('info-body-'+id);if(b){const show=b.style.display==='none';b.style.display=show?'block':'none';if(show){hsqAck(id);document.querySelectorAll('[data-info-media]:not([data-done])').forEach(img=>{img.dataset.done='1';try{firebase.firestore().collection('quick_media').doc(img.dataset.infoMedia).get().then(s=>{if(s.data()&&s.data().data)img.src=s.data().data}).catch(()=>{})}catch(x){}})}}return}
-      const ack=e.target.closest('[data-info-ack]');if(ack){hsqAck(ack.dataset.infoAck);return}
+      const open=e.target.closest('[data-info-open]');if(open){const id=open.dataset.infoOpen;const b=document.getElementById('info-body-'+id);if(b){const show=b.style.display==='none';b.style.display=show?'block':'none';if(show){const pill=open.querySelector('.pill');if(hsqAck(id,true)&&pill){pill.textContent='Visto';pill.classList.add('ok')}document.querySelectorAll('[data-info-media]:not([data-done])').forEach(img=>{img.dataset.done='1';try{firebase.firestore().collection('quick_media').doc(img.dataset.infoMedia).get().then(s=>{if(s.data()&&s.data().data)img.src=s.data().data}).catch(()=>{})}catch(x){}})}}return}
+      const ack=e.target.closest('[data-info-ack]');if(ack){hsqAck(ack.dataset.infoAck);renderInfo();return}
       const cm=e.target.closest('[data-info-comment]');if(cm){const id=cm.dataset.infoComment;const p=(state.hsqPublications||[]).find(x=>x.id===id);const v=document.querySelector(`[data-info-comment-input="${id}"]`)?.value||'';if(p){p.acks=p.acks||{};p.acks[session.name]={...(p.acks[session.name]||{}),comment:v};save('Comentario guardado')}return}
       const er=e.target.closest('[data-info-error]');if(er){const id=er.dataset.infoError;const p=(state.hsqPublications||[]).find(x=>x.id===id);const v=document.querySelector(`[data-info-error-input="${id}"]`)?.value||'';if(p){p.acks=p.acks||{};p.acks[session.name]={...(p.acks[session.name]||{}),error:v};save('Error reportado')}return}
     });
