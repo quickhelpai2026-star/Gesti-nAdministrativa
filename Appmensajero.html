@@ -130,10 +130,6 @@
       <!-- COMUNICADOS / CAPACITACIONES -->
       <section class="screen" id="screen-info">
         <div class="card"><h3 style="margin:0 0 8px"><i class="ti ti-news"></i> Comunicados y capacitaciones</h3><div id="infoList"><p class="muted">Sin publicaciones por ahora.</p></div></div>
-        <div class="card"><h3 style="margin:0 0 8px"><i class="ti ti-message"></i> Dejar un mensaje</h3><p class="muted">Cortes de nómina, sugerencias de la gestión, etc. Llega a tu coordinador.</p>
-          <textarea id="msgText" placeholder="Escribe tu mensaje"></textarea>
-          <button class="btn" id="msgBtn" type="button"><i class="ti ti-send"></i> Enviar mensaje</button>
-        </div>
       </section>
 
       <!-- SOLICITUDES / PQR -->
@@ -368,7 +364,6 @@
       if(lastGps)L.circleMarker(here,{radius:9,color:'#22C55E',fillColor:'#22C55E',fillOpacity:.9}).addTo(map).bindPopup(`<strong>Tú</strong><br>${session.name}`);
       const zone=kmlLatLngs();if(zone.length>2){L.polygon(zone,{color:'#F5C518',weight:2,dashArray:'7 5',fillColor:'#F5C518',fillOpacity:.18}).addTo(map);map.fitBounds([[ptLat,ptLng],...zone,...(lastGps?[here]:[])],{padding:[24,24],maxZoom:15});document.getElementById('zoneText').textContent=`Zona: ${state.prefs.kmlName||'cargada'} · Punto: ${pt.name||current?.point||''}`}else{document.getElementById('zoneText').textContent=`Punto: ${pt.name||current?.point||''} · ${pt.address||''}`}}
     document.getElementById('logout').onclick=()=>{if(watchId)navigator.geolocation.clearWatch(watchId);location.reload()};
-    document.getElementById('msgBtn').onclick=()=>{const t=document.getElementById('msgText').value.trim();if(!t){toast('Escribe un mensaje');return}state.messengerMessages=state.messengerMessages||[];state.messengerMessages.unshift({id:uid('MSG'),from:session.name,client:myQuicker().client||'',text:t,at:new Date().toLocaleString('es-CO')});const cl=myQuicker().client||'';const coords=(state.users||[]).filter(u=>u.profile==='Coordinador'&&(!u.client||u.client==='Global'||u.client===cl)).map(u=>u.name);state.notifications=state.notifications||[];coords.forEach(n=>state.notifications.unshift({id:uid('NT'),to:n,ticketId:null,read:false,at:new Date().toLocaleString('es-CO'),text:`Mensaje de ${session.name}: ${t.slice(0,60)}`}));document.getElementById('msgText').value='';save('Mensaje enviado')};
     document.addEventListener('click',e=>{
       const open=e.target.closest('[data-info-open]');if(open){const id=open.dataset.infoOpen;const b=document.getElementById('info-body-'+id);if(b){const show=b.style.display==='none';b.style.display=show?'block':'none';if(show){hsqAck(id);document.querySelectorAll('[data-info-media]:not([data-done])').forEach(img=>{img.dataset.done='1';try{firebase.firestore().collection('quick_media').doc(img.dataset.infoMedia).get().then(s=>{if(s.data()&&s.data().data)img.src=s.data().data}).catch(()=>{})}catch(x){}})}}return}
       const ack=e.target.closest('[data-info-ack]');if(ack){hsqAck(ack.dataset.infoAck);return}

@@ -2009,6 +2009,12 @@ function toggleMode(forceDark) {
 (() => {
   const STORAGE_KEY = 'quick_lastmile_mvp_state_v1';
   const FIREBASE_SETTINGS = window.QUICK_FIREBASE_CONFIG || {};
+  const DEFAULT_HSQ_TYPES = [
+    { key: 'capacitacion', label: 'Capacitación', icon: 'ti-school', fields: ['cover', 'body', 'link', 'projects'], evidence: true, comment: true, error: true, enabled: true },
+    { key: 'comparendo', label: 'Alerta de comparendo', icon: 'ti-traffic-cone', fields: ['projects', 'quicker', 'body', 'valor', 'infraction', 'dateImposicion', 'urgency', 'doc'], evidence: true, comment: true, error: false, enabled: true },
+    { key: 'transito', label: 'Alerta de tránsito', icon: 'ti-alert-triangle', fields: ['cover', 'body', 'link', 'projects', 'urgency'], evidence: false, comment: true, error: false, enabled: true },
+    { key: 'comunicado', label: 'Comunicado', icon: 'ti-speakerphone', fields: ['cover', 'body', 'projects'], evidence: false, comment: false, error: false, enabled: true }
+  ];
   let activeModule = 'mallas';
   let cloudDb = null;
   let cloudStorage = null;
@@ -2108,13 +2114,6 @@ function toggleMode(forceDark) {
       return normalizeState(JSON.parse(JSON.stringify(seed)));
     }
   }
-
-  const DEFAULT_HSQ_TYPES = [
-    { key: 'capacitacion', label: 'Capacitación', icon: 'ti-school', fields: ['cover', 'body', 'link', 'projects'], evidence: true, comment: true, error: true, enabled: true },
-    { key: 'comparendo', label: 'Alerta de comparendo', icon: 'ti-traffic-cone', fields: ['projects', 'quicker', 'body', 'valor', 'infraction', 'dateImposicion', 'urgency', 'doc'], evidence: true, comment: true, error: false, enabled: true },
-    { key: 'transito', label: 'Alerta de tránsito', icon: 'ti-alert-triangle', fields: ['cover', 'body', 'link', 'projects', 'urgency'], evidence: false, comment: true, error: false, enabled: true },
-    { key: 'comunicado', label: 'Comunicado', icon: 'ti-speakerphone', fields: ['cover', 'body', 'projects'], evidence: false, comment: false, error: false, enabled: true }
-  ];
 
   function normalizeState(value) {
     const next = { ...JSON.parse(JSON.stringify(seed)), ...(value || {}) };
