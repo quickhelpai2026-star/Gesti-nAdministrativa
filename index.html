@@ -14,6 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 <script src="quick_firebase_config.js"></script>
 <style>
   /* ───── RESET & BASE ───── */
@@ -1305,27 +1306,42 @@
   .ticket-req-pick { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
   .ticket-req-toggle { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-1); cursor:pointer; }
   .ticket-req-toggle input { width:16px; height:16px; accent-color:var(--q); }
-  /* Carnet */
-  .carnet-wrap { display:flex; justify-content:center; padding:8px 0; }
-  .carnet { width:320px; border-radius:20px; overflow:hidden; background:linear-gradient(160deg,#1a1a2e,#0f0f1a); border:1px solid rgba(245,197,24,.4); box-shadow:0 18px 50px rgba(0,0,0,.45); color:#fff; }
-  .light-mode .carnet { background:linear-gradient(160deg,#1f2937,#111827); }
-  .carnet-top { display:flex; align-items:center; gap:10px; padding:14px 16px; background:linear-gradient(135deg,#F5C518,#C9A200); color:#111; }
-  .carnet-logo { width:38px; height:38px; border-radius:11px; background:#111; color:#F5C518; display:grid; place-items:center; font-weight:900; font-size:20px; }
-  .carnet-brand strong { display:block; font-size:18px; letter-spacing:1px; line-height:1; }
-  .carnet-brand span { font-size:11px; opacity:.8; }
-  .carnet-photo { width:120px; height:120px; margin:18px auto 10px; border-radius:50%; overflow:hidden; border:3px solid #F5C518; background:#0b0b14; }
-  .carnet-photo img { width:100%; height:100%; object-fit:cover; }
-  .carnet-initials { width:100%; height:100%; display:grid; place-items:center; font-size:40px; font-weight:800; color:#F5C518; }
-  .carnet-name { text-align:center; font-size:20px; font-weight:800; padding:0 16px; }
-  .carnet-role { text-align:center; font-size:12px; color:#F5C518; margin:3px 0 14px; padding:0 16px; }
-  .carnet-rows { padding:0 18px 8px; display:flex; flex-direction:column; gap:8px; }
-  .carnet-rows > div { display:flex; justify-content:space-between; gap:10px; border-bottom:1px solid rgba(255,255,255,.1); padding-bottom:6px; font-size:13px; }
-  .carnet-rows span { color:rgba(255,255,255,.55); }
-  .carnet-rows strong { color:#fff; text-align:right; }
-  .carnet-moto { padding:10px 18px; }
-  .carnet-moto span { display:block; font-size:11px; color:rgba(255,255,255,.55); margin-bottom:6px; }
-  .carnet-moto img { width:100%; max-height:120px; object-fit:cover; border-radius:12px; }
-  .carnet-foot { text-align:center; font-size:10px; color:rgba(255,255,255,.45); padding:12px; border-top:1px solid rgba(255,255,255,.08); margin-top:6px; }
+  /* Carnet profesional (amarillo/blanco/negro) */
+  .carnet-wrap { display:flex; justify-content:center; padding:10px 0; }
+  .qc { width:340px; background:#fff; color:#111; border-radius:18px; overflow:hidden; position:relative; box-shadow:0 18px 50px rgba(0,0,0,.4); border:1px solid #e5e7eb; }
+  .qc-head { display:flex; align-items:center; gap:10px; padding:12px 14px; background:#111; color:#fff; }
+  .qc-logo { width:38px; height:38px; border-radius:9px; object-fit:cover; background:#fff; }
+  .qc-co { font-size:14px; font-weight:800; line-height:1.1; letter-spacing:.5px; flex:1; }
+  .qc-co span { display:block; font-size:10px; font-weight:600; color:#F5C518; letter-spacing:.4px; }
+  .qc-qrbtn { width:34px; height:34px; border-radius:9px; border:0; background:#F5C518; color:#111; font-size:18px; cursor:pointer; display:grid; place-items:center; }
+  .qc-body { display:flex; gap:14px; padding:16px 14px; align-items:center; }
+  .qc-photo { width:92px; height:92px; border-radius:12px; overflow:hidden; flex:none; border:3px solid #F5C518; background:#f3f4f6; }
+  .qc-photo img { width:100%; height:100%; object-fit:cover; }
+  .qc-initials { width:100%; height:100%; display:grid; place-items:center; font-size:30px; font-weight:800; color:#111; background:#F5C518; }
+  .qc-info { flex:1; min-width:0; }
+  .qc-name { font-size:17px; font-weight:900; line-height:1.15; color:#111; }
+  .qc-cargo { font-size:11px; font-weight:700; color:#a16207; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+  .qc-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; }
+  .qc-grid span { display:block; font-size:9px; color:#6b7280; text-transform:uppercase; letter-spacing:.4px; }
+  .qc-grid b { font-size:12px; color:#111; }
+  .qc-foot { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#F5C518; }
+  .qc-estado { font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; padding:3px 12px; border-radius:999px; background:#111; color:#22c55e; }
+  .qc-estado.off { color:#fca5a5; }
+  .qc-emp { font-size:11px; font-weight:800; color:#111; }
+  .qc-qr-overlay { position:absolute; inset:0; background:rgba(17,17,17,.96); display:none; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:20px; }
+  .qc-qr-overlay.show { display:flex; }
+  .qc-qr-overlay img { width:200px; height:200px; background:#fff; border-radius:12px; padding:8px; }
+  .qc-qr-overlay span { color:#fff; font-size:12px; text-align:center; }
+  /* Documentación */
+  .qdocs-layout { display:grid; grid-template-columns:360px 1fr; gap:18px; }
+  @media (max-width:820px){ .qdocs-layout { grid-template-columns:1fr; } }
+  .qdoc-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:560px){ .qdoc-grid { grid-template-columns:1fr; } }
+  .qdoc-card { border:1px solid var(--border); border-radius:14px; padding:12px; background:rgba(255,255,255,.03); }
+  .light-mode .qdoc-card { background:#f9fafb; }
+  .qdoc-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
+  .qdoc-view { margin-top:8px; }
+  .qdoc-img { width:100%; max-height:150px; object-fit:cover; border-radius:10px; }
 </style>
 </head>
 <body>
@@ -1707,30 +1723,7 @@
       </div>
 
       <!-- ════════════════════ QUICKERS ════════════════════ -->
-      <div class="page" id="page-quickers">
-        <div class="kpi-row">
-          <div class="kpi-card q-accent"><div class="kpi-label">Quickers activos</div><div class="kpi-value yellow">187</div><div class="kpi-delta up"><i class="ti ti-users"></i> De 212 registrados</div></div>
-          <div class="kpi-card grad-orange"><div class="kpi-label">Con doc vencido</div><div class="kpi-value">6</div><div class="kpi-delta down"><i class="ti ti-file-x"></i> Cédula, SOAT u otros</div></div>
-          <div class="kpi-card grad-purple"><div class="kpi-label">En proceso de vinc.</div><div class="kpi-value">12</div><div class="kpi-delta"><i class="ti ti-user-plus"></i> Docs pendientes</div></div>
-          <div class="kpi-card grad-blue"><div class="kpi-label">Suspendidos</div><div class="kpi-value">13</div><div class="kpi-delta down"><i class="ti ti-user-off"></i> Por vencimiento o caso</div></div>
-        </div>
-        <div class="card">
-          <div class="card-head">
-            <div><div class="card-title">Directorio de Quickers</div><div class="card-sub">Mensajería · Distribución · Outsourcing</div></div>
-            <button class="btn-q"><i class="ti ti-user-plus"></i> Registrar Quicker</button>
-          </div>
-          <table class="tbl">
-            <thead><tr><th>ID Quicker</th><th>Nombre</th><th>Operación</th><th>Coordinador</th><th>Documentos</th><th>Estado</th></tr></thead>
-            <tbody>
-              <tr><td class="link">CO8821</td><td>Carlos Ospina</td><td>Mensajería</td><td>Laura Ríos</td><td><span class="b b-green">Al día</span></td><td><span class="b b-green">Activo</span></td></tr>
-              <tr><td class="link">JL2049</td><td>Jorge López</td><td>Distribución</td><td>Miguel Torres</td><td><span class="b b-yellow">1 por vencer</span></td><td><span class="b b-green">Activo</span></td></tr>
-              <tr><td class="link">AR3312</td><td>Adriana Ruiz</td><td>Outsourcing</td><td>Paola Castro</td><td><span class="b b-green">Al día</span></td><td><span class="b b-green">Activo</span></td></tr>
-              <tr><td class="link">MR7743</td><td>Mario Restrepo</td><td>Mensajería</td><td>Carlos Vera</td><td><span class="b b-red">Cédula vencida</span></td><td><span class="b b-yellow">Alerta doc.</span></td></tr>
-              <tr><td class="link">PE5541</td><td>Pedro Estrada</td><td>Distribución</td><td>Laura Ríos</td><td><span class="b b-red">SOAT vencido</span></td><td><span class="b b-red">Suspendido</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div class="page" id="page-quickers"></div>
 
       <!-- ════════════════════ MATRIZ ACTIVOS ════════════════════ -->
       <div class="page" id="page-matriz">
@@ -2175,6 +2168,8 @@ function toggleMode(forceDark) {
     next.prefs.ticketFields = Array.isArray(next.prefs.ticketFields) ? next.prefs.ticketFields : [];
     // Tickets: requisitos de gestión personalizados (además de Comentario y Evidencia)
     next.prefs.ticketRequirementOptions = Array.isArray(next.prefs.ticketRequirementOptions) ? next.prefs.ticketRequirementOptions : [];
+    // Tipos de Solicitud/PQR que ve el mensajero (editable desde Configuración)
+    next.prefs.pqrTypes = Array.isArray(next.prefs.pqrTypes) && next.prefs.pqrTypes.length ? next.prefs.pqrTypes : ['Permiso', 'Queja', 'PQR', 'Solicitud', 'Novedad', 'Incapacidad'];
     // Borrado único de tickets para iniciar desde 0 con el nuevo sistema de gestión
     if (!next.prefs.ticketsClearedV2) { next.tickets = []; next.notifications = []; next.prefs.ticketsClearedV2 = true; }
     const requiredMallaCols = seed.prefs.mallaColumns;
@@ -2743,40 +2738,123 @@ function toggleMode(forceDark) {
   }
 
   // Carnet tipo tarjeta de presentación del Quicker
+  function carnetValidationText(q) {
+    return `QUICK HELP S.A.S. — Validación de colaborador\nNombre: ${q.name || ''}\nCédula: ${q.cedula || ''}\nProyecto: ${q.client || ''}\nPlaca: ${q.plate || ''}\nEstado: ${q.status || 'Activo'}`;
+  }
+  function buildCarnet(q) {
+    const docs = q.documents || {};
+    const photoRef = docs['Foto perfil'] || (q.avatarUrl ? { dataUrl: q.avatarUrl } : null);
+    const photoHTML = hasMedia(photoRef) ? `<img ${mediaAttr(photoRef)} alt="${escapeHTML(q.name)}">` : `<div class="qc-initials">${initials(q.name)}</div>`;
+    const active = (q.status || 'Activo') === 'Activo';
+    const city = q.city || pointInfo(q.client, q.point).city || '';
+    return `<div class="qc">
+      <div class="qc-head">
+        <img class="qc-logo" src="${QUICK_LOGO}" alt="Quick">
+        <div class="qc-co">QUICK HELP S.A.S.<span>Carnet de colaborador</span></div>
+        <button class="qc-qrbtn" type="button" data-carnet-qr title="Validar"><i class="ti ti-qrcode"></i></button>
+      </div>
+      <div class="qc-body">
+        <div class="qc-photo">${photoHTML}</div>
+        <div class="qc-info">
+          <div class="qc-name">${escapeHTML(q.name || '')}</div>
+          <div class="qc-cargo">${escapeHTML(q.cargo || 'Quicker mensajero')}</div>
+          <div class="qc-grid">
+            <div><span>Cédula</span><b>${escapeHTML(q.cedula || '—')}</b></div>
+            <div><span>Placa</span><b>${escapeHTML(q.plate || '—')}</b></div>
+            <div><span>Proyecto</span><b>${escapeHTML(q.client || '—')}</b></div>
+            <div><span>Ciudad</span><b>${escapeHTML(city || '—')}</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="qc-foot"><span class="qc-estado ${active ? 'on' : 'off'}">${escapeHTML(q.status || 'Activo')}</span><span class="qc-emp">Quick Help S.A.S.</span></div>
+      <div class="qc-qr-overlay" data-carnet-qr-overlay>
+        <img class="qc-qr-img" data-qr-text="${escapeHTML(carnetValidationText(q))}" alt="QR validación">
+        <span>Escanea para validar al colaborador</span>
+        <button class="dev-btn" type="button" data-carnet-qr-close>Cerrar</button>
+      </div>
+    </div>`;
+  }
+  function genQRImages() {
+    document.querySelectorAll('img[data-qr-text]:not([data-qrdone])').forEach(img => {
+      img.dataset.qrdone = '1';
+      const text = img.dataset.qrText;
+      if (window.QRCode && QRCode.toDataURL) {
+        QRCode.toDataURL(text, { width: 240, margin: 1, color: { dark: '#111111', light: '#ffffff' } }, (e, url) => { if (!e) img.src = url; });
+      } else {
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(text)}`;
+      }
+    });
+  }
   function openQuickerCarnet(id) {
     const q = state.quickers.find(x => x.id === id);
     if (!q) return;
-    const docs = q.documents || {};
-    const photoRef = docs['Foto perfil'] || (q.avatarUrl ? { dataUrl: q.avatarUrl } : null);
-    const motoRef = docs['Foto moto'];
-    const photoHTML = hasMedia(photoRef) ? `<img ${mediaAttr(photoRef)} alt="${escapeHTML(q.name)}">` : `<div class="carnet-initials">${initials(q.name)}</div>`;
-    const moto = hasMedia(motoRef);
     const form = document.getElementById('modal-form');
-    document.getElementById('modal-title').textContent = 'Carnet del Quicker';
-    document.getElementById('modal-subtitle').textContent = 'Tarjeta de presentación';
-    form.innerHTML = `<div class="carnet-wrap">
-      <div class="carnet">
-        <div class="carnet-top"><div class="carnet-logo">Q</div><div class="carnet-brand"><strong>QUICK</strong><span>Last Mile</span></div></div>
-        <div class="carnet-photo">${photoHTML}</div>
-        <div class="carnet-name">${escapeHTML(q.name)}</div>
-        <div class="carnet-role">${escapeHTML(q.client || 'Operación sin asignar')}${q.point ? ' · ' + escapeHTML(q.point) : ''}</div>
-        <div class="carnet-rows">
-          <div><span>Cédula</span><strong>${escapeHTML(q.cedula || '—')}</strong></div>
-          <div><span>Teléfono</span><strong>${escapeHTML(q.phone || '—')}</strong></div>
-          <div><span>Operación</span><strong>${escapeHTML(q.client || '—')}</strong></div>
-          <div><span>Estado</span><strong>${escapeHTML(q.status || 'Activo')}</strong></div>
-        </div>
-        ${moto ? `<div class="carnet-moto"><span>Vehículo</span><img ${mediaAttr(motoRef)} alt="Moto"></div>` : ''}
-        <div class="carnet-foot">Quick Last Mile · Documento interno</div>
-      </div>
-    </div>
-    <div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cerrar</button></div>`;
+    document.getElementById('modal-title').textContent = 'Carnet del colaborador';
+    document.getElementById('modal-subtitle').textContent = 'Tarjeta de identificación Quick';
+    form.innerHTML = `<div class="carnet-wrap">${buildCarnet(q)}</div>
+      <div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cerrar</button></div>`;
     document.getElementById('cancel-form').onclick = closeModal;
     const modal = document.getElementById('app-modal');
     modal.classList.remove('wide');
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     loadMediaImages();
+    genQRImages();
+  }
+
+  function openQuickerDocs(id) {
+    const q = state.quickers.find(x => x.id === id);
+    if (!q) return;
+    const docs = q.documents || {};
+    const cards = QUICKER_DOC_DEFS.map(def => {
+      const d = docs[def.k] || {};
+      const has = hasMedia(d);
+      const dd = def.exp && d.expiry ? daysToExpiry(d.expiry) : null;
+      const estado = !def.exp ? (has ? '<span class="b b-green">Cargado</span>' : '<span class="b b-yellow">Pendiente</span>')
+        : !d.expiry ? '<span class="b b-yellow">Sin fecha</span>'
+        : dd < 0 ? '<span class="b b-red">Vencido</span>'
+        : dd <= 30 ? `<span class="b b-yellow">Vence en ${dd}d</span>` : '<span class="b b-green">Vigente</span>';
+      const view = has ? ((d.fileType || '').startsWith('image/') || /^data:image|^https?.*(jpg|jpeg|png)/i.test(d.url || d.dataUrl || '') || !d.fileType
+          ? `<img class="qdoc-img" ${mediaAttr(d)} alt="${escapeHTML(def.k)}">`
+          : `<a class="dev-btn" ${d.dataUrl || d.url ? `href="${d.dataUrl || d.url}"` : `data-media-id="${escapeHTML(d.mediaId || '')}"`} target="_blank" download="${escapeHTML(d.fileName || def.k)}"><i class="ti ti-download"></i> Ver archivo</a>`)
+        : '<div class="fp-sub">Sin archivo adjunto</div>';
+      return `<div class="qdoc-card"><div class="qdoc-head"><strong>${escapeHTML(def.k)}</strong>${estado}</div>${def.exp ? `<div class="fp-sub">Vence: ${escapeHTML(d.expiry || '—')}</div>` : ''}${def.k === 'Foto moto' && q.plate ? `<div class="fp-sub">Placa: ${escapeHTML(q.plate)}</div>` : ''}<div class="qdoc-view">${view}</div></div>`;
+    }).join('');
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = `Documentación · ${q.name || ''}`;
+    document.getElementById('modal-subtitle').textContent = 'Valida los documentos del mensajero y su vigencia.';
+    form.innerHTML = `<div class="qdocs-layout">
+      <div class="qdocs-left">${buildCarnet(q)}</div>
+      <div class="qdocs-right"><div class="qdoc-grid">${cards}</div></div>
+    </div>
+    <div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cerrar</button></div>`;
+    document.getElementById('cancel-form').onclick = closeModal;
+    const modal = document.getElementById('app-modal');
+    modal.classList.add('wide', 'open');
+    modal.setAttribute('aria-hidden', 'false');
+    loadMediaImages();
+    genQRImages();
+  }
+
+  // QR para compartir la app del mensajero
+  function openMessengerQR() {
+    const base = window.location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '');
+    const url = base + 'Appmensajero.html';
+    const form = document.getElementById('modal-form');
+    document.getElementById('modal-title').textContent = 'App del mensajero';
+    document.getElementById('modal-subtitle').textContent = 'Escanea o comparte el enlace para abrir la app.';
+    form.innerHTML = `<div style="text-align:center">
+      <div style="background:#fff;display:inline-block;padding:14px;border-radius:16px;margin-bottom:12px"><img class="qc-qr-img" style="width:240px;height:240px;display:block" data-qr-text="${escapeHTML(url)}" alt="QR app mensajero"></div>
+      <div class="form-field"><label>Enlace</label><input id="messenger-link" readonly value="${escapeHTML(url)}" style="${'width:100%;min-height:40px;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--text-1);padding:0 10px;font:inherit'}"></div>
+    </div>
+    <div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cerrar</button><a class="dev-btn" id="qr-download" download="quick-app-mensajero.png"><i class="ti ti-download"></i> Descargar QR</a><button class="dev-btn primary" type="button" data-copy-link="${escapeHTML(url)}"><i class="ti ti-copy"></i> Copiar enlace</button></div>`;
+    document.getElementById('cancel-form').onclick = closeModal;
+    const modal = document.getElementById('app-modal');
+    modal.classList.remove('wide');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    genQRImages();
+    setTimeout(() => { const img = form.querySelector('[data-qr-text]'); const a = document.getElementById('qr-download'); if (img && a) a.href = img.src; }, 600);
   }
 
   function customCell(d, col) {
@@ -3608,19 +3686,79 @@ function toggleMode(forceDark) {
     );
   }
 
+  // ════════════════════ QUICKERS (hoja base de mensajeros) ════════════════════
+  const QUICK_LOGO = 'https://i.ibb.co/KjmjjvNZ/Captura-de-pantalla-2025-09-15-161315.jpg';
+  const QUICKER_DOC_DEFS = [
+    { k: 'Foto perfil', exp: false }, { k: 'Foto moto', exp: false },
+    { k: 'SOAT', exp: true }, { k: 'Tecnomecánica', exp: true }, { k: 'Licencia de conducción', exp: true }, { k: 'Cédula', exp: false }
+  ];
+  const quickerFilters = { estado: 'todos', operacion: 'todos' };
+  function nextQuickerId() {
+    const nums = (state.quickers || []).map(q => { const m = String(q.id || '').match(/(\d+)\s*$/); return m ? Number(m[1]) : 0; });
+    return `Q-${String((nums.length ? Math.max(...nums) : 0) + 1).padStart(3, '0')}`;
+  }
+  function daysToExpiry(date) { if (!date) return null; return Math.ceil((new Date(date) - new Date()) / 86400000); }
+  function quickerDocState(q) {
+    const docs = q.documents || {};
+    let venc = 0, prox = 0;
+    QUICKER_DOC_DEFS.filter(d => d.exp).forEach(d => {
+      const e = docs[d.k]?.expiry; if (!e) return;
+      const dd = daysToExpiry(e); if (dd < 0) venc++; else if (dd <= 30) prox++;
+    });
+    if (venc) return { label: `${venc} vencido${venc > 1 ? 's' : ''}`, cls: 'b-red' };
+    if (prox) return { label: `${prox} por vencer`, cls: 'b-yellow' };
+    return { label: 'Al día', cls: 'b-green' };
+  }
+  function quickerStatusBadge(s) {
+    const cls = { 'Activo': 'b-green', 'Inactivo': 'b-blue', 'Suspendido': 'b-red', 'Bloqueado': 'b-red' }[s] || 'b-yellow';
+    return `<span class="b ${cls}">${escapeHTML(s || 'Activo')}</span>`;
+  }
+
   function renderQuickers() {
-    const rows = scopedItems(state.quickers, q => q).map(q => {
-      const expired = q.docExpires && new Date(q.docExpires) < new Date('2026-06-17T00:00:00');
+    const all = scopedItems(state.quickers, q => q);
+    const isAdmin = (currentUser().profile || 'Administrador') === 'Administrador' || !currentUser().profile;
+    const ops = [...new Set(all.map(q => q.client).filter(Boolean))];
+
+    // KPIs funcionales (etiquetas al inicio)
+    const kpi = {
+      activos: all.filter(q => (q.status || 'Activo') === 'Activo').length,
+      docVenc: all.filter(q => quickerDocState(q).cls === 'b-red').length,
+      porVencer: all.filter(q => quickerDocState(q).cls === 'b-yellow').length,
+      inactivos: all.filter(q => /inactiv|suspend|bloque/i.test(q.status || '')).length
+    };
+    const kpisHTML = `<div class="kpi-row module-kpi-row" style="margin-bottom:16px">
+      <div class="kpi-card q-accent"><i class="ti ti-users kpi-icon"></i><div class="kpi-label">Activos</div><div class="kpi-value yellow">${kpi.activos}</div><div class="kpi-delta">De ${all.length} registrados</div></div>
+      <div class="kpi-card grad-orange"><i class="ti ti-file-x kpi-icon"></i><div class="kpi-label">Doc. vencido</div><div class="kpi-value">${kpi.docVenc}</div><div class="kpi-delta down">Requiere acción</div></div>
+      <div class="kpi-card grad-purple"><i class="ti ti-clock-exclamation kpi-icon"></i><div class="kpi-label">Por vencer</div><div class="kpi-value">${kpi.porVencer}</div><div class="kpi-delta">Próximos 30 días</div></div>
+      <div class="kpi-card grad-teal"><i class="ti ti-user-off kpi-icon"></i><div class="kpi-label">Inactivos</div><div class="kpi-value">${kpi.inactivos}</div><div class="kpi-delta">Suspendidos / inactivos</div></div>
+    </div>`;
+
+    const inS = 'min-height:38px;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--text-1);padding:0 10px;font:inherit';
+    const sel = (v, c) => v === c ? 'selected' : '';
+    const filtersHTML = `<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px">
+      <select data-quicker-filter="estado" style="${inS}"><option value="todos">Todo estado</option>${['Activo', 'Inactivo', 'Suspendido'].map(s => `<option ${sel(s, quickerFilters.estado)}>${s}</option>`).join('')}</select>
+      ${isAdmin && ops.length ? `<select data-quicker-filter="operacion" style="${inS}"><option value="todos">Toda operación</option>${ops.map(o => `<option ${sel(o, quickerFilters.operacion)}>${escapeHTML(o)}</option>`).join('')}</select>` : ''}
+      ${(quickerFilters.estado !== 'todos' || quickerFilters.operacion !== 'todos') ? `<button class="dev-btn" data-quicker-clear style="padding:6px 12px;font-size:12px"><i class="ti ti-x"></i> Limpiar</button>` : ''}
+    </div>`;
+
+    const rows = all.filter(q => {
+      const estadoOk = quickerFilters.estado === 'todos' || (q.status || 'Activo') === quickerFilters.estado;
+      const opOk = quickerFilters.operacion === 'todos' || q.client === quickerFilters.operacion;
+      return estadoOk && opOk;
+    }).map(q => {
+      const ds = quickerDocState(q);
+      const active = (q.status || 'Activo') === 'Activo';
       return row([
-        escapeHTML(q.id), escapeHTML(q.name), escapeHTML(q.phone), escapeHTML(q.email), escapeHTML(q.client), escapeHTML(q.point), escapeHTML(q.zone),
-        `${escapeHTML(q.docName)} · ${escapeHTML(q.docExpires)}`,
-        pill(expired ? 'Documento vencido' : q.status),
-        `<div class="row-actions">${iconAction('Carnet', 'quickerCarnet', q.id, 'ti-id-badge-2')}${action('Seguimiento', 'followQuicker', q.id)}${action('Bloquear', 'blockQuicker', q.id)}</div>`
+        escapeHTML(q.id), escapeHTML(q.name), escapeHTML(q.client || '—'), escapeHTML(q.coordinator || q.point || '—'),
+        `<button class="mini-action icon-action" type="button" title="Ver documentación" data-action="quickerDocs" data-id="${q.id}"><span class="b ${ds.cls}">${ds.label}</span> <i class="ti ti-folder"></i></button>`,
+        quickerStatusBadge(q.status),
+        `<div class="row-actions">${iconAction('Carnet', 'quickerCarnet', q.id, 'ti-id-badge-2')}${iconAction('Documentación', 'quickerDocs', q.id, 'ti-files')}${iconAction(active ? 'Inactivar' : 'Activar', active ? 'quickerDeactivate' : 'quickerActivate', q.id, active ? 'ti-user-off' : 'ti-user-check')}${iconAction('Editar', 'editMessenger', q.id, 'ti-pencil')}</div>`
       ]);
     });
-    panel('quickers', 'Maestra funcional de Quickers', 'Usuarios, contacto, cliente/punto, zona KML y alertas de documentos.',
-      `<button class="dev-btn primary" data-open="quicker"><i class="ti ti-user-plus"></i> Nuevo Quicker</button><button class="dev-btn" data-export="quickers">Exportar CSV</button>`,
-      table(['ID', 'Nombre', 'Teléfono', 'Correo', 'Cliente', 'Punto', 'Zona', 'Documento', 'Estado', 'Acciones'], rows)
+
+    panel('quickers', 'Quickers', 'Hoja base de mensajeros: datos, operación, documentación y estado.',
+      `<button class="dev-btn primary" data-open="messengerUser"><i class="ti ti-user-plus"></i> Registrar Quicker</button><button class="dev-btn" data-open-messenger-qr><i class="ti ti-qrcode"></i> Compartir app</button><button class="dev-btn" data-export="quickers"><i class="ti ti-download"></i> Exportar</button>`,
+      `${kpisHTML}${filtersHTML}${rows.length ? table(['ID', 'Nombre', 'Operación', 'Coordinador', 'Documentos', 'Estado', 'Acciones'], rows) : '<div class="dropzone" style="text-align:center"><strong>No hay quickers</strong><span class="fp-sub">Registra un mensajero o ajusta los filtros.</span></div>'}`
     );
   }
 
@@ -4348,6 +4486,7 @@ function toggleMode(forceDark) {
       ...DEFAULT_TICKET_REQS.map(r => `<div class="form-field-card"><div><strong>${escapeHTML(r.label)}</strong><br><span class="fp-sub">Requisito base</span></div><span>Sistema</span><div class="row-actions"></div></div>`),
       ...(state.prefs.ticketRequirementOptions || []).map((r, index) => `<div class="form-field-card"><div><strong>${escapeHTML(r.label)}</strong><br><span class="fp-sub">Personalizado · marcable por el coordinador</span></div><span>Manual</span><div class="row-actions">${iconAction('Eliminar requisito', 'deleteTicketReq', String(index), 'ti-trash')}</div></div>`)
     ].join('');
+    const pqrCards = (state.prefs.pqrTypes || []).map((t, index) => `<div class="form-field-card"><div><strong>${escapeHTML(t)}</strong></div><span>Mensajero</span><div class="row-actions">${iconAction('Eliminar tipo', 'deletePqrType', String(index), 'ti-trash')}</div></div>`).join('');
     const isDarkNow = !document.body.classList.contains('light-mode');
     const aparienciaSection = `<section class="settings-block">
       <div class="settings-block-title">Apariencia</div>
@@ -4390,7 +4529,11 @@ function toggleMode(forceDark) {
         <div class="settings-block-title" style="margin-top:22px">Preguntas adicionales</div>
         <div class="settings-block-desc" style="margin-bottom:14px;color:var(--text-2)">Preguntas o listas extra que aparecen al crear un ticket. Marca cuáles son obligatorias.</div>
         <div class="settings-actions"><button class="dev-btn primary" data-add-ticket-field><i class="ti ti-plus"></i> Agregar pregunta</button></div>
-        <div class="form-builder-list">${ticketFieldCards || '<div class="fp-sub">No hay preguntas adicionales. El ticket usa los campos base (título, tipo, prioridad, descripción, asignación, cliente y vencimiento).</div>'}</div></section>`
+        <div class="form-builder-list">${ticketFieldCards || '<div class="fp-sub">No hay preguntas adicionales. El ticket usa los campos base (título, tipo, prioridad, descripción, asignación, cliente y vencimiento).</div>'}</div>
+        <div class="settings-block-title" style="margin-top:22px">Solicitud / PQR del mensajero</div>
+        <div class="settings-block-desc" style="margin-bottom:14px;color:var(--text-2)">Tipos de solicitud que el mensajero puede elegir en la app (Permiso, Queja, PQR…).</div>
+        <div class="settings-actions"><button class="dev-btn primary" data-add-pqr-type><i class="ti ti-plus"></i> Agregar tipo</button></div>
+        <div class="form-builder-list">${pqrCards || '<div class="fp-sub">Sin tipos configurados.</div>'}</div></section>`
     };
     panel('config', 'Configuración', '', '',
       `<div class="settings-shell">
@@ -5283,6 +5426,9 @@ function toggleMode(forceDark) {
     if (actionName === 'editMessenger') { openMessengerUserForm(id); return; }
     if (actionName === 'viewEvidence') { openEvidenceModal(id); return; }
     if (actionName === 'quickerCarnet') { openQuickerCarnet(id); return; }
+    if (actionName === 'quickerDocs') { openQuickerDocs(id); return; }
+    if (actionName === 'quickerActivate') { const item = find('quickers'); if (item) { item.status = 'Activo'; log('Quicker', 'Activó mensajero', id); saveState('Mensajero activado'); } return; }
+    if (actionName === 'quickerDeactivate') { const item = find('quickers'); if (item) { item.status = 'Inactivo'; log('Quicker', 'Inactivó mensajero', id); saveState('Mensajero inactivado'); } return; }
     if (actionName === 'viewNoveltyCase') { openNoveltyCaseDetail(id); return; }
     if (actionName === 'viewDelay') { openDelayDetail(id); return; }
     if (actionName === 'viewGestionRow') { openGestionRowDetail(id); return; }
@@ -5297,6 +5443,7 @@ function toggleMode(forceDark) {
     if (actionName === 'editTicketField') { openTicketFieldForm(Number(id)); return; }
     if (actionName === 'deleteTicketField') { deleteTicketField(id); return; }
     if (actionName === 'deleteTicketReq') { deleteTicketReq(id); return; }
+    if (actionName === 'deletePqrType') { deletePqrType(id); return; }
     if (actionName === 'justifyDelay' || actionName === 'rejectDelay') {
       const item = ensureDelayNovelty(id);
       if (item) {
@@ -6416,6 +6563,9 @@ function toggleMode(forceDark) {
       <div class="form-field"><label>Nombre completo</label><input name="name" id="messenger-name" value="${escapeHTML(item.name || '')}" required></div>
       <div class="form-field"><label>Teléfono</label><input name="phone" id="messenger-phone" value="${escapeHTML(item.phone || '')}"></div>
       <div class="form-field"><label>Correo / usuario ingreso</label><input name="email" id="messenger-email" type="email" value="${escapeHTML(item.email || '')}" required></div>
+      <div class="form-field"><label>Cargo</label><select name="cargo">${['Quicker mensajero', 'Quicker conductor', 'Auxiliar', 'Supervisor'].map(c => `<option ${item.cargo === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+      <div class="form-field"><label>Ciudad</label><input name="city" value="${escapeHTML(item.city || '')}"></div>
+      <div class="form-field"><label>Placa de la moto</label><input name="plate" value="${escapeHTML(item.plate || '')}" placeholder="Ej: ABC12D"></div>
       <div class="form-field"><label>Contraseña</label><input name="password" type="text" value="${escapeHTML(loginUser.password || '')}" placeholder="Define contraseña" ${id ? '' : 'required'}></div>
       <div class="form-field"><label>Proyecto matriz</label><input name="projectName" id="messenger-project" value="${escapeHTML(item.projectName || '')}"></div>
       <div class="form-field"><label>Fecha contratación</label><input name="dateIngress" id="messenger-date" value="${escapeHTML(item.dateIngress || '')}"></div>
@@ -6444,7 +6594,8 @@ function toggleMode(forceDark) {
       event.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
       const q = {
-        ...item, id: item.id || uid('QK'), cedula: data.cedula, name: data.name, phone: data.phone, email: data.email,
+        ...item, id: item.id || nextQuickerId(), cedula: data.cedula, name: data.name, phone: data.phone, email: data.email,
+        cargo: data.cargo || 'Quicker mensajero', city: data.city || '', plate: (data.plate || '').toUpperCase(),
         client: data.client, point: data.point, zone: item.zone || '', docName: item.docName || 'Documentos base', docExpires: item.docExpires || '', status: item.status || 'Activo',
         projectName: data.projectName, dateIngress: data.dateIngress, paymentEnabled: data.paymentEnabled,
         paymentTypes: [...form.querySelectorAll('input[name="paymentTypes"]:checked')].map(o => o.value)
@@ -6555,6 +6706,26 @@ function toggleMode(forceDark) {
         saveState('Requisito agregado');
       });
   }
+  function openPqrTypeForm() {
+    openModal('Nuevo tipo de Solicitud/PQR', 'Aparecerá en el desplegable de la app del mensajero.',
+      `<div class="form-grid"><div class="form-field full"><label>Nombre del tipo</label><input name="label" placeholder="Ej: Cambio de turno" required></div></div>
+       <div class="modal-foot"><button class="dev-btn" type="button" id="cancel-form">Cancelar</button><button class="dev-btn primary" type="submit">Guardar</button></div>`,
+      event => {
+        event.preventDefault();
+        const label = (Object.fromEntries(new FormData(event.currentTarget).entries()).label || '').trim();
+        if (!label) { toast('Escribe un nombre'); return; }
+        state.prefs.pqrTypes = [...(state.prefs.pqrTypes || []), label];
+        closeModal(); log('Configuración', 'Agregó tipo PQR', label); saveState('Tipo agregado');
+      });
+  }
+  function deletePqrType(index) {
+    const i = Number(index); const list = [...(state.prefs.pqrTypes || [])];
+    if (!list[i]) return;
+    if (!confirm(`¿Eliminar "${list[i]}"?`)) return;
+    list.splice(i, 1); state.prefs.pqrTypes = list;
+    log('Configuración', 'Eliminó tipo PQR', String(i)); saveState('Tipo eliminado');
+  }
+
   function deleteTicketReq(index) {
     const i = Number(index);
     const list = [...(state.prefs.ticketRequirementOptions || [])];
@@ -6629,6 +6800,8 @@ function toggleMode(forceDark) {
     if (addTicketField) openTicketFieldForm();
     const addTicketReq = event.target.closest('[data-add-ticket-req]');
     if (addTicketReq) openTicketReqForm();
+    const addPqr = event.target.closest('[data-add-pqr-type]');
+    if (addPqr) openPqrTypeForm();
     const editSelected = event.target.closest('[data-edit-selected-user]');
     if (editSelected) {
       const id = document.querySelector('[data-edit-user-select]')?.value;
@@ -6670,6 +6843,18 @@ function toggleMode(forceDark) {
     if (exp) exportCSV(exp.dataset.export);
     const act = event.target.closest('[data-action]');
     if (act) handleAction(act.dataset.action, act.dataset.id);
+
+    // ── Quickers ──
+    const qShareQR = event.target.closest('[data-open-messenger-qr]');
+    if (qShareQR) { openMessengerQR(); return; }
+    const qClear = event.target.closest('[data-quicker-clear]');
+    if (qClear) { quickerFilters.estado = 'todos'; quickerFilters.operacion = 'todos'; renderQuickers(); return; }
+    const carnetQrBtn = event.target.closest('[data-carnet-qr]');
+    if (carnetQrBtn) { const ov = carnetQrBtn.closest('.qc')?.querySelector('[data-carnet-qr-overlay]'); if (ov) ov.classList.add('show'); return; }
+    const carnetQrClose = event.target.closest('[data-carnet-qr-close]');
+    if (carnetQrClose) { carnetQrClose.closest('[data-carnet-qr-overlay]')?.classList.remove('show'); return; }
+    const copyLink = event.target.closest('[data-copy-link]');
+    if (copyLink) { navigator.clipboard?.writeText(copyLink.dataset.copyLink).then(() => toast('Enlace copiado')).catch(() => toast('No se pudo copiar')); return; }
 
     // ── Tickets ──
     const ticketFormBtn = event.target.closest('[data-open-ticket-form]');
@@ -6921,6 +7106,9 @@ function toggleMode(forceDark) {
   });
 
   document.addEventListener('change', event => {
+    // ── Quickers: filtros ──
+    const qFilter = event.target.closest('[data-quicker-filter]');
+    if (qFilter) { quickerFilters[qFilter.dataset.quickerFilter] = qFilter.value; renderQuickers(); return; }
     // ── Tickets: filtros ──
     const tFilter = event.target.closest('[data-ticket-filter]');
     if (tFilter) { ticketFilters[tFilter.dataset.ticketFilter] = tFilter.value; renderTickets(); return; }
