@@ -2328,15 +2328,19 @@ function toggleMode(forceDark) {
     return FIREBASE_SETTINGS.enabled && cfg.apiKey && !String(cfg.apiKey).includes('PEGAR_') && cfg.projectId && !String(cfg.projectId).includes('PEGAR_');
   }
 
+  let cloudInitTries = 0;
   function initCloudSync() {
     if (!firebaseConfigReady()) {
       cloudStatus = FIREBASE_SETTINGS.enabled ? 'Firebase pendiente de configuración' : 'Modo local';
       renderCloudStatus();
       return;
     }
+    // El SDK puede tardar en cargar (CDN lento). Reintentar hasta ~30s antes de rendirse.
     if (!window.firebase?.firestore) {
-      cloudStatus = 'Firebase SDK no cargó';
+      cloudInitTries++;
+      cloudStatus = cloudInitTries > 30 ? 'Firebase SDK no cargó (revisa tu conexión)' : 'Cargando Firebase...';
       renderCloudStatus();
+      if (cloudInitTries <= 30) { setTimeout(initCloudSync, 1000); }
       return;
     }
     try {
