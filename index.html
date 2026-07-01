@@ -5280,9 +5280,18 @@ function toggleMode(forceDark) {
   function deleteSupport(collection, id, label) {
     if (!canDeleteSolicitudes()) { toast('Solo el administrador puede eliminar solicitudes'); return; }
     if (!confirm('¿Eliminar esta solicitud definitivamente?')) return;
-    state[collection] = (state[collection] || []).filter(x => x.id !== id);
+    // Buscar en la colección indicada y en las relacionadas (la fila puede venir de novedades)
+    const collections = [...new Set([collection, 'parkingReports', 'overtimeReports', 'novelties'])];
+    let removed = false;
+    collections.forEach(col => {
+      const before = (state[col] || []).length;
+      state[col] = (state[col] || []).filter(x => x.id !== id);
+      if ((state[col] || []).length < before) removed = true;
+    });
+    // También quitar novedades que referencian este id
+    state.novelties = (state.novelties || []).filter(n => n.ref !== id);
     log(label || 'Solicitud', 'Eliminó solicitud', id);
-    saveState('Solicitud eliminada');
+    saveState(removed ? 'Solicitud eliminada' : 'Registro eliminado');
   }
 
   function isPendingNovelty(item) {
