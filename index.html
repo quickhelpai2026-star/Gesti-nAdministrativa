@@ -3001,7 +3001,7 @@ function toggleMode(forceDark) {
   }
 
   function moduleDashboardButton(pageId) {
-    if (['dashboard', 'config'].includes(pageId)) return '';
+    if (['dashboard', 'config', 'matriz'].includes(pageId)) return '';
     return `<button class="dashboard-icon-btn" type="button" data-open-module-dashboard="${pageId}" title="Dashboard de ${moduleLabel(pageId)}" aria-label="Dashboard de ${moduleLabel(pageId)}"><i class="ti ti-chart-dots"></i></button>`;
   }
 
@@ -3838,12 +3838,19 @@ function toggleMode(forceDark) {
     Phone: 'Teléfono', CelPhone: 'Celular', Email: 'Correo', Salud: 'EPS / Salud', Pension: 'Pensión', Riesgos: 'ARL / Riesgos',
     Cesantias: 'Cesantías', Caja: 'Caja compensación', Empleado_Cobrable: 'Empleado cobrable'
   };
+  // Columnas del Excel que se muestran en la app (por posición, 0=A): C,D, F-O, Q-S, U-Z, AB-AD, AF-AG
+  const MATRIZ_SHOW = new Set([2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 20, 21, 22, 23, 24, 25, 27, 28, 29, 31, 32]);
   function openAssetDetail(cedula) {
     const a = findAssetByCedula(cedula);
     if (!a) { toast('No encontré esa cédula en la matriz'); return; }
-    const raw = a.raw || a;
     const fmt = v => { if (v === null || v === undefined || v === '') return '—'; if (v instanceof Date) return v.toISOString().slice(0, 10); return String(v); };
-    const entries = Object.entries(raw).filter(([k]) => k !== 'Columna1');
+    let entries;
+    if (a.raw && Object.keys(a.raw).length) {
+      entries = Object.entries(a.raw).filter((_, i) => MATRIZ_SHOW.has(i));
+    } else {
+      // Matriz cargada antes de la actualización: muestra los campos disponibles
+      entries = Object.entries(a).filter(([k]) => k !== 'raw');
+    }
     const rowsHTML = entries.map(([k, v]) => `<div class="asset-row"><span>${escapeHTML(MATRIZ_LABELS[k] || k)}</span><strong>${escapeHTML(fmt(v))}</strong></div>`).join('');
     const form = document.getElementById('modal-form');
     document.getElementById('modal-title').textContent = a.name || 'Colaborador';
@@ -5883,6 +5890,12 @@ function toggleMode(forceDark) {
   function exportCSV(collection) {
     if (collection === 'availabilities') {
       downloadMallaWorkbook(state.availabilities || [], 'mallas', false);
+      return;
+    }
+    if (collection === 'assetMatrix') {
+      // Exporta la matriz COMPLETA (todas las columnas originales del Excel), incluso las no mostradas
+      const rows = (state.assetMatrix || []).map(a => (a.raw && Object.keys(a.raw).length) ? a.raw : { cedula: a.cedula, name: a.name, city: a.city, salary: a.salary, rodamiento: a.rodamiento, projectId: a.projectId, projectName: a.projectName, dateIngress: a.dateIngress, phone: a.phone, cellPhone: a.cellPhone, email: a.email });
+      downloadCSV({ matriz: rows }, 'matriz');
       return;
     }
     if (collection === 'quickgo') {
